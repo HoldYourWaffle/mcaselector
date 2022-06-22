@@ -97,6 +97,7 @@ public class StatusBar extends StackPane {
 	}
 
 	private void update(TileMap tileMap) {
+		// TODO biome on hover (#228)
 		selectedChunks.setText(Translation.STATUS_SELECTED + ": " + (tileMap.getSelection().isInverted() ? "\u221e" : tileMap.getSelectedChunks()));
 		queuedJobs.setText(Translation.STATUS_QUEUE + ": " + JobHandler.getActiveJobs());
 		totalRegions.setText(Translation.STATUS_TOTAL + ": " + tileMap.getLoadedTiles());

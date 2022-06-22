@@ -33,13 +33,13 @@ public class OptionBar extends BorderPane {
 	* File				View				Selection					Tools				About
 	* - Open World		- Chunk Grid		- Clear         			- Import chunks
 	* - Open Region		- Region Grid		- Invert        			- Filter chunks
-	* - Settings		- Goto				- Copy chunks				- Change fields
-	* - Render Settings	- Reset Zoom    	- Paste chunks				- Edit chunk
-	* - Quit			- Save Screenshot	- Export selected chunks	- Swap chunks
-	*					- Clear cache   	- Delete selected chunks	- Edit overlays
-	*					- Clear all cache	- Import selection			- Next overlay
-	*										- Export selection          - Next overlay type
-	*                                       - Export as image
+	* - Settings		- Goto				- Copy chunks				- Biome selector
+	* - Render Settings	- Reset Zoom    	- Paste chunks				- Change fields
+	* - Quit			- Save Screenshot	- Export selected chunks	- Edit chunk
+	*					- Clear cache   	- Delete selected chunks	- Swap chunks
+	*					- Clear all cache	- Import selection			- Edit overlays
+	*										- Export selection          - Next overlay
+	*                                       - Export as image           - Next overlay type
 	* 										- Clear cache
 	* */
 
@@ -81,6 +81,7 @@ public class OptionBar extends BorderPane {
 	private final MenuItem exportImage = UIFactory.menuItem(Translation.MENU_SELECTION_EXPORT_IMAGE);
 	private final MenuItem clearSelectionCache = UIFactory.menuItem(Translation.MENU_SELECTION_CLEAR_CACHE);
 	private final MenuItem filterChunks = UIFactory.menuItem(Translation.MENU_TOOLS_FILTER_CHUNKS);
+	private final MenuItem biomeSelector = UIFactory.menuItem(Translation.MENU_TOOLS_BIOME_SELECTOR);
 	private final MenuItem changeFields = UIFactory.menuItem(Translation.MENU_TOOLS_CHANGE_FIELDS);
 	private final MenuItem editNBT = UIFactory.menuItem(Translation.MENU_TOOLS_EDIT_NBT);
 	private final MenuItem swapChunks = UIFactory.menuItem(Translation.MENU_TOOLS_SWAP_CHUNKS);
@@ -117,7 +118,7 @@ public class OptionBar extends BorderPane {
 				exportImage, UIFactory.separator(),
 				clearSelectionCache);
 		tools.getItems().addAll(
-				importChunks, filterChunks, changeFields, editNBT, UIFactory.separator(),
+				importChunks, filterChunks, biomeSelector, changeFields, editNBT, UIFactory.separator(),
 				swapChunks, UIFactory.separator(),
 				editOverlays, nextOverlay, nextOverlayType);
 		about.setOnMouseClicked(e -> DialogHelper.showAboutDialog(primaryStage));
@@ -232,6 +233,7 @@ public class OptionBar extends BorderPane {
 		exportImage.setOnAction(e -> DialogHelper.generateImageFromSelection(tileMap, primaryStage));
 		clearSelectionCache.setOnAction(e -> CacheHelper.clearSelectionCache(tileMap));
 		filterChunks.setOnAction(e -> DialogHelper.filterChunks(tileMap, primaryStage));
+		biomeSelector.setOnAction(e -> DialogHelper.biomeSelector(tileMap, primaryStage));
 		changeFields.setOnAction(e -> DialogHelper.changeFields(tileMap, primaryStage));
 		editNBT.setOnAction(e -> DialogHelper.editNBT(tileMap, primaryStage));
 		swapChunks.setOnAction(e -> DialogHelper.swapChunks(tileMap, primaryStage));
@@ -265,6 +267,7 @@ public class OptionBar extends BorderPane {
 		exportSelection.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCodeCombination.SHORTCUT_DOWN));
 		clearSelectionCache.setAccelerator(new KeyCodeCombination(KeyCode.J, KeyCodeCombination.SHORTCUT_DOWN));
 		filterChunks.setAccelerator(new KeyCodeCombination(KeyCode.F, KeyCodeCombination.SHORTCUT_DOWN));
+		biomeSelector.setAccelerator(new KeyCodeCombination(KeyCode.F, KeyCodeCombination.SHORTCUT_DOWN, KeyCodeCombination.SHIFT_DOWN));
 		changeFields.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCodeCombination.SHORTCUT_DOWN));
 		editNBT.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCodeCombination.SHORTCUT_DOWN));
 		swapChunks.setAccelerator(new KeyCodeCombination(KeyCode.M, KeyCodeCombination.SHORTCUT_DOWN));
@@ -298,6 +301,7 @@ public class OptionBar extends BorderPane {
 		clearAllCache.setDisable(!enabled);
 		saveScreenshot.setDisable(!enabled);
 		filterChunks.setDisable(!enabled);
+		biomeSelector.setDisable(!enabled);
 		changeFields.setDisable(!enabled);
 		importChunks.setDisable(!enabled);
 		invert.setDisable(!enabled);

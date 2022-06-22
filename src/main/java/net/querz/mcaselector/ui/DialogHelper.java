@@ -167,6 +167,10 @@ public class DialogHelper {
 		tileMap.draw();
 	}
 
+	public static void biomeSelector(TileMap tileMap, Stage primaryStage) {
+		new BiomeSelectorDialog(primaryStage, tileMap).show();
+	}
+
 	public static void quit(TileMap tileMap, Stage primaryStage) {
 		if (tileMap.hasUnsavedSelection()) {
 			Optional<ButtonType> result = new ConfirmationDialog(primaryStage, Translation.DIALOG_UNSAVED_SELECTION_TITLE, Translation.DIALOG_UNSAVED_SELECTION_HEADER, "unsaved-changes").showAndWait();

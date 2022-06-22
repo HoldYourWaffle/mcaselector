@@ -36,6 +36,7 @@ menu.selection.export_image;Exporteer als afbeelding
 menu.selection.clear_cache;Cache wissen
 menu.tools.import_chunks;Chunks importeren
 menu.tools.filter_chunks;Chunks filteren
+menu.tools.biome_selector;Biome selecteren
 menu.tools.change_fields;Velden veranderen
 menu.tools.edit_nbt;Chunk aanpassen
 menu.tools.swap_chunks;Chunks omwisselen
@@ -119,6 +120,7 @@ dialog.filter_chunks.delete.tooltip;Verwijdert alle aangepaste chunks uit de hui
 dialog.filter_chunks.selection_only;Alleen van toepassing op selectie
 dialog.filter_chunks.overwrite_selection;Selectie overschrijven
 dialog.filter_chunks.selection_radius;Selectie radius
+dialog.biome_selector.title;Biome selecteren
 dialog.edit_overlays.title;Bewerk overlays
 dialog.edit_overlays.overlay_active.tooltip;Actief
 dialog.edit_overlays.delete.tooltip;Verwijderen
@@ -163,6 +165,7 @@ dialog.progress.title.importing_chunks;Chunks importeren...
 dialog.progress.title.deleting_filtered_chunks;Gefilterde chunks verwijderen...
 dialog.progress.title.exporting_filtered_chunks;Gefilterde chunks exporteren...
 dialog.progress.title.selecting_filtered_chunks;Gefilterde chunks selecteren...
+dialog.progress.title.selecting_biomes;Biomes selecteren...
 dialog.progress.title.changing_nbt_data;NBT gegevens aanpassen...
 dialog.progress.title.saving_chunk;Chunk opslaan in bestand...
 dialog.error.button.copy_to_clipboard;Kopieer naar klembord

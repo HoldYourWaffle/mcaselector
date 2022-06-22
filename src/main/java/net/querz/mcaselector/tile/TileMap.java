@@ -16,31 +16,33 @@ import javafx.scene.input.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import net.querz.mcaselector.Config;
-import net.querz.mcaselector.io.*;
+import net.querz.mcaselector.io.FileHelper;
+import net.querz.mcaselector.io.ImageHelper;
+import net.querz.mcaselector.io.JobHandler;
+import net.querz.mcaselector.io.WorldDirectories;
+import net.querz.mcaselector.io.job.BiomeSelector;
 import net.querz.mcaselector.io.job.ParseDataJob;
 import net.querz.mcaselector.io.job.RegionImageGenerator;
+import net.querz.mcaselector.overlay.Overlay;
+import net.querz.mcaselector.point.Point2f;
+import net.querz.mcaselector.point.Point2i;
+import net.querz.mcaselector.progress.Timer;
 import net.querz.mcaselector.property.DataProperty;
 import net.querz.mcaselector.selection.ChunkSet;
 import net.querz.mcaselector.selection.Selection;
 import net.querz.mcaselector.selection.SelectionData;
-import net.querz.mcaselector.overlay.Overlay;
+import net.querz.mcaselector.text.Translation;
 import net.querz.mcaselector.ui.DialogHelper;
 import net.querz.mcaselector.ui.ProgressTask;
 import net.querz.mcaselector.ui.Window;
-import net.querz.mcaselector.point.Point2f;
-import net.querz.mcaselector.point.Point2i;
-import net.querz.mcaselector.progress.Timer;
+import net.querz.mcaselector.ui.dialog.CancellableProgressDialog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.Transferable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -77,6 +79,8 @@ public class TileMap extends Canvas implements ClipboardOwner {
 	private boolean showRegionGrid = true;
 	private boolean showCoordinates = false;
 	private boolean showNonexistentRegions;
+
+	private BiomeSelector biomeSelector = null;
 
 	private final List<Consumer<TileMap>> updateListener = new ArrayList<>(1);
 	private final List<Consumer<TileMap>> hoverListener = new ArrayList<>(1);
@@ -545,7 +549,21 @@ public class TileMap extends Canvas implements ClipboardOwner {
 			firstMouseLocation = new Point2f(event.getX(), event.getY());
 			firstPastedChunksOffset = pastedChunksOffset;
 
-			if (event.getButton() == MouseButton.PRIMARY && !window.isKeyPressed(KeyCode.COMMAND) && pastedChunks == null) {
+			if (biomeSelector != null && (event.getButton() == MouseButton.PRIMARY || event.getButton() == MouseButton.SECONDARY)) { //TODO quick access as shortcut modifier?
+				new CancellableProgressDialog(Translation.DIALOG_PROGRESS_TITLE_SELECTING_BIOMES, window.getPrimaryStage())
+						.showProgressBar(t -> biomeSelector.selectBiomes(
+								getMouseChunk(event.getX(), event.getY()),
+								event.getButton() == MouseButton.PRIMARY,
+								s -> Platform.runLater(() -> {
+									if (event.getButton() == MouseButton.PRIMARY) {
+										addSelection(s);
+									} else {
+										// TODO implement "erasing flood" with removeSelection util (extract from mark)
+									}
+									draw();
+								}), t, false));
+				//r.getFilter().resetTempData(); CHECK do I need this?
+			} else if (event.getButton() == MouseButton.PRIMARY && !window.isKeyPressed(KeyCode.COMMAND) && pastedChunks == null) {
 				mark(event.getX(), event.getY(), true);
 			} else if (event.getButton() == MouseButton.SECONDARY) {
 				mark(event.getX(), event.getY(), false);
@@ -560,6 +578,8 @@ public class TileMap extends Canvas implements ClipboardOwner {
 	}
 
 	private void onMouseDragged(MouseEvent event) {
+		// TODO implement for biome selector as multiple seed chunks? (take all biomes in a chunk)
+
 		Point2f mouseLocation = new Point2f(event.getX(), event.getY());
 		if (event.getButton() == MouseButton.MIDDLE
 				|| event.getButton() == MouseButton.PRIMARY && window.isKeyPressed(KeyCode.COMMAND)) {
@@ -677,6 +697,11 @@ public class TileMap extends Canvas implements ClipboardOwner {
 	public void setShowNonexistentRegions(boolean showNonexistentRegions) {
 		this.showNonexistentRegions = showNonexistentRegions;
 		draw();
+	}
+
+	public void setBiomeSelector(BiomeSelector biomeSelector) {
+		this.biomeSelector = biomeSelector;
+		// TODO set fill cursor?
 	}
 
 	public void goTo(int x, int z) {

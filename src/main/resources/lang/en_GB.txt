@@ -36,6 +36,7 @@ menu.selection.export_image;Export as image
 menu.selection.clear_cache;Clear cache
 menu.tools.import_chunks;Import chunks
 menu.tools.filter_chunks;Filter chunks
+menu.tools.biome_selector;Biome selector
 menu.tools.change_fields;Change fields
 menu.tools.edit_nbt;Edit chunk
 menu.tools.swap_chunks;Swap chunks
@@ -119,6 +120,7 @@ dialog.filter_chunks.delete.tooltip;Deletes all affected chunks from the current
 dialog.filter_chunks.selection_only;Apply to selection only
 dialog.filter_chunks.overwrite_selection;Overwrite selection
 dialog.filter_chunks.selection_radius;Selection radius
+dialog.biome_selector.title;Biome selector
 dialog.edit_overlays.title;Edit overlays
 dialog.edit_overlays.overlay_active.tooltip;Active
 dialog.edit_overlays.delete.tooltip;Delete
@@ -163,6 +165,7 @@ dialog.progress.title.importing_chunks;Importing chunks...
 dialog.progress.title.deleting_filtered_chunks;Deleting filtered chunks...
 dialog.progress.title.exporting_filtered_chunks;Exporting filtered chunks...
 dialog.progress.title.selecting_filtered_chunks;Selecting filtered chunks...
+dialog.progress.title.selecting_biomes;Selecting biomes...
 dialog.progress.title.changing_nbt_data;Changing NBT data...
 dialog.progress.title.saving_chunk;Saving chunk...
 dialog.error.button.copy_to_clipboard;Copy to Clipboard
