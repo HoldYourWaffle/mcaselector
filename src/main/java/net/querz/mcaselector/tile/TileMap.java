@@ -553,7 +553,6 @@ public class TileMap extends Canvas implements ClipboardOwner {
 				new CancellableProgressDialog(Translation.DIALOG_PROGRESS_TITLE_SELECTING_BIOMES, window.getPrimaryStage())
 						.showProgressBar(t -> biomeSelector.selectBiomes(
 								getMouseChunk(event.getX(), event.getY()),
-								event.getButton() == MouseButton.PRIMARY,
 								s -> Platform.runLater(() -> {
 									if (event.getButton() == MouseButton.PRIMARY) {
 										addSelection(s);

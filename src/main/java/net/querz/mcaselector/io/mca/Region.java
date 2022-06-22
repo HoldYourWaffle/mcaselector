@@ -1,5 +1,6 @@
 package net.querz.mcaselector.io.mca;
 
+import it.unimi.dsi.fastutil.ints.IntArrayFIFOQueue;
 import net.querz.mcaselector.changer.Field;
 import net.querz.mcaselector.filter.Filter;
 import net.querz.mcaselector.io.ByteArrayPointer;
@@ -11,8 +12,10 @@ import net.querz.mcaselector.progress.Timer;
 import net.querz.mcaselector.range.Range;
 import net.querz.mcaselector.selection.ChunkSet;
 import net.querz.mcaselector.selection.Selection;
+import net.querz.mcaselector.tile.Tile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -389,34 +392,89 @@ public class Region {
 		}
 	}
 
-	public ChunkSet getFilteredChunks(Filter<?> filter, Selection selection) {
+	public ChunkSet getFilteredChunks(Filter<?> filter, Selection bounds) {
 		ChunkSet chunks = new ChunkSet();
-
-		for (int i = 0; i < 1024; i++) {
-			RegionChunk region = this.region.getChunk(i);
-			EntitiesChunk entities = this.entities == null ? null : this.entities.getChunk(i);
-			PoiChunk poi = this.poi == null ? null : this.poi.getChunk(i);
-
-			if (region == null || region.isEmpty()) {
-				continue;
-			}
-
-			ChunkData filterData = new ChunkData(region, poi, entities);
-
-			Point2i location = region.getAbsoluteLocation();
-			if (location == null) {
-				continue;
-			}
-
-			try {
-				if ((selection == null || selection.isChunkSelected(location)) && filter.matches(filterData)) {
-					chunks.set(location.asChunkIndex());
-				}
-			} catch (Exception ex) {
-				LOGGER.warn("failed to select chunk {}: {}", location, ex.getMessage());
+		for (int i = 0; i < Tile.CHUNKS; i++) {
+			if (matchChunk(i, filter, bounds)) {
+				chunks.set(i);
 			}
 		}
 		return chunks;
+	}
+
+	// XXX not a great name...
+	public ChunkSet getFloodFilteredChunks(Point2i seedChunk, Filter<?> filter, Selection bounds) {
+		ChunkSet chunks = new ChunkSet();
+
+		// CHECK what happens outside of rendered chunks? seems to be non-random?
+
+		IntArrayFIFOQueue queue = new IntArrayFIFOQueue();
+		boolean[] queued = new boolean[Tile.CHUNKS];
+
+		int seedIndex = this.region.getChunkAt(seedChunk).absoluteLocation.asChunkIndex();
+		queued[seedIndex] = true;
+		queue.enqueue(seedIndex);
+
+		while (!queue.isEmpty()) {
+			int i = queue.dequeueInt();
+
+			if (!matchChunk(i, filter, bounds)) {
+				continue;
+			}
+
+			chunks.set(i);
+
+			int up = i - 32, left = i - 1, right = i + 1, down = i + 32;
+
+			if (i > 31 && !queued[up]) {
+				queued[up] = true;
+				queue.enqueue(up);
+			}
+
+			if (i % 32 != 0 && !queued[left]) {
+				queued[left] = true;
+				queue.enqueue(left);
+			}
+
+			if (i % 32 != 31 && !queued[right]) {
+				queued[right] = true;
+				queue.enqueue(right);
+			}
+
+			if (i < Tile.CHUNKS - 32 && !queued[down]) {
+				queued[down] = true;
+				queue.enqueue(down);
+			}
+		}
+		return chunks;
+	}
+
+	private boolean matchChunk(int index, Filter<?> filter, Selection bounds) {
+		RegionChunk region = this.region.getChunk(index);
+		if (region == null || region.isEmpty()) {
+			return false;
+		}
+
+		Point2i location = region.getAbsoluteLocation();
+		if (location == null) {
+			// CHECK when does this happen?
+			return false;
+		}
+
+		EntitiesChunk entities = this.entities == null ? null : this.entities.getChunk(index);
+		PoiChunk poi = this.poi == null ? null : this.poi.getChunk(index);
+		ChunkData filterData = new ChunkData(region, poi, entities);
+
+		try {
+			if ((bounds == null || bounds.isChunkSelected(location)) && filter.matches(filterData)) {
+				return true;
+			}
+		} catch (Exception ex) {
+			// XXX why is the exception swallowed?
+			LOGGER.warn("failed to select chunk {}: {}", location, ex.getMessage());
+		}
+
+		return false;
 	}
 
 	public void applyFieldChanges(List<Field<?>> fields, boolean force, Selection selection) {
