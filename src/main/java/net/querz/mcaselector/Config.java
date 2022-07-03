@@ -2,6 +2,7 @@ package net.querz.mcaselector;
 
 import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.WorldDirectories;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.logging.Logging;
 import net.querz.mcaselector.tile.Tile;
 import net.querz.mcaselector.overlay.Overlay;
@@ -212,7 +213,7 @@ public final class Config {
 	public static void setWorldDirs(WorldDirectories dirs) {
 		LOGGER.debug("setting world directories to {}", dirs);
 		Config.worldDirs = dirs;
-		Config.worldDir = dirs.getRegion();
+		Config.worldDir = dirs.getDirectory(McaType.REGION);
 		worldUUID = UUID.nameUUIDFromBytes(worldDir.getAbsolutePath().getBytes());
 		cacheDir = new File(baseCacheDir, worldUUID.toString().replace("-", ""));
 	}

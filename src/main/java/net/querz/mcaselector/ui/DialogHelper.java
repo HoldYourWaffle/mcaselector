@@ -22,6 +22,7 @@ import net.querz.mcaselector.io.job.SelectionDeleter;
 import net.querz.mcaselector.io.job.SelectionExporter;
 import net.querz.mcaselector.io.job.SelectionImageExporter;
 import net.querz.mcaselector.io.mca.ChunkData;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.io.mca.Region;
 import net.querz.mcaselector.selection.ChunkSet;
 import net.querz.mcaselector.selection.ClipboardSelection;
@@ -307,8 +308,8 @@ public class DialogHelper {
 				}
 
 				WorldDirectories worldDirectories = Config.getWorldDirs();
-				worldDirectories.setPoi(r.poi);
-				worldDirectories.setEntities(r.entities);
+				worldDirectories.setDirectory(McaType.POI, r.poi);
+				worldDirectories.setDirectory(McaType.ENTITIES, r.entities);
 
 				CacheHelper.updateWorldSettingsFile();
 			}
@@ -520,14 +521,14 @@ public class DialogHelper {
 	private static void deleteTempFiles(Map<Point2i, RegionDirectories> tempFiles) {
 		if (tempFiles != null) {
 			for (RegionDirectories tempFile : tempFiles.values()) {
-				if (!tempFile.getRegion().delete()) {
-					LOGGER.warn("failed to delete temp file {}", tempFile.getRegion());
+				if (!tempFile.getDirectory(McaType.REGION).delete()) {
+					LOGGER.warn("failed to delete temp file {}", tempFile.getDirectory(McaType.REGION));
 				}
-				if (!tempFile.getPoi().delete()) {
-					LOGGER.warn("failed to delete temp file {}", tempFile.getPoi());
+				if (!tempFile.getDirectory(McaType.POI).delete()) {
+					LOGGER.warn("failed to delete temp file {}", tempFile.getDirectory(McaType.POI));
 				}
-				if (!tempFile.getEntities().delete()) {
-					LOGGER.warn("failed to delete temp file {}", tempFile.getEntities());
+				if (!tempFile.getDirectory(McaType.ENTITIES).delete()) {
+					LOGGER.warn("failed to delete temp file {}", tempFile.getDirectory(McaType.ENTITIES));
 				}
 			}
 		}
@@ -578,7 +579,7 @@ public class DialogHelper {
 			tileMap.getWindow().getOptionBar().setWorldDependentMenuItemsEnabled(true, tileMap);
 			tileMap.getOverlayPool().switchTo(new File(Config.getCacheDir(), "cache.db").toString(), tileMap.getOverlays());
 			task.done(Translation.DIALOG_PROGRESS_DONE.toString());
-			Platform.runLater(() -> tileMap.getWindow().setTitleSuffix(worldDirectories.getRegion().getParent()));
+			Platform.runLater(() -> tileMap.getWindow().setTitleSuffix(worldDirectories.getDirectory(McaType.REGION).getParent()));
 		});
 	}
 

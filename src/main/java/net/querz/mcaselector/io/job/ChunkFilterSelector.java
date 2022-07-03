@@ -90,7 +90,7 @@ public final class ChunkFilterSelector {
 			// load MCAFile
 			Timer t = new Timer();
 			try {
-				Region region = Region.loadRegion(getRegionDirectories(), regionData, poiData, entitiesData);
+				Region region = new Region(getRegionDirectories(), regionData, poiData, entitiesData);
 
 				if (region.getRegion() == null) {
 					progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());

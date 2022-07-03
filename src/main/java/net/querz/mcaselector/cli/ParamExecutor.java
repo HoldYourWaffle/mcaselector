@@ -7,6 +7,7 @@ import net.querz.mcaselector.filter.FilterParser;
 import net.querz.mcaselector.filter.filters.GroupFilter;
 import net.querz.mcaselector.io.*;
 import net.querz.mcaselector.io.job.*;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.overlay.Overlay;
 import net.querz.mcaselector.overlay.OverlayParser;
 import net.querz.mcaselector.point.Point2i;
@@ -716,14 +717,14 @@ public final class ParamExecutor {
 		ChunkImporter.importChunks(source, progress, true, overwrite, sourceSelection, targetSelection, sections, offset, tempFiles);
 		if (tempFiles.get() != null) {
 			for (RegionDirectories tempFile : tempFiles.get().values()) {
-				if (!tempFile.getRegion().delete()) {
-					LOGGER.warn("failed to delete temp file {}", tempFile.getRegion());
+                if (!tempFile.getDirectory(McaType.REGION).delete()) {
+                    LOGGER.warn("failed to delete temp file {}", tempFile.getDirectory(McaType.REGION));
 				}
-				if (!tempFile.getPoi().delete()) {
-					LOGGER.warn("failed to delete temp file {}", tempFile.getPoi());
+				if (!tempFile.getDirectory(McaType.POI).delete()) {
+					LOGGER.warn("failed to delete temp file {}", tempFile.getDirectory(McaType.POI));
 				}
-				if (!tempFile.getEntities().delete()) {
-					LOGGER.warn("failed to delete temp file {}", tempFile.getEntities());
+				if (!tempFile.getDirectory(McaType.ENTITIES).delete()) {
+					LOGGER.warn("failed to delete temp file {}", tempFile.getDirectory(McaType.ENTITIES));
 				}
 			}
 		}

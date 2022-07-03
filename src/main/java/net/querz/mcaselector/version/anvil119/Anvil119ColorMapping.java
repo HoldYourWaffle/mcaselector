@@ -2,7 +2,7 @@ package net.querz.mcaselector.version.anvil119;
 
 import net.querz.mcaselector.text.TextHelper;
 import net.querz.mcaselector.version.ColorMapping;
-import net.querz.mcaselector.version.Helper;
+import net.querz.mcaselector.version.NbtHelper;
 import net.querz.nbt.CompoundTag;
 import net.querz.nbt.StringTag;
 import net.querz.nbt.Tag;
@@ -106,12 +106,12 @@ public class Anvil119ColorMapping implements ColorMapping {
 
 	@Override
 	public int getRGB(Object o, String biome) {
-		String name = Helper.stringFromCompound((CompoundTag) o, "Name", "");
+		String name = NbtHelper.stringFromCompound((CompoundTag) o, "Name", "");
 		Object value = mapping.get(name);
 		if (value instanceof Integer) {
 			return applyBiomeTint(name, biome, (int) value);
 		} else if (value instanceof BlockStateMapping) {
-			int color = ((BlockStateMapping) value).getColor(Helper.tagFromCompound((CompoundTag) o, "Properties"));
+			int color = ((BlockStateMapping) value).getColor(NbtHelper.tagFromCompound((CompoundTag) o, "Properties"));
 			return applyBiomeTint(name, biome, color);
 		}
 		return 0xFF000000;
@@ -130,11 +130,11 @@ public class Anvil119ColorMapping implements ColorMapping {
 
 	private int applyBiomeTint(String name, String biome, int color) {
 		if (grass.contains(name)) {
-			return applyTint(color, biomeGrassTints.getOrDefault(biome, DEFAULT_GRASS_TINT));
+			return ColorMapping.applyTint(color, biomeGrassTints.getOrDefault(biome, DEFAULT_GRASS_TINT));
 		} else if (foliage.contains(name)) {
-			return applyTint(color, biomeFoliageTints.getOrDefault(biome, DEFAULT_FOLIAGE_TINT));
+			return ColorMapping.applyTint(color, biomeFoliageTints.getOrDefault(biome, DEFAULT_FOLIAGE_TINT));
 		} else if (name.equals("minecraft:water")) {
-			return applyTint(color, biomeWaterTints.getOrDefault(biome, DEFAULT_WATER_TINT));
+			return ColorMapping.applyTint(color, biomeWaterTints.getOrDefault(biome, DEFAULT_WATER_TINT));
 		}
 		return color;
 	}

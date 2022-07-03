@@ -1,5 +1,6 @@
 package net.querz.mcaselector.io;
 
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.selection.Selection;
 import java.io.File;
@@ -7,12 +8,14 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+// XXX record-ify?
 public class WorldDirectories implements Serializable, Cloneable {
 
 	private File region;
 	private File poi;
 	private File entities;
 
+	// XXX uninitialized?
 	public WorldDirectories() {}
 
 	public WorldDirectories(File region, File poi, File entities) {
@@ -21,35 +24,27 @@ public class WorldDirectories implements Serializable, Cloneable {
 		this.entities = entities;
 	}
 
-	public void setRegion(File region) {
-		this.region = region;
+	public void setDirectory(McaType type, File dir) {
+		switch (type) {
+			case REGION -> region = dir;
+			case POI -> poi = dir;
+			case ENTITIES -> entities = dir;
+		}
 	}
 
-	public void setPoi(File poi) {
-		this.poi = poi;
-	}
-
-	public void setEntities(File entities) {
-		this.entities = entities;
-	}
-
-	public File getRegion() {
-		return region;
-	}
-
-	public File getPoi() {
-		return poi;
-	}
-
-	public File getEntities() {
-		return entities;
+	public File getDirectory(McaType type) {
+		return switch (type) {
+			case REGION -> region;
+			case POI -> poi;
+			case ENTITIES -> entities;
+		};
 	}
 
 	public RegionDirectories makeRegionDirectories(Point2i region) {
 		RegionDirectories rd = new RegionDirectories();
-		rd.setRegion(new File(this.region, FileHelper.createMCAFileName(region)));
-		rd.setPoi(new File(this.poi, FileHelper.createMCAFileName(region)));
-		rd.setEntities(new File(this.entities, FileHelper.createMCAFileName(region)));
+		rd.setDirectory(McaType.REGION, new File(this.region, FileHelper.createMCAFileName(region)));
+		rd.setDirectory(McaType.POI, new File(this.poi, FileHelper.createMCAFileName(region)));
+		rd.setDirectory(McaType.ENTITIES, new File(this.entities, FileHelper.createMCAFileName(region)));
 		return rd;
 	}
 
@@ -72,7 +67,7 @@ public class WorldDirectories implements Serializable, Cloneable {
 					Point2i l = FileHelper.parseMCAFileName(f);
 					if (selection == null || selection.isAnyChunkInRegionSelected(l.asLong())) {
 						if (regionDirectories.containsKey(l)) {
-							regionDirectories.get(l).setEntities(f);
+							regionDirectories.get(l).setDirectory(McaType.ENTITIES, f);
 						} else {
 							regionDirectories.put(l, new RegionDirectories(l, null, f, null));
 						}
@@ -88,7 +83,7 @@ public class WorldDirectories implements Serializable, Cloneable {
 					Point2i l = FileHelper.parseMCAFileName(f);
 					if (selection == null || selection.isAnyChunkInRegionSelected(l.asLong())) {
 						if (regionDirectories.containsKey(l)) {
-							regionDirectories.get(l).setPoi(f);
+							regionDirectories.get(l).setDirectory(McaType.POI, f);
 						} else {
 							regionDirectories.put(l, new RegionDirectories(l, null, null, f));
 						}

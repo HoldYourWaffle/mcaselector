@@ -1,25 +1,22 @@
 package net.querz.mcaselector.io.mca;
 
 import net.querz.mcaselector.changer.Field;
-import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
-import net.querz.mcaselector.overlay.Overlay;
+
 import java.util.List;
 
 public record ChunkData(RegionChunk region, PoiChunk poi, EntitiesChunk entities) {
 
 	public boolean relocate(Point3i offset) {
-		boolean result = true;
-		if (region != null && region.getData() != null && region.getData().containsKey("DataVersion")) {
-			result = region.relocate(offset);
+		// XXX boolean return value is never used
+		return relocateChunk(region, offset) && relocateChunk(poi, offset) && relocateChunk(entities, offset);
+	}
+
+	private boolean relocateChunk(Chunk c, Point3i offset) {
+		if (c != null && c.getData() != null && c.getData().containsKey("DataVersion")) {
+			return c.relocate(offset);
 		}
-		if (poi != null && poi.getData() != null && poi.getData().containsKey("DataVersion")) {
-			result = result && poi.relocate(offset);
-		}
-		if (entities != null && entities.getData() != null && entities.getData().containsKey("DataVersion")) {
-			result = result && entities.relocate(offset);
-		}
-		return result;
+		return true;
 	}
 
 	public void applyFieldChanges(List<Field<?>> fields, boolean force) {
@@ -32,7 +29,8 @@ public record ChunkData(RegionChunk region, PoiChunk poi, EntitiesChunk entities
 		}
 	}
 
-	public int parseData(Overlay parser) {
-		return parser.parseValue(this);
+	public int getDataVersion() {
+		return region.getDataVersion();
 	}
+
 }

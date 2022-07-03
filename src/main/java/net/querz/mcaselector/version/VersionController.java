@@ -1,5 +1,6 @@
 package net.querz.mcaselector.version;
 
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.version.anvil112.*;
 import net.querz.mcaselector.version.anvil113.*;
 import net.querz.mcaselector.version.anvil114.*;
@@ -21,20 +22,12 @@ public final class VersionController {
 		return Mapping.match(dataVersion).getChunkFilter();
 	}
 
-	public static ChunkMerger getChunkMerger(int dataVersion) {
-		return Mapping.match(dataVersion).getChunkMerger();
+	public static ChunkMerger getChunkMerger(McaType type, int dataVersion) {
+		return Mapping.match(dataVersion).getMerger(type);
 	}
 
-	public static ChunkMerger getPoiMerger(int dataVersion) {
-		return Mapping.match(dataVersion).getPoiMerger();
-	}
-
-	public static ChunkMerger getEntityMerger(int dataVersion) {
-		return Mapping.match(dataVersion).getEntityMerger();
-	}
-
-	public static ChunkRelocator getChunkRelocator(int dataVersion) {
-		return Mapping.match(dataVersion).getChunkRelocator();
+	public static ChunkRelocator getChunkRelocator(McaType type, int dataVersion) {
+		return Mapping.match(dataVersion).getRelocator(type);
 	}
 
 	public static ChunkRenderer getChunkRenderer(int dataVersion) {
@@ -45,25 +38,13 @@ public final class VersionController {
 		return Mapping.match(dataVersion).getColorMapping();
 	}
 
-	public static ChunkRelocator getPoiRelocator(int dataVersion) {
-		return Mapping.match(dataVersion).getPOIRelocator();
-	}
-
-	public static ChunkRelocator getEntityRelocator(int dataVersion) {
-		return Mapping.match(dataVersion).getEntityRelocator();
-	}
-
 	public static EntityFilter getEntityFilter(int dataVersion) {
 		return Mapping.match(dataVersion).getEntityFilter();
 	}
 
 	private static final Map<Supplier<? extends ChunkFilter>, ChunkFilter> chunkFilterInstances = new ConcurrentHashMap<>();
-	private static final Map<Supplier<? extends ChunkMerger>, ChunkMerger> chunkMergerInstances = new ConcurrentHashMap<>();
-	private static final Map<Supplier<? extends ChunkMerger>, ChunkMerger> poiMergerInstances = new ConcurrentHashMap<>();
-	private static final Map<Supplier<? extends ChunkMerger>, ChunkMerger> entityMergerInstances = new ConcurrentHashMap<>();
-	private static final Map<Supplier<? extends ChunkRelocator>, ChunkRelocator> chunkRelocatorInstances = new ConcurrentHashMap<>();
-	private static final Map<Supplier<? extends ChunkRelocator>, ChunkRelocator> poiRelocatorInstances = new ConcurrentHashMap<>();
-	private static final Map<Supplier<? extends ChunkRelocator>, ChunkRelocator> entityRelocatorInstances = new ConcurrentHashMap<>();
+	private static final Map<Supplier<? extends ChunkMerger>, ChunkMerger> mergerInstances = new ConcurrentHashMap<>();
+	private static final Map<Supplier<? extends ChunkRelocator>, ChunkRelocator> relocatorInstances = new ConcurrentHashMap<>();
 	private static final Map<Supplier<? extends EntityFilter>, EntityFilter> entityFilterInstances = new ConcurrentHashMap<>();
 	private static final Map<Supplier<? extends ChunkRenderer>, ChunkRenderer> chunkRendererInstances = new ConcurrentHashMap<>();
 	private static final Map<Supplier<? extends ColorMapping>, ColorMapping> colorMappingInstances = new ConcurrentHashMap<>();
@@ -82,12 +63,8 @@ public final class VersionController {
 
 		private final int minVersion, maxVersion;
 		private final Supplier<? extends ChunkFilter> chunkFilter;
-		private final Supplier<? extends ChunkMerger> chunkMerger;
-		private final Supplier<? extends ChunkMerger> poiMerger;
-		private final Supplier<? extends ChunkMerger> entityMerger;
-		private final Supplier<? extends ChunkRelocator> chunkRelocator;
-		private final Supplier<? extends ChunkRelocator> poiRelocator;
-		private final Supplier<? extends ChunkRelocator> entityRelocator;
+		private final Map<McaType, Supplier<? extends ChunkMerger>> mergers;
+		private final Map<McaType, Supplier<? extends ChunkRelocator>> relocators;
 		private final Supplier<? extends EntityFilter> entityFilter;
 
 		private final Supplier<? extends ChunkRenderer> chunkRenderer;
@@ -111,12 +88,16 @@ public final class VersionController {
 			this.minVersion = minVersion;
 			this.maxVersion = maxVersion;
 			this.chunkFilter = chunkFilter;
-			this.chunkMerger = chunkMerger;
-			this.poiMerger = poiMerger;
-			this.entityMerger = entityMerger;
-			this.chunkRelocator = chunkRelocator;
-			this.poiRelocator = poiRelocator;
-			this.entityRelocator = entityRelocator;
+			this.mergers = Map.of(
+				McaType.REGION, chunkMerger,
+				McaType.POI, poiMerger,
+				McaType.ENTITIES, entityMerger
+			);
+			this.relocators = Map.of(
+				McaType.REGION, chunkRelocator,
+				McaType.POI, poiRelocator,
+				McaType.ENTITIES, entityRelocator
+			);
 			this.entityFilter = entityFilter;
 			this.chunkRenderer = chunkRenderer;
 			this.colorMapping = colorMapping;
@@ -126,28 +107,12 @@ public final class VersionController {
 			return chunkFilterInstances.computeIfAbsent(chunkFilter, Supplier::get);
 		}
 
-		ChunkMerger getChunkMerger() {
-			return chunkMergerInstances.computeIfAbsent(chunkMerger, Supplier::get);
+		ChunkMerger getMerger(McaType type) {
+			return mergerInstances.computeIfAbsent(mergers.get(type), Supplier::get);
 		}
 
-		ChunkMerger getPoiMerger() {
-			return poiMergerInstances.computeIfAbsent(poiMerger, Supplier::get);
-		}
-
-		ChunkMerger getEntityMerger() {
-			return entityMergerInstances.computeIfAbsent(entityMerger, Supplier::get);
-		}
-
-		ChunkRelocator getChunkRelocator() {
-			return chunkRelocatorInstances.computeIfAbsent(chunkRelocator, Supplier::get);
-		}
-
-		ChunkRelocator getPOIRelocator() {
-			return poiRelocatorInstances.computeIfAbsent(poiRelocator, Supplier::get);
-		}
-
-		ChunkRelocator getEntityRelocator() {
-			return entityRelocatorInstances.computeIfAbsent(entityRelocator, Supplier::get);
+		ChunkRelocator getRelocator(McaType type) {
+			return relocatorInstances.computeIfAbsent(relocators.get(type), Supplier::get);
 		}
 
 		EntityFilter getEntityFilter() {

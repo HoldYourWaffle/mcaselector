@@ -6,8 +6,12 @@ import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
 import net.querz.mcaselector.range.Range;
 import net.querz.mcaselector.selection.ChunkSet;
+import net.querz.mcaselector.version.ChunkMerger;
+import net.querz.mcaselector.version.VersionController;
+import net.querz.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -17,13 +21,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public abstract class MCAFile<T extends Chunk> {
+public abstract class MCAFile<T extends Chunk> implements Cloneable {
 
 	private static final Logger LOGGER = LogManager.getLogger(MCAFile.class);
 
@@ -40,7 +45,8 @@ public abstract class MCAFile<T extends Chunk> {
 	protected Function<Point2i, T> chunkConstructor;
 
 	// file name must have well formed mca file format (r.<x>.<z>.mca)
-	public MCAFile(File file, Function<Point2i, T> chunkConstructor) {
+	@SuppressWarnings("unchecked")
+	public MCAFile(File file, Class<T> chunkClass) {
 		Point2i location = FileHelper.parseMCAFileName(file);
 		if (location == null) {
 			throw new IllegalArgumentException("failed to parse region file name from " + file);
@@ -48,7 +54,23 @@ public abstract class MCAFile<T extends Chunk> {
 		this.location = location;
 		this.file = file;
 		this.timestamps = new int[1024];
-		this.chunkConstructor = chunkConstructor;
+
+		try {
+			Constructor<T> constructor = chunkClass.getConstructor(Point2i.class);
+			this.chunkConstructor = (absoluteLocation) -> {
+				try {
+					return constructor.newInstance(absoluteLocation);
+				} catch (ReflectiveOperationException e) {
+					// uh-oh, we can't really do anything about this
+					throw new RuntimeException(e);
+				}
+			};
+		} catch (ReflectiveOperationException e) {
+			throw new IllegalArgumentException("Provided chunkClass does not have the appropriate constructor", e);
+		}
+
+		// For some reason Array.newInstance returns Object?
+		this.chunks = (T[]) Array.newInstance(chunkClass, 1024);
 	}
 
 	protected MCAFile(Point2i location) {
@@ -415,9 +437,7 @@ public abstract class MCAFile<T extends Chunk> {
 		}
 	}
 
-	public abstract void mergeChunksInto(MCAFile<T> destination, Point3i offset, boolean overwrite, ChunkSet sourceChunks, ChunkSet targetChunks, List<Range> ranges);
-
-	protected void mergeChunksInto(MCAFile<T> destination, Point3i offset, boolean overwrite, ChunkSet sourceChunks, ChunkSet targetChunks, List<Range> ranges, BiFunction<Point2i, Integer, T> chunkCreator) {
+	public void mergeChunksInto(MCAFile<T> destination, Point3i offset, boolean overwrite, ChunkSet sourceChunks, ChunkSet targetChunks, List<Range> ranges) {
 		Point2i relativeOffset = location.regionToChunk().add(offset.toPoint2i()).sub(destination.location.regionToChunk());
 		int startX = relativeOffset.getX() > 0 ? 0 : 32 - (32 + relativeOffset.getX());
 		int limitX = relativeOffset.getX() > 0 ? (32 - relativeOffset.getX()) : 32;
@@ -450,16 +470,21 @@ public abstract class MCAFile<T extends Chunk> {
 					}
 
 					if (ranges != null) {
-						int sourceVersion = sourceChunk.getData().getInt("DataVersion");
+						int sourceVersion = sourceChunk.getDataVersion();
 						if (sourceVersion == 0) {
 							continue;
 						}
 
 						int destinationVersion;
 						if (destinationChunk == null || destinationChunk.isEmpty()) {
-							destinationChunk = chunkCreator.apply(destChunk, sourceVersion);
+							ChunkMerger chunkMerger = VersionController.getChunkMerger(getType(), sourceVersion);
+							CompoundTag root = chunkMerger.newEmptyChunk(destChunk, sourceVersion);
+							destinationChunk = chunkConstructor.apply(destChunk);
+							destinationChunk.setData(root);
+							destinationChunk.setCompressionType(CompressionType.ZLIB);
+
 							destination.chunks[destIndex] = destinationChunk;
-						} else if (sourceVersion != (destinationVersion = destinationChunk.getData().getInt("DataVersion"))) {
+						} else if (sourceVersion != (destinationVersion = destinationChunk.getDataVersion())) {
 							Point2i srcChunk = location.regionToChunk().add(x, z);
 							LOGGER.warn("failed to merge chunk at {} into chunk at {} because their DataVersion does not match ({} != {})",
 									srcChunk, destChunk, sourceVersion, destinationVersion);
@@ -557,4 +582,9 @@ public abstract class MCAFile<T extends Chunk> {
 		clone.timestamps = timestamps.clone();
 		return clone;
 	}
+
+	public abstract MCAFile<T> clone();
+
+	public abstract McaType getType();
+
 }

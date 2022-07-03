@@ -57,7 +57,7 @@ public class EntityFilter extends TextFilter<List<String>> {
 		if (data.region() == null || data.region().getData() == null) {
 			return false;
 		}
-		ListTag entities = VersionController.getEntityFilter(data.region().getData().getInt("DataVersion")).getEntities(data);
+		ListTag entities = VersionController.getEntityFilter(data.getDataVersion()).getEntities(data);
 		if (entities == null || entities.getID() == Tag.LONG_ARRAY) {
 			return false;
 		}
@@ -79,7 +79,7 @@ public class EntityFilter extends TextFilter<List<String>> {
 		if (data.region() == null || data.region().getData() == null) {
 			return false;
 		}
-		ListTag entities = VersionController.getEntityFilter(data.region().getData().getInt("DataVersion")).getEntities(data);
+		ListTag entities = VersionController.getEntityFilter(data.getDataVersion()).getEntities(data);
 		if (entities == null || entities.getID() == Tag.LONG_ARRAY) {
 			return false;
 		}

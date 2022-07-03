@@ -11,6 +11,7 @@ import net.querz.mcaselector.io.ImageHelper;
 import net.querz.mcaselector.io.db.CacheDBController;
 import net.querz.mcaselector.io.job.CachedImageLoadJob;
 import net.querz.mcaselector.io.job.RegionImageGenerator;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.text.Translation;
 import net.querz.mcaselector.ui.ProgressTask;
@@ -241,7 +242,7 @@ public final class ImagePool {
 		}
 
 		// get all files that match the "r.<x>.<z>.mca" name
-		File[] files = Config.getWorldDirs().getRegion().listFiles();
+        File[] files = Config.getWorldDirs().getDirectory(McaType.REGION).listFiles();
 		if (files == null) {
 			return;
 		}

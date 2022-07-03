@@ -12,6 +12,7 @@ import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 import net.querz.mcaselector.Config;
 import net.querz.mcaselector.io.WorldDirectories;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.property.DataProperty;
 import net.querz.mcaselector.text.Translation;
 import net.querz.mcaselector.ui.component.FileTextField;
@@ -228,8 +229,8 @@ public class SettingsDialog extends Dialog<SettingsDialog.Result> {
 
 		if (Config.getWorldDirs() != null) {
 			WorldDirectories worldDirectories = Config.getWorldDirs().clone();
-			poiField.setFile(worldDirectories.getPoi());
-			entitiesField.setFile(worldDirectories.getEntities());
+            poiField.setFile(worldDirectories.getDirectory(McaType.POI));
+			entitiesField.setFile(worldDirectories.getDirectory(McaType.ENTITIES));
 		}
 
 		heightSlider.setValue(Config.getRenderHeight());

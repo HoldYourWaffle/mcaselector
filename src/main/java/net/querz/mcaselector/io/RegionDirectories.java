@@ -1,8 +1,10 @@
 package net.querz.mcaselector.io;
 
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.point.Point2i;
 import java.io.File;
 
+// XXX suspiciously similar to WorldDirectories
 public class RegionDirectories implements Cloneable {
 
 	private Point2i location;
@@ -21,37 +23,24 @@ public class RegionDirectories implements Cloneable {
 		this.entities = entities;
 	}
 
-	public void setRegion(File region) {
+	public void setDirectory(McaType type, File dir) {
 		if (location == null) {
-			location = FileHelper.parseMCAFileName(region);
+			location = FileHelper.parseMCAFileName(dir);
 		}
-		this.region = region;
-	}
 
-	public void setPoi(File poi) {
-		if (location == null) {
-			location = FileHelper.parseMCAFileName(poi);
+		switch (type) {
+			case REGION -> region = dir;
+			case POI -> poi = dir;
+			case ENTITIES -> entities = dir;
 		}
-		this.poi = poi;
 	}
 
-	public void setEntities(File entities) {
-		if (location == null) {
-			location = FileHelper.parseMCAFileName(entities);
-		}
-		this.entities = entities;
-	}
-
-	public File getRegion() {
-		return region;
-	}
-
-	public File getPoi() {
-		return poi;
-	}
-
-	public File getEntities() {
-		return entities;
+	public File getDirectory(McaType type) {
+		return switch (type) {
+			case REGION -> region;
+			case POI -> poi;
+			case ENTITIES -> entities;
+		};
 	}
 
 	public Point2i getLocation() {
@@ -69,9 +58,9 @@ public class RegionDirectories implements Cloneable {
 		String fileName = FileHelper.createMCAFileName(location);
 		return new RegionDirectories(
 				location,
-				new File(wd.getRegion(), fileName),
-				new File(wd.getPoi(), fileName),
-				new File(wd.getEntities(), fileName)
+				new File(wd.getDirectory(McaType.REGION), fileName),
+				new File(wd.getDirectory(McaType.POI), fileName),
+				new File(wd.getDirectory(McaType.ENTITIES), fileName)
 		);
 	}
 

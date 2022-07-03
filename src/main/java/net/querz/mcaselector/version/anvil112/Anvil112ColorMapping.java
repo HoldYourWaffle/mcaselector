@@ -107,11 +107,11 @@ public class Anvil112ColorMapping implements ColorMapping {
 
 	private int applyBiomeTint(int id, int biome, int color) {
 		if (grass.contains(id)) {
-			return applyTint(color, biomeGrassTints[biome]);
+			return ColorMapping.applyTint(color, biomeGrassTints[biome]);
 		} else if (foliage.contains(id)) {
-			return applyTint(color, biomeFoliageTints[biome]);
+			return ColorMapping.applyTint(color, biomeFoliageTints[biome]);
 		} else if (id == 8 || id == 9) {
-			return applyTint(color, biomeWaterTints[biome]);
+			return ColorMapping.applyTint(color, biomeWaterTints[biome]);
 		}
 		return color;
 	}

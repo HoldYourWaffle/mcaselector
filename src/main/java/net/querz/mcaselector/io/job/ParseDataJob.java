@@ -2,6 +2,7 @@ package net.querz.mcaselector.io.job;
 
 import net.querz.mcaselector.io.ByteArrayPointer;
 import net.querz.mcaselector.io.RegionDirectories;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.io.mca.ChunkData;
 import net.querz.mcaselector.io.mca.EntitiesMCAFile;
 import net.querz.mcaselector.io.mca.PoiMCAFile;
@@ -12,6 +13,7 @@ import net.querz.mcaselector.tile.Tile;
 import net.querz.mcaselector.overlay.Overlay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
@@ -86,18 +88,18 @@ public class ParseDataJob extends ProcessDataJob {
 		Timer t = new Timer();
 
 		RegionMCAFile regionMCAFile = null;
-		if (region != null) {
+        if (region != null) {
 			regionMCAFile = region;
-		} else if (getRegionDirectories().getRegion() != null && getRegionDirectories().getRegion().exists() && getRegionDirectories().getRegion().length() > 0) {
+		} else if (getRegionDirectories().getDirectory(McaType.REGION) != null && getRegionDirectories().getDirectory(McaType.REGION).exists() && getRegionDirectories().getDirectory(McaType.REGION).length() > 0) {
 			byte[] regionData = loadRegion();
-			regionMCAFile = new RegionMCAFile(getRegionDirectories().getRegion());
+            regionMCAFile = new RegionMCAFile(getRegionDirectories().getDirectory(McaType.REGION));
 			if (regionData != null) {
 				// load EntitiesMCAFile
 				ByteArrayPointer ptr = new ByteArrayPointer(regionData);
 				try {
 					regionMCAFile.load(ptr);
 				} catch (IOException ex) {
-					LOGGER.warn("failed to read mca file header from {}", getRegionDirectories().getRegion());
+                    LOGGER.warn("failed to read mca file header from {}", getRegionDirectories().getDirectory(McaType.REGION));
 				}
 			}
 		}
@@ -105,16 +107,16 @@ public class ParseDataJob extends ProcessDataJob {
 		EntitiesMCAFile entitiesMCAFile = null;
 		if (entities != null) {
 			entitiesMCAFile = entities;
-		} else if (getRegionDirectories().getEntities() != null && getRegionDirectories().getEntities().exists() && getRegionDirectories().getEntities().length() > 0) {
+		} else if (getRegionDirectories().getDirectory(McaType.ENTITIES) != null && getRegionDirectories().getDirectory(McaType.ENTITIES).exists() && getRegionDirectories().getDirectory(McaType.ENTITIES).length() > 0) {
 			byte[] entitiesData = loadEntities();
-			entitiesMCAFile = new EntitiesMCAFile(getRegionDirectories().getEntities());
+			entitiesMCAFile = new EntitiesMCAFile(getRegionDirectories().getDirectory(McaType.ENTITIES));
 			if (entitiesData != null) {
 				// load EntitiesMCAFile
 				ByteArrayPointer ptr = new ByteArrayPointer(entitiesData);
 				try {
 					entitiesMCAFile.load(ptr);
 				} catch (IOException ex) {
-					LOGGER.warn("failed to read mca file header from {}", getRegionDirectories().getEntities());
+					LOGGER.warn("failed to read mca file header from {}", getRegionDirectories().getDirectory(McaType.ENTITIES));
 				}
 			}
 		}
@@ -122,16 +124,16 @@ public class ParseDataJob extends ProcessDataJob {
 		PoiMCAFile poiMCAFile = null;
 		if (poi != null) {
 			poiMCAFile = poi;
-		} else if (getRegionDirectories().getPoi() != null && getRegionDirectories().getPoi().exists() && getRegionDirectories().getPoi().length() > 0) {
+		} else if (getRegionDirectories().getDirectory(McaType.POI) != null && getRegionDirectories().getDirectory(McaType.POI).exists() && getRegionDirectories().getDirectory(McaType.POI).length() > 0) {
 			byte[] poiData = loadPoi();
-			poiMCAFile = new PoiMCAFile(getRegionDirectories().getPoi());
+			poiMCAFile = new PoiMCAFile(getRegionDirectories().getDirectory(McaType.POI));
 			if (poiData != null) {
 				// load PoiMCAFile
 				ByteArrayPointer ptr = new ByteArrayPointer(poiData);
 				try {
 					poiMCAFile.load(ptr);
 				} catch (IOException ex) {
-					LOGGER.warn("failed to read mca file header from {}", getRegionDirectories().getPoi());
+					LOGGER.warn("failed to read mca file header from {}", getRegionDirectories().getDirectory(McaType.POI));
 				}
 			}
 		}
@@ -150,7 +152,7 @@ public class ParseDataJob extends ProcessDataJob {
 					poiMCAFile == null ? null : poiMCAFile.getChunk(i),
 					entitiesMCAFile == null ? null : entitiesMCAFile.getChunk(i));
 			try {
-				data[i] = chunkData.parseData(parser);
+				data[i] = parser.parseValue(chunkData);
 			} catch (Exception ex) {
 				LOGGER.warn("failed to parse chunk data at index {}", i, ex);
 			}
