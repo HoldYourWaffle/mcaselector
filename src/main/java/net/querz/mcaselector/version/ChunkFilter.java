@@ -1,29 +1,24 @@
 package net.querz.mcaselector.version;
 
+import net.querz.mcaselector.io.anvil.BlockState;
 import net.querz.mcaselector.io.registry.BiomeRegistry;
 import net.querz.mcaselector.range.Range;
+import net.querz.nbt.ByteTag;
+import net.querz.nbt.CompoundTag;
+import net.querz.nbt.IntTag;
+import net.querz.nbt.ListTag;
+import net.querz.nbt.LongTag;
 import net.querz.nbt.NBTUtil;
-import net.querz.nbt.*;
-import java.util.Collection;
+import net.querz.nbt.StringTag;
+
 import java.util.List;
 import java.util.Map;
 
 public interface ChunkFilter {
 
-	// returns true if ALL block names are present
-	boolean matchBlockNames(CompoundTag data, Collection<String> names);
+	BlockState[] getPaletteOfSection(CompoundTag sectionData);
 
-	// returns true if ALL biomes are present
-	boolean matchBiomes(CompoundTag data, Collection<BiomeRegistry.BiomeIdentifier> biomes);
-
-	// returns true if AT LEAST ONE block name is present
-	boolean matchAnyBlockName(CompoundTag data, Collection<String> names);
-
-	// returns true if the palette ONLY contains the block names, ignoring air
-	boolean paletteEquals(CompoundTag data, Collection<String> names);
-
-	// returns true if AT LEAST ONE biome is present
-	boolean matchAnyBiome(CompoundTag data, Collection<BiomeRegistry.BiomeIdentifier> biomes);
+	BiomeRegistry.BiomeIdentifier[] getBiomesOfSection(CompoundTag sectionData);
 
 	void changeBiome(CompoundTag data, BiomeRegistry.BiomeIdentifier biome);
 
@@ -31,9 +26,9 @@ public interface ChunkFilter {
 
 	void replaceBlocks(CompoundTag data, Map<String, BlockReplaceData> replace);
 
-	int getAverageHeight(CompoundTag data);
+	int[] getHeightmap(CompoundTag data, HeightmapType heightmapType);
 
-	int getBlockAmount(CompoundTag data, String[] blocks);
+	int[] getBlockStatePointersOfSection(CompoundTag sectionData);
 
 	ListTag getTileEntities(CompoundTag data);
 
@@ -159,5 +154,10 @@ public interface ChunkFilter {
 
 	enum BlockReplaceType {
 		NAME, STATE, STATE_TILE, NAME_TILE
+	}
+
+	enum HeightmapType {
+		// XXX right place?
+		MOTION_BLOCKING, MOTION_BLOCKING_NO_LEAVES, OCEAN_FLOOR, OCEAN_FLOOR_WG, WORLD_SURFACE, WORLD_SURFACE_WG
 	}
 }
