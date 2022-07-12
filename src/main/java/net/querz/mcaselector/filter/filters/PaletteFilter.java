@@ -1,12 +1,17 @@
 package net.querz.mcaselector.filter.filters;
 
 import net.querz.mcaselector.filter.Comparator;
+import net.querz.mcaselector.filter.ComparatorAlgorithm;
 import net.querz.mcaselector.filter.FilterType;
 import net.querz.mcaselector.filter.Operator;
 import net.querz.mcaselector.filter.TextFilter;
+import net.querz.mcaselector.io.anvil.BlockState;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.text.TextHelper;
+import net.querz.mcaselector.version.ChunkHandler;
+import net.querz.mcaselector.version.ChunkHelper;
 import net.querz.mcaselector.version.VersionController;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,8 +57,10 @@ public class PaletteFilter extends TextFilter<List<String>> {
 		if (data.region() == null || data.region().getData() == null) {
 			return false;
 		}
-		return VersionController.getChunkHandler(data.getDataVersion())
-				.matchBlockNames(data.region().getData(), value);
+
+		ChunkHandler handler = VersionController.getChunkHandler(data.getDataVersion());
+		List<BlockState> palette = ChunkHelper.combineSections(handler, data.region().getData(), handler::getPaletteOfSection);
+		return ComparatorAlgorithm.CONTAINS.compare(palette, getFilterValue(), BlockState::name);
 	}
 
 	@Override
@@ -66,16 +73,20 @@ public class PaletteFilter extends TextFilter<List<String>> {
 		if (data.region() == null || data.region().getData() == null) {
 			return false;
 		}
-		return VersionController.getChunkHandler(data.getDataVersion())
-				.matchAnyBlockName(data.region().getData(), value);
+
+		ChunkHandler handler = VersionController.getChunkHandler(data.getDataVersion());
+		List<BlockState> palette = ChunkHelper.combineSections(handler, data.region().getData(), handler::getPaletteOfSection);
+		return ComparatorAlgorithm.INTERSECTS.compare(palette, getFilterValue(), BlockState::name);
 	}
 
 	public boolean equals(List<String> value, ChunkData data) {
 		if (data.region() == null || data.region().getData() == null) {
 			return false;
 		}
-		return VersionController.getChunkHandler(data.getDataVersion())
-			.paletteEquals(data.region().getData(), value);
+
+		ChunkHandler handler = VersionController.getChunkHandler(data.getDataVersion());
+		List<BlockState> palette = ChunkHelper.combineSections(handler, data.region().getData(), handler::getPaletteOfSection);
+		return ComparatorAlgorithm.EQUALS.compare(palette, getFilterValue(), BlockState::name);
 	}
 
 	public boolean notEquals(List<String> values, ChunkData data) {

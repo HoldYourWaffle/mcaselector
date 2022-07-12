@@ -1,11 +1,17 @@
 package net.querz.mcaselector.overlay.overlays;
 
+import net.querz.mcaselector.io.anvil.BlockState;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.overlay.Overlay;
 import net.querz.mcaselector.overlay.OverlayType;
 import net.querz.mcaselector.text.TextHelper;
 import net.querz.mcaselector.version.ChunkHandler;
+import net.querz.mcaselector.version.ChunkHelper;
 import net.querz.mcaselector.version.VersionController;
+import net.querz.nbt.CompoundTag;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class BlockAmountOverlay extends Overlay {
 
@@ -22,8 +28,34 @@ public class BlockAmountOverlay extends Overlay {
 		if (chunkData.region() == null || chunkData.region().getData() == null) {
 			return 0;
 		}
-		ChunkHandler chunkHandler = VersionController.getChunkHandler(chunkData.getDataVersion());
-		return chunkHandler.getBlockAmount(chunkData.region().getData(), multiValues());
+
+		// contains is O(1) on Set
+		// OPTIMIZE can we use this 'trick' in other places?
+		Set<String> countedBlocks = Set.of(multiValues());
+
+		ChunkHandler handler = VersionController.getChunkHandler(chunkData.getDataVersion());
+		int count = 0;
+
+		// NOTE not using ChunkHelper.getBlockAt because it'd spend a lot of time resolving pointers that we know should not be counted, and comparing pointer ints is faster than block name strings
+		for (CompoundTag sectionData : ChunkHelper.iterateSections(handler, chunkData.region().getData())) {
+			BlockState[] palette = handler.getPaletteOfSection(sectionData);
+
+			// all pointer values that correspond to a block that should be counted
+			Set<Integer> countedPointers = new HashSet<>();
+			for (int i = 0; i < palette.length; i++) {
+				if (countedBlocks.contains(palette[i].name())) {
+					countedPointers.add(i);
+				}
+			}
+
+			for (int pointer : handler.getBlockStatePointersOfSection(sectionData)) {
+				if (countedPointers.contains(pointer)) {
+					count++;
+				}
+			}
+		}
+
+		return count;
 	}
 
 	@Override

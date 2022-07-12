@@ -1,11 +1,19 @@
 package net.querz.mcaselector.filter.filters;
 
-import net.querz.mcaselector.filter.*;
 import net.querz.mcaselector.filter.Comparator;
-import net.querz.mcaselector.io.registry.BiomeRegistry;
+import net.querz.mcaselector.filter.ComparatorAlgorithm;
+import net.querz.mcaselector.filter.Filter;
+import net.querz.mcaselector.filter.FilterType;
+import net.querz.mcaselector.filter.Operator;
+import net.querz.mcaselector.filter.TextFilter;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
+import net.querz.mcaselector.io.registry.BiomeRegistry;
+import net.querz.mcaselector.version.ChunkHandler;
+import net.querz.mcaselector.version.ChunkHelper;
 import net.querz.mcaselector.version.VersionController;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BiomeFilter extends TextFilter<List<BiomeRegistry.BiomeIdentifier>> {
 
@@ -38,8 +46,11 @@ public class BiomeFilter extends TextFilter<List<BiomeRegistry.BiomeIdentifier>>
 		if (data.region() == null) {
 			return false;
 		}
-		return VersionController.getChunkHandler(data.getDataVersion())
-				.matchBiomes(data.region().getData(), value);
+
+		ChunkHandler handler = VersionController.getChunkHandler(data.getDataVersion());
+		List<BiomeRegistry.BiomeIdentifier> biomes = ChunkHelper.combineSections(handler, data.region().getData(), handler::getBiomesOfSection);
+		// XXX why not use the value parameter?
+		return ComparatorAlgorithm.CONTAINS.compare(biomes, getFilterValue());
 	}
 
 	@Override
@@ -52,8 +63,10 @@ public class BiomeFilter extends TextFilter<List<BiomeRegistry.BiomeIdentifier>>
 		if (data.region() == null) {
 			return false;
 		}
-		return VersionController.getChunkHandler(data.getDataVersion())
-				.matchAnyBiome(data.region().getData(), value);
+
+		ChunkHandler handler = VersionController.getChunkHandler(data.getDataVersion());
+		List<BiomeRegistry.BiomeIdentifier> biomes = ChunkHelper.combineSections(handler, data.region().getData(), handler::getBiomesOfSection);
+		return ComparatorAlgorithm.INTERSECTS.compare(biomes, getFilterValue());
 	}
 
 	@Override

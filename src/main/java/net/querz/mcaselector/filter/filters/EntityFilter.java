@@ -2,16 +2,17 @@ package net.querz.mcaselector.filter.filters;
 
 import net.querz.mca.parsers.EntityParser;
 import net.querz.mcaselector.filter.Comparator;
+import net.querz.mcaselector.filter.ComparatorAlgorithm;
 import net.querz.mcaselector.filter.FilterType;
 import net.querz.mcaselector.filter.Operator;
 import net.querz.mcaselector.filter.TextFilter;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.version.VersionController;
-import net.querz.nbt.CompoundTag;
 import net.querz.nbt.ListTag;
 import net.querz.nbt.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -61,17 +62,8 @@ public class EntityFilter extends TextFilter<List<String>> {
 		if (entities == null || entities.getID() == Tag.LONG_ARRAY) {
 			return false;
 		}
-		nameLoop:
-		for (String name : getFilterValue()) {
-			for (CompoundTag entity : entities.iterateType(CompoundTag.TYPE)) {
-				String id = entity.getString("id");
-				if (name.equals(id)) {
-					continue nameLoop;
-				}
-			}
-			return false;
-		}
-		return true;
+		// XXX hardcoded nbt key, shouldn't this be VersionController'ed?
+		return ComparatorAlgorithm.CONTAINS.compareFromCompoundList(entities, "id", getFilterValue());
 	}
 
 	@Override
@@ -83,15 +75,8 @@ public class EntityFilter extends TextFilter<List<String>> {
 		if (entities == null || entities.getID() == Tag.LONG_ARRAY) {
 			return false;
 		}
-		for (String name : getFilterValue()) {
-			for (CompoundTag entity : entities.iterateType(CompoundTag.TYPE)) {
-				String id = entity.getString("id");
-				if (name.equals(id)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		// XXX hardcoded nbt key, shouldn't this be VersionController'ed?
+		return ComparatorAlgorithm.INTERSECTS.compareFromCompoundList(entities, "id", getFilterValue());
 	}
 
 	@Override

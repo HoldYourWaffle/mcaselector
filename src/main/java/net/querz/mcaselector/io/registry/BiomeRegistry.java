@@ -74,8 +74,8 @@ public final class BiomeRegistry {
 
 	public static class BiomeIdentifier {
 
-		Integer id;
-		String name;
+		final Integer id;
+		final String name;
 
 		public BiomeIdentifier(String name) {
 			this(name, toID(name));
@@ -122,6 +122,22 @@ public final class BiomeRegistry {
 				}
 			}
 			return "";
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			// Comparing integers is faster than strings, so we only check id's
+			// Because id & name are final we can safely assume they're consistent
+			BiomeIdentifier that = (BiomeIdentifier) o;
+			return id.equals(that.id);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(id);
 		}
 	}
 }
