@@ -5,7 +5,7 @@ import net.querz.mcaselector.changer.FieldType;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.range.Range;
 import net.querz.mcaselector.range.RangeParser;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.EntityFilter;
 import net.querz.mcaselector.version.VersionController;
 
@@ -39,8 +39,8 @@ public class DeleteSectionsField extends Field<List<Range>> {
 	@Override
 	public void change(ChunkData data) {
 		if (data.region() != null && data.region().getData() != null) {
-			ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-			chunkFilter.deleteSections(data.region().getData(), getNewValue());
+			ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+			chunkHandler.deleteSections(data.region().getData(), getNewValue());
 		}
 		// delete entities and poi as well
 		if (data.entities() != null && data.entities().getData() != null) {

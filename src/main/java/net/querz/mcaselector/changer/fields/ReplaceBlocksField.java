@@ -3,7 +3,7 @@ package net.querz.mcaselector.changer.fields;
 import net.querz.mcaselector.changer.Field;
 import net.querz.mcaselector.changer.FieldType;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.CompoundTag;
 import net.querz.nbt.io.snbt.ParseException;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public class ReplaceBlocksField extends Field<Map<String, ChunkFilter.BlockReplaceData>> {
+public class ReplaceBlocksField extends Field<Map<String, ChunkHandler.BlockReplaceData>> {
 
 	private static final Logger LOGGER = LogManager.getLogger(ReplaceBlocksField.class);
 
@@ -54,7 +54,7 @@ public class ReplaceBlocksField extends Field<Map<String, ChunkFilter.BlockRepla
 		//              <snbt-string-block-state>
 		//              <to>;<snbt-string-tile-entity>
 
-		Map<String, ChunkFilter.BlockReplaceData> newValue = new HashMap<>();
+		Map<String, ChunkHandler.BlockReplaceData> newValue = new HashMap<>();
 
 		String trimmed = s.trim();
 
@@ -140,15 +140,15 @@ public class ReplaceBlocksField extends Field<Map<String, ChunkFilter.BlockRepla
 				}
 			}
 
-			ChunkFilter.BlockReplaceData data;
+			ChunkHandler.BlockReplaceData data;
 			if (toName != null && toTile != null) {
-				data = new ChunkFilter.BlockReplaceData(toName, toTile);
+				data = new ChunkHandler.BlockReplaceData(toName, toTile);
 			} else if (toName != null) {
-				data = new ChunkFilter.BlockReplaceData(toName);
+				data = new ChunkHandler.BlockReplaceData(toName);
 			} else if (toState != null && toTile != null) {
-				data = new ChunkFilter.BlockReplaceData(toState, toTile);
+				data = new ChunkHandler.BlockReplaceData(toState, toTile);
 			} else if (toState != null) {
-				data = new ChunkFilter.BlockReplaceData(toState);
+				data = new ChunkHandler.BlockReplaceData(toState);
 			} else {
 				return super.parseNewValue(s);
 			}
@@ -174,14 +174,14 @@ public class ReplaceBlocksField extends Field<Map<String, ChunkFilter.BlockRepla
 	}
 
 	@Override
-	public Map<String, ChunkFilter.BlockReplaceData> getOldValue(ChunkData data) {
+	public Map<String, ChunkHandler.BlockReplaceData> getOldValue(ChunkData data) {
 		return null;
 	}
 
 	@Override
 	public void change(ChunkData data) {
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		chunkFilter.replaceBlocks(data.region().getData(), getNewValue());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		chunkHandler.replaceBlocks(data.region().getData(), getNewValue());
 	}
 
 	@Override
@@ -198,7 +198,7 @@ public class ReplaceBlocksField extends Field<Map<String, ChunkFilter.BlockRepla
 	public String valueToString() {
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
-		for (Map.Entry<String, ChunkFilter.BlockReplaceData> entry : getNewValue().entrySet()) {
+		for (Map.Entry<String, ChunkHandler.BlockReplaceData> entry : getNewValue().entrySet()) {
 			if (first) {
 				first = false;
 			} else {

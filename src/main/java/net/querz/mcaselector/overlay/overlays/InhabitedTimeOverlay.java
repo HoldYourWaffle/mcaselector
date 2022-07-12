@@ -4,7 +4,7 @@ import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.overlay.Overlay;
 import net.querz.mcaselector.text.TextHelper;
 import net.querz.mcaselector.overlay.OverlayType;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.LongTag;
 
@@ -21,8 +21,8 @@ public class InhabitedTimeOverlay extends Overlay {
 
 	@Override
 	public int parseValue(ChunkData chunkData) {
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(chunkData.getDataVersion());
-		LongTag tag = chunkFilter.getInhabitedTime(chunkData.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(chunkData.getDataVersion());
+		LongTag tag = chunkHandler.getInhabitedTime(chunkData.region().getData());
 		return tag == null ? 0 : tag.asInt();
 	}
 

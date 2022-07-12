@@ -5,7 +5,7 @@ import net.querz.mcaselector.filter.FilterType;
 import net.querz.mcaselector.filter.IntFilter;
 import net.querz.mcaselector.filter.Operator;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.ListTag;
 
@@ -24,8 +24,8 @@ public class TileEntityAmountFilter extends IntFilter {
 		if (data.region() == null || data.region().getData() == null) {
 			return 0;
 		}
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		ListTag tileEntities = chunkFilter.getTileEntities(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		ListTag tileEntities = chunkHandler.getTileEntities(data.region().getData());
 		return tileEntities == null ? 0 : tileEntities.size();
 	}
 

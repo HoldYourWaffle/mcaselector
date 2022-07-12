@@ -6,12 +6,12 @@ import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
 import net.querz.mcaselector.range.Range;
 import net.querz.mcaselector.tile.Tile;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.NbtHelper;
 import net.querz.nbt.*;
 import java.util.*;
 
-public class Anvil113ChunkFilter implements ChunkFilter {
+public class Anvil113ChunkHandler implements ChunkHandler {
 
 	@Override
 	public boolean matchBlockNames(CompoundTag data, Collection<String> names) {

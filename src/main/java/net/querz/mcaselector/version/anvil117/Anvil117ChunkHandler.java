@@ -2,11 +2,11 @@ package net.querz.mcaselector.version.anvil117;
 
 import net.querz.mcaselector.io.registry.BiomeRegistry;
 import net.querz.mcaselector.version.NbtHelper;
-import net.querz.mcaselector.version.anvil116.Anvil116ChunkFilter;
+import net.querz.mcaselector.version.anvil116.Anvil116ChunkHandler;
 import net.querz.nbt.CompoundTag;
 import java.util.Arrays;
 
-public class Anvil117ChunkFilter extends Anvil116ChunkFilter {
+public class Anvil117ChunkHandler extends Anvil116ChunkHandler {
 
 	@Override
 	public void forceBiome(CompoundTag data, BiomeRegistry.BiomeIdentifier biome) {

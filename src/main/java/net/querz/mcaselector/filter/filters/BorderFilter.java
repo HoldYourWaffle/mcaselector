@@ -12,7 +12,7 @@ import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.io.anvil.mca.RegionMCAFile;
 import net.querz.mcaselector.point.Point2i;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.StringTag;
 import org.apache.logging.log4j.LogManager;
@@ -46,8 +46,8 @@ public class BorderFilter extends IntFilter {
 			return 9;
 		}
 
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		StringTag tag = chunkFilter.getStatus(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		StringTag tag = chunkHandler.getStatus(data.region().getData());
 		if (tag == null || !tag.getValue().equals("full")) {
 			return 9;
 		}

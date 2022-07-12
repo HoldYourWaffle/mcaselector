@@ -5,7 +5,7 @@ import net.querz.mcaselector.filter.*;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.property.DataProperty;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.CompoundTag;
 import net.querz.nbt.IntTag;
@@ -107,9 +107,9 @@ public class PlayerLocationFilter extends TextFilter<PlayerLocationFilter.Player
 			}
 		}
 
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		IntTag xPos = chunkFilter.getXPos(data.region().getData());
-		IntTag zPos = chunkFilter.getZPos(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		IntTag xPos = chunkHandler.getXPos(data.region().getData());
+		IntTag zPos = chunkHandler.getZPos(data.region().getData());
 		if (xPos == null || zPos == null) {
 			return false;
 		}

@@ -4,7 +4,7 @@ import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.overlay.Overlay;
 import net.querz.mcaselector.overlay.OverlayType;
 import net.querz.mcaselector.text.TextHelper;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 
 public class BlockAmountOverlay extends Overlay {
@@ -22,8 +22,8 @@ public class BlockAmountOverlay extends Overlay {
 		if (chunkData.region() == null || chunkData.region().getData() == null) {
 			return 0;
 		}
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(chunkData.getDataVersion());
-		return chunkFilter.getBlockAmount(chunkData.region().getData(), multiValues());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(chunkData.getDataVersion());
+		return chunkHandler.getBlockAmount(chunkData.region().getData(), multiValues());
 	}
 
 	@Override

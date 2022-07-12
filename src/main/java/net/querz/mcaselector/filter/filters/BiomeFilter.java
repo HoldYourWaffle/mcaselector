@@ -38,7 +38,7 @@ public class BiomeFilter extends TextFilter<List<BiomeRegistry.BiomeIdentifier>>
 		if (data.region() == null) {
 			return false;
 		}
-		return VersionController.getChunkFilter(data.getDataVersion())
+		return VersionController.getChunkHandler(data.getDataVersion())
 				.matchBiomes(data.region().getData(), value);
 	}
 
@@ -52,7 +52,7 @@ public class BiomeFilter extends TextFilter<List<BiomeRegistry.BiomeIdentifier>>
 		if (data.region() == null) {
 			return false;
 		}
-		return VersionController.getChunkFilter(data.getDataVersion())
+		return VersionController.getChunkHandler(data.getDataVersion())
 				.matchAnyBiome(data.region().getData(), value);
 	}
 

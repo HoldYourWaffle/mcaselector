@@ -1,11 +1,11 @@
 package net.querz.mcaselector.version.anvil116;
 
 import net.querz.mcaselector.math.Bits;
-import net.querz.mcaselector.version.anvil115.Anvil115ChunkFilter;
+import net.querz.mcaselector.version.anvil115.Anvil115ChunkHandler;
 import net.querz.nbt.ListTag;
 import java.util.Map;
 
-public class Anvil116ChunkFilter extends Anvil115ChunkFilter {
+public class Anvil116ChunkHandler extends Anvil115ChunkHandler {
 
 	@Override
 	protected int getPaletteIndex(int blockIndex, long[] blockStates) {

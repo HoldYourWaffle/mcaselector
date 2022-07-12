@@ -3,7 +3,7 @@ package net.querz.mcaselector.version.anvil112;
 import net.querz.mcaselector.io.registry.BiomeRegistry;
 import net.querz.mcaselector.range.Range;
 import net.querz.mcaselector.tile.Tile;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.NbtHelper;
 import net.querz.nbt.*;
 import org.apache.logging.log4j.LogManager;
@@ -13,15 +13,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Anvil112ChunkFilter implements ChunkFilter {
+public class Anvil112ChunkHandler implements ChunkHandler {
 
-	private static final Logger LOGGER = LogManager.getLogger(Anvil112ChunkFilter.class);
+	private static final Logger LOGGER = LogManager.getLogger(Anvil112ChunkHandler.class);
 
 	private final Map<String, BlockData[]> mapping = new HashMap<>();
 
-	public Anvil112ChunkFilter() {
+	public Anvil112ChunkHandler() {
 		try (BufferedReader bis = new BufferedReader(
-				new InputStreamReader(Objects.requireNonNull(Anvil112ChunkFilter.class.getClassLoader().getResourceAsStream("mapping/block_name_to_id.txt"))))) {
+				new InputStreamReader(Objects.requireNonNull(Anvil112ChunkHandler.class.getClassLoader().getResourceAsStream("mapping/block_name_to_id.txt"))))) {
 			String line;
 			while ((line = bis.readLine()) != null) {
 				line = line.trim();

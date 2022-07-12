@@ -1,10 +1,10 @@
 package net.querz.mcaselector.version.anvil114;
 
 import net.querz.mcaselector.version.NbtHelper;
-import net.querz.mcaselector.version.anvil113.Anvil113ChunkFilter;
+import net.querz.mcaselector.version.anvil113.Anvil113ChunkHandler;
 import net.querz.nbt.*;
 
-public class Anvil114ChunkFilter extends Anvil113ChunkFilter {
+public class Anvil114ChunkHandler extends Anvil113ChunkHandler {
 
 	@Override
 	public ByteTag getLightPopulated(CompoundTag data) {

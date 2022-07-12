@@ -3,7 +3,7 @@ package net.querz.mcaselector.filter.filters;
 import net.querz.mcaselector.filter.*;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.point.Point2i;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.IntTag;
 
@@ -22,8 +22,8 @@ public class ZPosFilter extends IntFilter implements RegionMatcher {
 		if (data.region() == null || data.region().getData() == null) {
 			return null;
 		}
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		IntTag tag = chunkFilter.getZPos(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		IntTag tag = chunkHandler.getZPos(data.region().getData());
 		return tag == null ? 0 : tag.asInt();
 	}
 

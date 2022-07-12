@@ -5,7 +5,7 @@ import net.querz.mcaselector.filter.FilterType;
 import net.querz.mcaselector.filter.IntFilter;
 import net.querz.mcaselector.filter.Operator;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.IntTag;
 
@@ -24,8 +24,8 @@ public class YPosFilter extends IntFilter {
 		if (data.region() == null || data.region().getData() == null) {
 			return null;
 		}
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		IntTag tag = chunkFilter.getYPos(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		IntTag tag = chunkHandler.getYPos(data.region().getData());
 		return tag == null ? 0 : tag.asInt();
 	}
 

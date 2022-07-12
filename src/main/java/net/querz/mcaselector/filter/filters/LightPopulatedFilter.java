@@ -5,7 +5,7 @@ import net.querz.mcaselector.filter.Comparator;
 import net.querz.mcaselector.filter.FilterType;
 import net.querz.mcaselector.filter.Operator;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.ByteTag;
 
@@ -34,8 +34,8 @@ public class LightPopulatedFilter extends ByteFilter {
 		if (data.region() == null) {
 			return 0;
 		}
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		ByteTag tag = chunkFilter.getLightPopulated(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		ByteTag tag = chunkHandler.getLightPopulated(data.region().getData());
 		return tag == null ? 0 : tag.asByte();
 	}
 

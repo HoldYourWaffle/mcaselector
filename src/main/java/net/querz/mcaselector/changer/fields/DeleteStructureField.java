@@ -4,7 +4,7 @@ import net.querz.mcaselector.changer.Field;
 import net.querz.mcaselector.changer.FieldType;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.io.registry.StructureRegistry;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.CompoundTag;
 import java.util.ArrayList;
@@ -52,9 +52,9 @@ public class DeleteStructureField extends Field<List<String>> {
 
 	@Override
 	public void change(ChunkData data) {
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		CompoundTag references = chunkFilter.getStructureReferences(data.region().getData());
-		CompoundTag starts = chunkFilter.getStructureStarts(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		CompoundTag references = chunkHandler.getStructureReferences(data.region().getData());
+		CompoundTag starts = chunkHandler.getStructureStarts(data.region().getData());
 		for (String structure : getNewValue()) {
 			for (String alt : StructureRegistry.getAlts(structure)) {
 				references.remove(alt);

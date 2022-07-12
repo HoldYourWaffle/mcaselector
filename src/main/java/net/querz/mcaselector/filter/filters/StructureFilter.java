@@ -6,7 +6,7 @@ import net.querz.mcaselector.filter.Operator;
 import net.querz.mcaselector.filter.TextFilter;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.io.registry.StructureRegistry;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.*;
 import java.util.*;
@@ -27,8 +27,8 @@ public class StructureFilter extends TextFilter<List<String>> {
 		if (data.region() == null || data.region().getData() == null) {
 			return false;
 		}
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		CompoundTag references = chunkFilter.getStructureReferences(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		CompoundTag references = chunkHandler.getStructureReferences(data.region().getData());
 		if (references == null) {
 			return false;
 		}
@@ -56,8 +56,8 @@ public class StructureFilter extends TextFilter<List<String>> {
 		if (data.region() == null || data.region().getData() == null) {
 			return false;
 		}
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		CompoundTag references = chunkFilter.getStructureReferences(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		CompoundTag references = chunkHandler.getStructureReferences(data.region().getData());
 		if (references == null) {
 			return false;
 		}

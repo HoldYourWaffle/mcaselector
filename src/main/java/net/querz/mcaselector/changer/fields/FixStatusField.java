@@ -3,7 +3,7 @@ package net.querz.mcaselector.changer.fields;
 import net.querz.mcaselector.changer.Field;
 import net.querz.mcaselector.changer.FieldType;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.ListTag;
 import net.querz.nbt.StringTag;
@@ -30,16 +30,16 @@ public class FixStatusField extends Field<Boolean> {
 
 	@Override
 	public void change(ChunkData data) {
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		StringTag status = chunkFilter.getStatus(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		StringTag status = chunkHandler.getStatus(data.region().getData());
 
 		if ("empty".equals(status.getValue())) {
-			ListTag sections = chunkFilter.getSections(data.region().getData());
+			ListTag sections = chunkHandler.getSections(data.region().getData());
 			if (sections == null) {
 				return;
 			}
 			if (sections.size() > 0) {
-				chunkFilter.setStatus(data.region().getData(), "full");
+				chunkHandler.setStatus(data.region().getData(), "full");
 			}
 		}
 	}

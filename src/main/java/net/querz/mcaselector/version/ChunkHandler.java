@@ -14,7 +14,7 @@ import net.querz.nbt.StringTag;
 import java.util.List;
 import java.util.Map;
 
-public interface ChunkFilter {
+public interface ChunkHandler {
 
 	BlockState[] getPaletteOfSection(CompoundTag sectionData);
 

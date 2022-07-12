@@ -6,7 +6,7 @@ import net.querz.mcaselector.filter.LongFilter;
 import net.querz.mcaselector.filter.Operator;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.text.TextHelper;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.LongTag;
 
@@ -25,8 +25,8 @@ public class LastUpdateFilter extends LongFilter {
 		if (data.region() == null) {
 			return 0L;
 		}
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		LongTag tag = chunkFilter.getLastUpdate(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		LongTag tag = chunkHandler.getLastUpdate(data.region().getData());
 		return tag == null ? 0L : tag.asLong();
 	}
 

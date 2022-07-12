@@ -3,7 +3,7 @@ package net.querz.mcaselector.changer.fields;
 import net.querz.mcaselector.changer.Field;
 import net.querz.mcaselector.changer.FieldType;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
-import net.querz.mcaselector.version.ChunkFilter;
+import net.querz.mcaselector.version.ChunkHandler;
 import net.querz.mcaselector.version.VersionController;
 import net.querz.nbt.LongTag;
 
@@ -15,8 +15,8 @@ public class InhabitedTimeField extends Field<Long> {
 
 	@Override
 	public Long getOldValue(ChunkData data) {
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		LongTag inhabitedTime = chunkFilter.getInhabitedTime(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		LongTag inhabitedTime = chunkHandler.getInhabitedTime(data.region().getData());
 		return inhabitedTime == null ? null : inhabitedTime.asLong();
 	}
 
@@ -32,16 +32,16 @@ public class InhabitedTimeField extends Field<Long> {
 
 	@Override
 	public void change(ChunkData data) {
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		LongTag tag = chunkFilter.getInhabitedTime(data.region().getData());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		LongTag tag = chunkHandler.getInhabitedTime(data.region().getData());
 		if (tag != null) {
-			chunkFilter.setInhabitedTime(data.region().getData(), getNewValue());
+			chunkHandler.setInhabitedTime(data.region().getData(), getNewValue());
 		}
 	}
 
 	@Override
 	public void force(ChunkData data) {
-		ChunkFilter chunkFilter = VersionController.getChunkFilter(data.getDataVersion());
-		chunkFilter.setInhabitedTime(data.region().getData(), getNewValue());
+		ChunkHandler chunkHandler = VersionController.getChunkHandler(data.getDataVersion());
+		chunkHandler.setInhabitedTime(data.region().getData(), getNewValue());
 	}
 }
