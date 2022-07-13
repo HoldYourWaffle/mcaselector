@@ -133,12 +133,13 @@ public class Anvil113ColorMapping implements ColorMapping {
 	}
 
 	private int applyBiomeTint(String name, int biome, int color) {
+		// TODO big dupe
 		if (grass.contains(name)) {
-			return applyTint(color, biomeGrassTints[biome]);
+			return ColorMapping.applyTint(color, biomeGrassTints[biome]);
 		} else if (foliage.contains(name)) {
-			return applyTint(color, biomeFoliageTints[biome]);
+			return ColorMapping.applyTint(color, biomeFoliageTints[biome]);
 		} else if (name.equals("minecraft:water")) {
-			return applyTint(color, biomeWaterTints[biome]);
+			return ColorMapping.applyTint(color, biomeWaterTints[biome]);
 		}
 		return color;
 	}
