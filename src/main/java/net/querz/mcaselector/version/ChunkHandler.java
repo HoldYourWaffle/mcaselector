@@ -15,21 +15,26 @@ import java.util.List;
 import java.util.Map;
 
 public interface ChunkHandler {
+	// TODO audit other filter implementations for comparator consolidation
 
 	BlockState[] getPaletteOfSection(CompoundTag sectionData);
 
 	BiomeRegistry.BiomeIdentifier[] getBiomesOfSection(CompoundTag sectionData);
 
+	// CHECK how does this handle 3D biomes?
 	void changeBiome(CompoundTag data, BiomeRegistry.BiomeIdentifier biome);
 
+	// CHECK what's force vs change?
 	void forceBiome(CompoundTag data, BiomeRegistry.BiomeIdentifier biome);
 
 	void replaceBlocks(CompoundTag data, Map<String, BlockReplaceData> replace);
 
 	int[] getHeightmap(CompoundTag data, HeightmapType heightmapType);
 
+	// value points to index in getPaletteOfSection
 	int[] getBlockStatePointersOfSection(CompoundTag sectionData);
 
+	// TODO unparsed nbt desirable here?
 	ListTag getTileEntities(CompoundTag data);
 
 	CompoundTag getStructureStarts(CompoundTag data);
@@ -39,6 +44,8 @@ public interface ChunkHandler {
 	ListTag getSections(CompoundTag data);
 
 	void deleteSections(CompoundTag data, List<Range> ranges);
+
+	// TODO big get/set simple properties dupe? (1.18 snapshot special case)
 
 	LongTag getInhabitedTime(CompoundTag data);
 
@@ -62,9 +69,12 @@ public interface ChunkHandler {
 
 	void setLightPopulated(CompoundTag data, byte lightPopulated);
 
+	/* end dupe */
+
 	void forceBlending(CompoundTag data);
 
 	class BlockReplaceData {
+		// TODO make record type?
 
 		private String name;
 		private CompoundTag state;

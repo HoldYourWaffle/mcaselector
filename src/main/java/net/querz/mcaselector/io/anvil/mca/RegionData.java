@@ -24,6 +24,8 @@ import java.util.List;
 
 // holds data for chunks, poi and entities
 public class RegionData {
+	// NOW continue to evaluate chunk/region classes
+	// SOON continue re-implementing ChunkHandler's
 
 	// TODO logging and error handling could do with an overhaul
 	private static final Logger LOGGER = LogManager.getLogger(RegionData.class);

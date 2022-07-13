@@ -51,6 +51,7 @@ public final class VersionController {
 
 	private enum Mapping {
 
+		// XXX what happens pre-1.12?
 		ANVIL112(0,    1343, Anvil112ChunkHandler::new, Anvil112ChunkMerger::new, Anvil112PoiMerger::new, Anvil112EntityMerger::new, Anvil112ChunkRelocator::new, Anvil112PoiRelocator::new, Anvil112EntityRelocator::new, Anvil112EntityFilter::new, Anvil112ChunkRenderer::new, Anvil112ColorMapping::new),
 		ANVIL113(1344, 1631, Anvil113ChunkHandler::new, Anvil113ChunkMerger::new, Anvil112PoiMerger::new, Anvil112EntityMerger::new, Anvil113ChunkRelocator::new, Anvil112PoiRelocator::new, Anvil112EntityRelocator::new, Anvil112EntityFilter::new, Anvil113ChunkRenderer::new, Anvil113ColorMapping::new),
 		ANVIL114(1632, 2201, Anvil113ChunkHandler::new, Anvil114ChunkMerger::new, Anvil114PoiMerger::new, Anvil112EntityMerger::new, Anvil114ChunkRelocator::new, Anvil114PoiRelocator::new, Anvil112EntityRelocator::new, Anvil112EntityFilter::new, Anvil113ChunkRenderer::new, Anvil114ColorMapping::new),

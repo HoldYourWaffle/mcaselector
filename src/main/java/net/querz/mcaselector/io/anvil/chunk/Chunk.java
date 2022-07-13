@@ -181,6 +181,7 @@ public abstract class Chunk implements Cloneable {
 		return "<absoluteLocation=" + absoluteLocation + ", compressionType=" + compressionType + ", data=" + s + ">";
 	}
 
+	// XXX made public
 	public <T extends Chunk> T clone(Function<Point2i, T> chunkConstructor) {
 		T clone = chunkConstructor.apply(absoluteLocation);
 		clone.compressionType = compressionType;

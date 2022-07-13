@@ -78,6 +78,7 @@ public abstract class MCAFile<T extends Chunk> implements Cloneable {
 
 	protected MCAFile(Point2i location) {
 		this.location = location;
+		// CHECK chunkConstructor will be null?
 	}
 
 // IO STUFF ------------------------------------------------------------------------------------------------------------

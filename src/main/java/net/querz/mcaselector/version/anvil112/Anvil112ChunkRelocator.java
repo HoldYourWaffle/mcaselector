@@ -70,6 +70,7 @@ public class Anvil112ChunkRelocator implements ChunkRelocator {
 	}
 
 	private void applyOffsetToEntity(CompoundTag entity, Point3i offset) {
+		// TODO big dupe
 		if (entity == null) {
 			return;
 		}
