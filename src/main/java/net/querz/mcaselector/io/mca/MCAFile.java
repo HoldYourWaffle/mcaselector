@@ -559,4 +559,7 @@ public abstract class MCAFile<T extends Chunk> implements Cloneable {
 	}
 
 	public abstract MCAFile<T> clone();
+
+	public abstract McaType getType();
+
 }

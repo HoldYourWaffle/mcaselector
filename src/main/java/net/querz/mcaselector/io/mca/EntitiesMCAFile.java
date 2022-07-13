@@ -36,4 +36,10 @@ public class EntitiesMCAFile extends MCAFile<EntitiesChunk> {
 	public EntitiesMCAFile clone() {
 		return clone(EntitiesMCAFile::new);
 	}
+
+	@Override
+	public McaType getType() {
+		return McaType.ENTITIES;
+	}
+
 }

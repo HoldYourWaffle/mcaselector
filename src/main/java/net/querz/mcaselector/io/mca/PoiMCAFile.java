@@ -36,4 +36,10 @@ public class PoiMCAFile extends MCAFile<PoiChunk> {
 	public PoiMCAFile clone() {
 		return clone(PoiMCAFile::new);
 	}
+
+	@Override
+	public McaType getType() {
+		return McaType.POI;
+	}
+
 }
