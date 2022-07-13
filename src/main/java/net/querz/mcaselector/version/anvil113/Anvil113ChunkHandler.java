@@ -1,5 +1,6 @@
 package net.querz.mcaselector.version.anvil113;
 
+import net.querz.mcaselector.io.anvil.BlockState;
 import net.querz.mcaselector.io.registry.BiomeRegistry;
 import net.querz.mcaselector.math.Bits;
 import net.querz.mcaselector.point.Point2i;
@@ -14,86 +15,42 @@ import java.util.*;
 public class Anvil113ChunkHandler implements ChunkHandler {
 
 	@Override
-	public boolean matchBlockNames(CompoundTag data, Collection<String> names) {
-		ListTag sections = NbtHelper.tagFromLevelFromRoot(data, "Sections", null);
-		if (sections == null) {
-			return false;
+	public BlockState[] getPaletteOfSection(CompoundTag sectionData) {
+		ListTag palette = NbtHelper.tagFromCompound(sectionData, "Palette", null);
+		if (palette == null) {
+			return new BlockState[0];
 		}
 
-		int c = 0;
-		nameLoop:
-		for (String name : names) {
-			for (CompoundTag t : sections.iterateType(CompoundTag.TYPE)) {
-				ListTag palette = NbtHelper.tagFromCompound(t, "Palette", null);
-				if (palette == null) {
-					continue;
-				}
-				for (CompoundTag p : palette.iterateType(CompoundTag.TYPE)) {
-					if (name.equals(NbtHelper.stringFromCompound(p, "Name"))) {
-						c++;
-						continue nameLoop;
-					}
-				}
-			}
-		}
-		return names.size() == c;
-	}
+		BlockState[] blockStates = new BlockState[palette.size()];
 
-	@Override
-	public boolean matchAnyBlockName(CompoundTag data, Collection<String> names) {
-		ListTag sections = NbtHelper.tagFromLevelFromRoot(data, "Sections", null);
-		if (sections == null) {
-			return false;
-		}
+		for (int i = 0; i < palette.size(); i++) {
+			CompoundTag paletteEntry = palette.getCompound(i);
 
-		for (String name : names) {
-			for (CompoundTag t : sections.iterateType(CompoundTag.TYPE)) {
-				ListTag palette = NbtHelper.tagFromCompound(t, "Palette", null);
-				if (palette == null) {
-					continue;
-				}
-				for (CompoundTag p : palette.iterateType(CompoundTag.TYPE)) {
-					if (name.equals(NbtHelper.stringFromCompound(p, "Name"))) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public boolean paletteEquals(CompoundTag data, Collection<String> names) {
-		ListTag sections = NbtHelper.tagFromLevelFromRoot(data, "Sections", null);
-		if (sections == null) {
-			return false;
-		}
-
-		Set<String> blocks = new HashSet<>();
-		for (CompoundTag t : sections.iterateType(CompoundTag.TYPE)) {
-			ListTag palette = NbtHelper.tagFromCompound(t, "Palette", null);
-			if (palette == null) {
+			String name = NbtHelper.stringFromCompound(paletteEntry, "Name");
+			if (name == null) {
+				// XXX when does this happen?
 				continue;
 			}
-			for (CompoundTag p : palette.iterateType(CompoundTag.TYPE)) {
-				String n;
-				if ((n = NbtHelper.stringFromCompound(p, "Name")) != null) {
-					if (!names.contains(n)) {
-						return false;
-					}
-					blocks.add(n);
-				}
-			}
+			CompoundTag props = NbtHelper.tagFromCompound(paletteEntry, "Properties");
+
+			blockStates[i] = new BlockState(name, props);
 		}
-		if (blocks.size() != names.size()) {
-			return false;
+
+		return blockStates;
+	}
+
+	@Override
+	public int[] getBlockStatePointersOfSection(CompoundTag sectionData) {
+		long[] blockStates = NbtHelper.longArrayFromCompound(sectionData, "BlockStates");
+		if (blockStates == null) {
+			return new int[0];
 		}
-		for (String name : names) {
-			if (!blocks.contains(name)) {
-				return false;
-			}
+
+		int[] blockStatePointers = new int[4096];
+		for (int i = 0; i < 4096; i++) {
+			blockStatePointers[i] = getPaletteIndex(i, blockStates);
 		}
-		return true;
+		return blockStatePointers;
 	}
 
 	@Override
@@ -128,8 +85,17 @@ public class Anvil113ChunkHandler implements ChunkHandler {
 					return true;
 				}
 			}
+			CompoundTag props = NbtHelper.tagFromCompound(paletteEntry, "Properties");
+
+			blockStates[i] = new BlockState(name, props);
 		}
 		return false;
+	}
+
+	@Override
+	public BiomeRegistry.BiomeIdentifier[] getBiomesOfSection(CompoundTag sectionData) {
+		// STUB
+		return new BiomeRegistry.BiomeIdentifier[0];
 	}
 
 	@Override
@@ -192,6 +158,9 @@ public class Anvil113ChunkHandler implements ChunkHandler {
 			for (int height : heights) {
 				sections.add(sectionMap.get(height));
 			}
+			CompoundTag props = NbtHelper.tagFromCompound(paletteEntry, "Properties");
+
+			blockStates[i] = new BlockState(name, props);
 		}
 
 		ListTag tileEntities = NbtHelper.tagFromCompound(level, "TileEntities", null);
@@ -289,6 +258,9 @@ public class Anvil113ChunkHandler implements ChunkHandler {
 				paletteIndex = i;
 				break;
 			}
+			CompoundTag props = NbtHelper.tagFromCompound(paletteEntry, "Properties");
+
+			blockStates[i] = new BlockState(name, props);
 		}
 
 		if (paletteIndex == -1) {
@@ -299,6 +271,9 @@ public class Anvil113ChunkHandler implements ChunkHandler {
 			if ((paletteIndex & (paletteIndex - 1)) == 0) {
 				blockStates = adjustBlockStateBits(palette, blockStates, null);
 			}
+			CompoundTag props = NbtHelper.tagFromCompound(paletteEntry, "Properties");
+
+			blockStates[i] = new BlockState(name, props);
 		}
 
 		setPaletteIndex(index, paletteIndex, blockStates);
@@ -351,6 +326,9 @@ public class Anvil113ChunkHandler implements ChunkHandler {
 			for (int i = 0; i < 4096; i++) {
 				setPaletteIndex(i, getPaletteIndex(i, blockStates), newBlockStates);
 			}
+			CompoundTag props = NbtHelper.tagFromCompound(paletteEntry, "Properties");
+
+			blockStates[i] = new BlockState(name, props);
 		}
 
 		return newBlockStates;
@@ -391,6 +369,9 @@ public class Anvil113ChunkHandler implements ChunkHandler {
 			if (palette.getCompound(i).getString("Name").equals("minecraft:air")) {
 				return true;
 			}
+			CompoundTag props = NbtHelper.tagFromCompound(paletteEntry, "Properties");
+
+			blockStates[i] = new BlockState(name, props);
 		}
 		return false;
 	}
@@ -447,8 +428,17 @@ public class Anvil113ChunkHandler implements ChunkHandler {
 					}
 				}
 			}
+			CompoundTag props = NbtHelper.tagFromCompound(paletteEntry, "Properties");
+
+			blockStates[i] = new BlockState(name, props);
 		}
 		return totalHeight / (Tile.CHUNK_SIZE * Tile.CHUNK_SIZE);
+	}
+
+	@Override
+	public int[] getHeightmap(CompoundTag data, HeightmapType heightmapType) {
+		// STUB
+		return new int[0];
 	}
 
 	protected boolean isEmpty(CompoundTag blockData) {
@@ -461,50 +451,6 @@ public class Anvil113ChunkHandler implements ChunkHandler {
 
 	protected int filterSections(Tag sectionA, Tag sectionB) {
 		return NbtHelper.numberFromCompound(sectionB, "Y", -1).intValue() - NbtHelper.numberFromCompound(sectionA, "Y", -1).intValue();
-	}
-
-	@Override
-	public int getBlockAmount(CompoundTag data, String[] blocks) {
-		ListTag sections = NbtHelper.tagFromLevelFromRoot(data, "Sections", null);
-		if (sections == null) {
-			return 0;
-		}
-
-		int result = 0;
-
-		for (CompoundTag section : sections.iterateType(CompoundTag.TYPE)) {
-			ListTag palette = NbtHelper.tagFromCompound(section, "Palette", null);
-			if (palette == null) {
-				continue;
-			}
-
-			for (int i = 0; i < palette.size(); i++) {
-				CompoundTag blockState = palette.getCompound(i);
-				String name = NbtHelper.stringFromCompound(blockState, "Name");
-				if (name == null) {
-					continue;
-				}
-
-				for (String block : blocks) {
-					if (name.equals(block)) {
-						// count blocks of this type
-
-						long[] blockStates = NbtHelper.longArrayFromCompound(section, "BlockStates");
-						if (blockStates == null) {
-							break;
-						}
-
-						for (int k = 0; k < 4096; k++) {
-							if (blockState == getBlockAt(k, blockStates, palette)) {
-								result++;
-							}
-						}
-						break;
-					}
-				}
-			}
-		}
-		return result;
 	}
 
 	@Override
@@ -543,6 +489,9 @@ public class Anvil113ChunkHandler implements ChunkHandler {
 					i--;
 				}
 			}
+			CompoundTag props = NbtHelper.tagFromCompound(paletteEntry, "Properties");
+
+			blockStates[i] = new BlockState(name, props);
 		}
 	}
 

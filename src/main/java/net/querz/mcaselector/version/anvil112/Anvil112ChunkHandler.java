@@ -1,5 +1,6 @@
 package net.querz.mcaselector.version.anvil112;
 
+import net.querz.mcaselector.io.anvil.BlockState;
 import net.querz.mcaselector.io.registry.BiomeRegistry;
 import net.querz.mcaselector.range.Range;
 import net.querz.mcaselector.tile.Tile;
@@ -8,10 +9,19 @@ import net.querz.mcaselector.version.NbtHelper;
 import net.querz.nbt.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public class Anvil112ChunkHandler implements ChunkHandler {
 
@@ -214,39 +224,20 @@ public class Anvil112ChunkHandler implements ChunkHandler {
 		return true;
 	}
 
-	private static class BlockData {
-		int id;
-		Set<Byte> data;
+	@Override
+	public BlockState[] getPaletteOfSection(CompoundTag sectionData) {
+		// STUB
+		// Here be trickery: pre-flattening the map of id to block names is effectively the palette for every chunk
+		// NOW how to handle blockstates?
 
-		BlockData(int id, Set<Byte> data) {
-			this.id = id;
-			this.data = data;
-		}
-
-		@Override
-		public String toString() {
-			return "{" + id + ":" + Arrays.toString(data.toArray()) + "}";
-		}
+		return new BlockState[0];
 	}
 
-	private static class Block {
-		int id;
-		byte data;
+	@Override
+	public int[] getBlockStatePointersOfSection(CompoundTag sectionData) {
+		// STUB
 
-		Block(int id, byte data) {
-			this.id = id;
-			this.data = data;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(id, data);
-		}
-
-		@Override
-		public boolean equals(Object other) {
-			return other instanceof Block && ((Block) other).id == id && ((Block) other).data == data;
-		}
+		return new int[0];
 	}
 
 	@Override
@@ -283,6 +274,12 @@ public class Anvil112ChunkHandler implements ChunkHandler {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public BiomeRegistry.BiomeIdentifier[] getBiomesOfSection(CompoundTag sectionData) {
+		// STUB
+		return new BiomeRegistry.BiomeIdentifier[0];
 	}
 
 	@Override
@@ -425,6 +422,12 @@ public class Anvil112ChunkHandler implements ChunkHandler {
 			}
 		}
 		return totalHeight / (Tile.CHUNK_SIZE * Tile.CHUNK_SIZE);
+	}
+
+	@Override
+	public int[] getHeightmap(CompoundTag data, HeightmapType heightmapType) {
+		// STUB
+		return new int[0];
 	}
 
 	private boolean isEmpty(int blockID) {
@@ -588,4 +591,16 @@ public class Anvil112ChunkHandler implements ChunkHandler {
 	public void forceBlending(CompoundTag data) {
 		// do nothing
 	}
+
+	private record BlockData(int id, Set<Byte> data) {
+
+		@Override
+		public String toString() {
+			// CHECK is record's default implementation good enough?
+			return "{" + id + ":" + Arrays.toString(data.toArray()) + "}";
+		}
+
+	}
+
+	private record Block(int id, byte data) {}
 }
