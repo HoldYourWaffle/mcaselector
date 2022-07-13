@@ -1,6 +1,7 @@
 package net.querz.mcaselector.version.anvil119;
 
 import net.querz.mcaselector.point.Point3i;
+import net.querz.mcaselector.version.ChunkHelper;
 import net.querz.mcaselector.version.ChunkRelocator;
 import net.querz.mcaselector.version.NbtHelper;
 import net.querz.mcaselector.version.anvil117.Anvil117EntityRelocator;
@@ -49,7 +50,7 @@ public class Anvil119ChunkRelocator implements ChunkRelocator {
 			ListTag newSections = new ListTag();
 			int yMax = NbtHelper.findHighestSection(sections, -4);
 			for (CompoundTag section : sections.iterateType(CompoundTag.TYPE)) {
-				if (applyOffsetToSection(section, offset.blockToSection(), -4, yMax)) {
+				if (ChunkHelper.applyOffsetToSection(section, offset.blockToSection(), -4, yMax)) {
 					newSections.add(section);
 				}
 			}
