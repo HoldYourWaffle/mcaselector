@@ -130,11 +130,11 @@ public class Anvil119ColorMapping implements ColorMapping {
 
 	private int applyBiomeTint(String name, String biome, int color) {
 		if (grass.contains(name)) {
-			return applyTint(color, biomeGrassTints.getOrDefault(biome, DEFAULT_GRASS_TINT));
+			return ColorMapping.applyTint(color, biomeGrassTints.getOrDefault(biome, DEFAULT_GRASS_TINT));
 		} else if (foliage.contains(name)) {
-			return applyTint(color, biomeFoliageTints.getOrDefault(biome, DEFAULT_FOLIAGE_TINT));
+			return ColorMapping.applyTint(color, biomeFoliageTints.getOrDefault(biome, DEFAULT_FOLIAGE_TINT));
 		} else if (name.equals("minecraft:water")) {
-			return applyTint(color, biomeWaterTints.getOrDefault(biome, DEFAULT_WATER_TINT));
+			return ColorMapping.applyTint(color, biomeWaterTints.getOrDefault(biome, DEFAULT_WATER_TINT));
 		}
 		return color;
 	}

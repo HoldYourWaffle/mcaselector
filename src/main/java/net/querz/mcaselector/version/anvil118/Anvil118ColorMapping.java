@@ -170,22 +170,22 @@ public class Anvil118ColorMapping implements ColorMapping {
 
 	private int applyBiomeTintLegacy(String name, int biome, int color) {
 		if (grass.contains(name)) {
-			return applyTint(color, biomeGrassTintsLegacy[biome]);
+			return ColorMapping.applyTint(color, biomeGrassTintsLegacy[biome]);
 		} else if (foliage.contains(name)) {
-			return applyTint(color, biomeFoliageTintsLegacy[biome]);
+			return ColorMapping.applyTint(color, biomeFoliageTintsLegacy[biome]);
 		} else if (name.equals("minecraft:water")) {
-			return applyTint(color, biomeWaterTintsLegacy[biome]);
+			return ColorMapping.applyTint(color, biomeWaterTintsLegacy[biome]);
 		}
 		return color;
 	}
 
 	private int applyBiomeTint(String name, String biome, int color) {
 		if (grass.contains(name)) {
-			return applyTint(color, biomeGrassTints.getOrDefault(biome, DEFAULT_GRASS_TINT));
+			return ColorMapping.applyTint(color, biomeGrassTints.getOrDefault(biome, DEFAULT_GRASS_TINT));
 		} else if (foliage.contains(name)) {
-			return applyTint(color, biomeFoliageTints.getOrDefault(biome, DEFAULT_FOLIAGE_TINT));
+			return ColorMapping.applyTint(color, biomeFoliageTints.getOrDefault(biome, DEFAULT_FOLIAGE_TINT));
 		} else if (name.equals("minecraft:water")) {
-			return applyTint(color, biomeWaterTints.getOrDefault(biome, DEFAULT_WATER_TINT));
+			return ColorMapping.applyTint(color, biomeWaterTints.getOrDefault(biome, DEFAULT_WATER_TINT));
 		}
 		return color;
 	}
