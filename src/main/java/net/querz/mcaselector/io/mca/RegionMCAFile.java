@@ -63,7 +63,14 @@ public class RegionMCAFile extends MCAFile<RegionChunk> {
 		return min;
 	}
 
+	@Override
 	public RegionMCAFile clone() {
 		return clone(RegionMCAFile::new);
 	}
+
+	@Override
+	public McaType getType() {
+		return McaType.REGION;
+	}
+
 }
