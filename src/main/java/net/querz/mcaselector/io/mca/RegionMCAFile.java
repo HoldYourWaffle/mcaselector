@@ -10,8 +10,7 @@ import java.io.File;
 public class RegionMCAFile extends MCAFile<RegionChunk> {
 
 	public RegionMCAFile(File file) {
-		super(file, RegionChunk::new);
-		super.chunks = new RegionChunk[1024];
+		super(file, RegionChunk.class);
 	}
 
 	private RegionMCAFile(Point2i location) {

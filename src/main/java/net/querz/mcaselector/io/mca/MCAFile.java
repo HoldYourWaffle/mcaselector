@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -43,7 +45,8 @@ public abstract class MCAFile<T extends Chunk> implements Cloneable {
 	protected Function<Point2i, T> chunkConstructor;
 
 	// file name must have well formed mca file format (r.<x>.<z>.mca)
-	public MCAFile(File file, Function<Point2i, T> chunkConstructor) {
+	@SuppressWarnings("unchecked")
+	public MCAFile(File file, Class<T> chunkClass) {
 		Point2i location = FileHelper.parseMCAFileName(file);
 		if (location == null) {
 			throw new IllegalArgumentException("failed to parse region file name from " + file);
@@ -51,7 +54,23 @@ public abstract class MCAFile<T extends Chunk> implements Cloneable {
 		this.location = location;
 		this.file = file;
 		this.timestamps = new int[1024];
-		this.chunkConstructor = chunkConstructor;
+
+		try {
+			Constructor<T> constructor = chunkClass.getConstructor(Point2i.class);
+			this.chunkConstructor = (absoluteLocation) -> {
+				try {
+					return constructor.newInstance(absoluteLocation);
+				} catch (ReflectiveOperationException e) {
+					// uh-oh, we can't really do anything about this
+					throw new RuntimeException(e);
+				}
+			};
+		} catch (ReflectiveOperationException e) {
+			throw new IllegalArgumentException("Provided chunkClass does not have the appropriate constructor", e);
+		}
+
+		// For some reason Array.newInstance returns Object?
+		this.chunks = (T[]) Array.newInstance(chunkClass, 1024);
 	}
 
 	protected MCAFile(Point2i location) {
