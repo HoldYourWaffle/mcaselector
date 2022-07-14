@@ -40,9 +40,9 @@ public class WorldDirectories implements Serializable, Cloneable {
 
 	public RegionDirectories makeRegionDirectories(Point2i region) {
 		RegionDirectories rd = new RegionDirectories();
-		rd.setRegion(new File(this.region, FileHelper.createMCAFileName(region)));
-		rd.setPoi(new File(this.poi, FileHelper.createMCAFileName(region)));
-		rd.setEntities(new File(this.entities, FileHelper.createMCAFileName(region)));
+		rd.setDirectory(McaType.REGION, new File(this.region, FileHelper.createMCAFileName(region)));
+		rd.setDirectory(McaType.POI, new File(this.poi, FileHelper.createMCAFileName(region)));
+		rd.setDirectory(McaType.ENTITIES, new File(this.entities, FileHelper.createMCAFileName(region)));
 		return rd;
 	}
 
@@ -65,7 +65,7 @@ public class WorldDirectories implements Serializable, Cloneable {
 					Point2i l = FileHelper.parseMCAFileName(f);
 					if (selection == null || selection.isAnyChunkInRegionSelected(l.asLong())) {
 						if (regionDirectories.containsKey(l)) {
-							regionDirectories.get(l).setEntities(f);
+							regionDirectories.get(l).setDirectory(McaType.ENTITIES, f);
 						} else {
 							regionDirectories.put(l, new RegionDirectories(l, null, null, f));
 						}
@@ -81,7 +81,7 @@ public class WorldDirectories implements Serializable, Cloneable {
 					Point2i l = FileHelper.parseMCAFileName(f);
 					if (selection == null || selection.isAnyChunkInRegionSelected(l.asLong())) {
 						if (regionDirectories.containsKey(l)) {
-							regionDirectories.get(l).setPoi(f);
+							regionDirectories.get(l).setDirectory(McaType.POI, f);
 						} else {
 							regionDirectories.put(l, new RegionDirectories(l, null, f, null));
 						}

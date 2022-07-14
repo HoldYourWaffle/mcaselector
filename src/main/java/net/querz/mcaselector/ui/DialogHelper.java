@@ -521,14 +521,14 @@ public class DialogHelper {
 	private static void deleteTempFiles(Map<Point2i, RegionDirectories> tempFiles) {
 		if (tempFiles != null) {
 			for (RegionDirectories tempFile : tempFiles.values()) {
-				if (!tempFile.getRegion().delete()) {
-					LOGGER.warn("failed to delete temp file {}", tempFile.getRegion());
+				if (!tempFile.getDirectory(McaType.REGION).delete()) {
+					LOGGER.warn("failed to delete temp file {}", tempFile.getDirectory(McaType.REGION));
 				}
-				if (!tempFile.getPoi().delete()) {
-					LOGGER.warn("failed to delete temp file {}", tempFile.getPoi());
+				if (!tempFile.getDirectory(McaType.POI).delete()) {
+					LOGGER.warn("failed to delete temp file {}", tempFile.getDirectory(McaType.POI));
 				}
-				if (!tempFile.getEntities().delete()) {
-					LOGGER.warn("failed to delete temp file {}", tempFile.getEntities());
+				if (!tempFile.getDirectory(McaType.ENTITIES).delete()) {
+					LOGGER.warn("failed to delete temp file {}", tempFile.getDirectory(McaType.ENTITIES));
 				}
 			}
 		}

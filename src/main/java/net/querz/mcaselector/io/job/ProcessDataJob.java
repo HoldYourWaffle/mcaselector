@@ -3,9 +3,11 @@ package net.querz.mcaselector.io.job;
 import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.Job;
 import net.querz.mcaselector.io.RegionDirectories;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.progress.Timer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,27 +26,27 @@ public abstract class ProcessDataJob extends Job {
 	}
 
 	public byte[] loadPoi() {
-		return load(getRegionDirectories().getPoi());
+		return load(getRegionDirectories().getDirectory(McaType.POI));
 	}
 
 	public byte[] loadEntities() {
-		return load(getRegionDirectories().getEntities());
+		return load(getRegionDirectories().getDirectory(McaType.ENTITIES));
 	}
 
 	public byte[] loadRegion() {
-		return load(getRegionDirectories().getRegion());
+        return load(getRegionDirectories().getDirectory(McaType.REGION));
 	}
 
 	public byte[] loadPoiHeader() {
-		return load(getRegionDirectories().getPoi(), FileHelper.HEADER_SIZE);
+		return load(getRegionDirectories().getDirectory(McaType.POI), FileHelper.HEADER_SIZE);
 	}
 
 	public byte[] loadEntitiesHeader() {
-		return load(getRegionDirectories().getEntities(), FileHelper.HEADER_SIZE);
+		return load(getRegionDirectories().getDirectory(McaType.ENTITIES), FileHelper.HEADER_SIZE);
 	}
 
 	public byte[] loadRegionHeader() {
-		return load(getRegionDirectories().getRegion(), FileHelper.HEADER_SIZE);
+        return load(getRegionDirectories().getDirectory(McaType.REGION), FileHelper.HEADER_SIZE);
 	}
 
 	protected byte[] load(File file) {

@@ -32,14 +32,14 @@ public class Region {
 
 	public static Region loadRegion(RegionDirectories dirs, byte[] regionData, byte[] poiData, byte[] entitiesData) throws IOException {
 		Region r = new Region();
-		if (dirs.getRegion() != null && dirs.getRegion().length() > FileHelper.HEADER_SIZE && regionData != null) {
-			r.loadRegion(dirs.getRegion(), new ByteArrayPointer(regionData));
+		if (dirs.getDirectory(McaType.REGION) != null && dirs.getDirectory(McaType.REGION).length() > FileHelper.HEADER_SIZE && regionData != null) {
+			r.loadRegion(dirs.getDirectory(McaType.REGION), new ByteArrayPointer(regionData));
 		}
-		if (dirs.getPoi() != null && poiData != null) {
-			r.loadPoi(dirs.getPoi(), new ByteArrayPointer(poiData));
+		if (dirs.getDirectory(McaType.POI) != null && poiData != null) {
+			r.loadPoi(dirs.getDirectory(McaType.POI), new ByteArrayPointer(poiData));
 		}
-		if (dirs.getEntities() != null && entitiesData != null) {
-			r.loadEntities(dirs.getEntities(), new ByteArrayPointer(entitiesData));
+		if (dirs.getDirectory(McaType.ENTITIES) != null && entitiesData != null) {
+			r.loadEntities(dirs.getDirectory(McaType.ENTITIES), new ByteArrayPointer(entitiesData));
 		}
 		r.location = dirs.getLocation();
 		r.directories = dirs;
@@ -48,14 +48,14 @@ public class Region {
 
 	public static Region loadRegion(RegionDirectories dirs) throws IOException {
 		Region r = new Region();
-		if (dirs.getRegion() != null) {
-			r.loadRegion(dirs.getRegion());
+		if (dirs.getDirectory(McaType.REGION) != null) {
+			r.loadRegion(dirs.getDirectory(McaType.REGION));
 		}
-		if (dirs.getPoi() != null) {
-			r.loadPoi(dirs.getPoi());
+		if (dirs.getDirectory(McaType.POI) != null) {
+			r.loadPoi(dirs.getDirectory(McaType.POI));
 		}
-		if (dirs.getEntities() != null) {
-			r.loadEntities(dirs.getEntities());
+		if (dirs.getDirectory(McaType.ENTITIES) != null) {
+			r.loadEntities(dirs.getDirectory(McaType.ENTITIES));
 		}
 		r.location = dirs.getLocation();
 		r.directories = dirs;
@@ -64,16 +64,16 @@ public class Region {
 
 	public static Region loadRegionHeaders(RegionDirectories dirs, byte[] regionHeader, byte[] poiHeader, byte[] entitiesHeader) throws IOException {
 		Region r = new Region();
-		if (dirs.getRegion() != null && regionHeader != null) {
-			r.region = new RegionMCAFile(dirs.getRegion());
+		if (dirs.getDirectory(McaType.REGION) != null && regionHeader != null) {
+			r.region = new RegionMCAFile(dirs.getDirectory(McaType.REGION));
 			r.region.loadHeader(new ByteArrayPointer(regionHeader));
 		}
-		if (dirs.getPoi() != null && poiHeader != null) {
-			r.poi = new PoiMCAFile(dirs.getPoi());
+		if (dirs.getDirectory(McaType.POI) != null && poiHeader != null) {
+			r.poi = new PoiMCAFile(dirs.getDirectory(McaType.POI));
 			r.poi.loadHeader(new ByteArrayPointer(poiHeader));
 		}
-		if (dirs.getEntities() != null && entitiesHeader != null) {
-			r.entities = new EntitiesMCAFile(dirs.getEntities());
+		if (dirs.getDirectory(McaType.ENTITIES) != null && entitiesHeader != null) {
+			r.entities = new EntitiesMCAFile(dirs.getDirectory(McaType.ENTITIES));
 			r.entities.loadHeader(new ByteArrayPointer(entitiesHeader));
 		}
 		r.directories = dirs;
@@ -82,25 +82,25 @@ public class Region {
 
 	public static Region loadOrCreateEmptyRegion(RegionDirectories dirs) throws IOException {
 		Region r = new Region();
-		if (dirs.getRegion() != null) {
-			if (dirs.getRegion().exists()) {
-				r.loadRegion(dirs.getRegion());
+		if (dirs.getDirectory(McaType.REGION) != null) {
+			if (dirs.getDirectory(McaType.REGION).exists()) {
+				r.loadRegion(dirs.getDirectory(McaType.REGION));
 			} else {
-				r.region = new RegionMCAFile(dirs.getRegion());
+				r.region = new RegionMCAFile(dirs.getDirectory(McaType.REGION));
 			}
 		}
-		if (dirs.getPoi() != null) {
-			if (dirs.getPoi().exists()) {
-				r.loadPoi(dirs.getPoi());
+		if (dirs.getDirectory(McaType.POI) != null) {
+			if (dirs.getDirectory(McaType.POI).exists()) {
+				r.loadPoi(dirs.getDirectory(McaType.POI));
 			} else {
-				r.poi = new PoiMCAFile(dirs.getPoi());
+				r.poi = new PoiMCAFile(dirs.getDirectory(McaType.POI));
 			}
 		}
-		if (dirs.getEntities() != null) {
-			if (dirs.getEntities().exists()) {
-				r.loadEntities(dirs.getEntities());
+		if (dirs.getDirectory(McaType.ENTITIES) != null) {
+			if (dirs.getDirectory(McaType.ENTITIES).exists()) {
+				r.loadEntities(dirs.getDirectory(McaType.ENTITIES));
 			} else {
-				r.entities = new EntitiesMCAFile(dirs.getEntities());
+				r.entities = new EntitiesMCAFile(dirs.getDirectory(McaType.ENTITIES));
 			}
 		}
 		return r;
@@ -176,13 +176,13 @@ public class Region {
 
 	public void setDirectories(RegionDirectories dirs) {
 		if (region != null) {
-			region.setFile(dirs.getRegion());
+			region.setFile(dirs.getDirectory(McaType.REGION));
 		}
 		if (poi != null) {
-			poi.setFile(dirs.getPoi());
+			poi.setFile(dirs.getDirectory(McaType.POI));
 		}
 		if (entities != null) {
-			entities.setFile(dirs.getEntities());
+			entities.setFile(dirs.getDirectory(McaType.ENTITIES));
 		}
 	}
 
@@ -220,14 +220,14 @@ public class Region {
 	}
 
 	public void setChunkDataAt(ChunkData chunkData, Point2i location) {
-		if (region == null && directories.getRegion() != null) {
-			region = new RegionMCAFile(directories.getRegion());
+		if (region == null && directories.getDirectory(McaType.REGION) != null) {
+			region = new RegionMCAFile(directories.getDirectory(McaType.REGION));
 		}
-		if (poi == null && directories.getPoi() != null) {
-			poi = new PoiMCAFile(directories.getPoi());
+		if (poi == null && directories.getDirectory(McaType.POI) != null) {
+			poi = new PoiMCAFile(directories.getDirectory(McaType.POI));
 		}
-		if (entities == null && directories.getEntities() != null) {
-			entities = new EntitiesMCAFile(directories.getEntities());
+		if (entities == null && directories.getDirectory(McaType.ENTITIES) != null) {
+			entities = new EntitiesMCAFile(directories.getDirectory(McaType.ENTITIES));
 		}
 		if (region != null) {
 			region.setChunkAt(location, chunkData.region());
@@ -266,13 +266,13 @@ public class Region {
 
 	public void saveWithTempFiles(RegionDirectories dest) throws IOException {
 		if (region != null) {
-			region.saveWithTempFile(dest.getRegion());
+			region.saveWithTempFile(dest.getDirectory(McaType.REGION));
 		}
 		if (poi != null) {
-			poi.saveWithTempFile(dest.getPoi());
+			poi.saveWithTempFile(dest.getDirectory(McaType.POI));
 		}
 		if (entities != null) {
-			entities.saveWithTempFile(dest.getEntities());
+			entities.saveWithTempFile(dest.getDirectory(McaType.ENTITIES));
 		}
 	}
 
@@ -290,25 +290,25 @@ public class Region {
 
 	public void deFragment(RegionDirectories dest) throws IOException {
 		if (region != null) {
-			region.deFragment(dest.getRegion());
+			region.deFragment(dest.getDirectory(McaType.REGION));
 		}
 		if (poi != null) {
-			poi.deFragment(dest.getPoi());
+			poi.deFragment(dest.getDirectory(McaType.POI));
 		}
 		if (entities != null) {
-			entities.deFragment(dest.getEntities());
+			entities.deFragment(dest.getDirectory(McaType.ENTITIES));
 		}
 	}
 
 	public void deleteFiles() {
-		if (directories.getRegion() != null && directories.getRegion().exists()) {
-			directories.getRegion().delete();
+		if (directories.getDirectory(McaType.REGION) != null && directories.getDirectory(McaType.REGION).exists()) {
+			directories.getDirectory(McaType.REGION).delete();
 		}
-		if (directories.getPoi() != null && directories.getPoi().exists()) {
-			directories.getPoi().delete();
+		if (directories.getDirectory(McaType.POI) != null && directories.getDirectory(McaType.POI).exists()) {
+			directories.getDirectory(McaType.POI).delete();
 		}
-		if (directories.getEntities() != null && directories.getEntities().exists()) {
-			directories.getEntities().delete();
+		if (directories.getDirectory(McaType.ENTITIES) != null && directories.getDirectory(McaType.ENTITIES).exists()) {
+			directories.getDirectory(McaType.ENTITIES).delete();
 		}
 	}
 
