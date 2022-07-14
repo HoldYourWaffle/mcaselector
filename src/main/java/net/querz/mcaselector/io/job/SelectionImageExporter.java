@@ -12,6 +12,7 @@ import net.querz.mcaselector.io.ImageHelper;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.mca.RegionMCAFile;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.progress.Progress;
 import net.querz.mcaselector.selection.ChunkSet;
@@ -21,6 +22,7 @@ import net.querz.mcaselector.tile.Tile;
 import net.querz.mcaselector.tile.TileImage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -78,7 +80,7 @@ public final class SelectionImageExporter {
 
 			// test if the image is already in cache
 			File cacheImage = FileHelper.createPNGFilePath(Config.getCacheDir(), 1, getRegionDirectories().getLocation());
-			File regionFile = FileHelper.createRegionMCAFilePath(getRegionDirectories().getLocation());
+            File regionFile = FileHelper.createMCAFilePath(McaType.REGION, getRegionDirectories().getLocation());
 			RegionMCAFile mcaFile = null;
 			if (cacheImage.exists()) {
 				// load cached image

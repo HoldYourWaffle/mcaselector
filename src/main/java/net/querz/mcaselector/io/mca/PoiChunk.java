@@ -31,7 +31,7 @@ public class PoiChunk extends Chunk {
 
 	@Override
 	public File getMCCFile() {
-		return FileHelper.createPoiMCCFilePath(absoluteLocation);
+		return FileHelper.createMCCFilePath(McaType.POI, absoluteLocation);
 	}
 
 	@Override
