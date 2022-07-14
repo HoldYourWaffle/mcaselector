@@ -38,4 +38,10 @@ public class EntitiesChunk extends Chunk {
 	public EntitiesChunk clone() {
 		return clone(EntitiesChunk::new);
 	}
+
+	@Override
+	public McaType getType() {
+		return McaType.ENTITIES;
+	}
+
 }
