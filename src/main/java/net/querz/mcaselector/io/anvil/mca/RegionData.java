@@ -115,6 +115,14 @@ public class RegionData {
 		return r;
 	}
 
+	/*private static MCAFile load(McaType type, File src) throws IOException {
+		Function<File, MCAFile> constructor = switch (type) {
+			case REGION -> RegionMCAFile::new;
+			case POI -> PoiMCAFile::new;
+			case ENTITIES -> EntitiesMCAFile::new;
+		};
+		return constructor.apply(src);
+	}*/
 
 	private void loadRegion(File src) throws IOException {
 		region = new RegionMCAFile(src);
