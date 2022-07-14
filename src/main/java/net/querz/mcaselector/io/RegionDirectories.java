@@ -1,5 +1,6 @@
 package net.querz.mcaselector.io;
 
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.point.Point2i;
 import java.io.File;
 
@@ -69,9 +70,9 @@ public class RegionDirectories implements Cloneable {
 		String fileName = FileHelper.createMCAFileName(location);
 		return new RegionDirectories(
 				location,
-				new File(wd.getRegion(), fileName),
-				new File(wd.getPoi(), fileName),
-				new File(wd.getEntities(), fileName)
+				new File(wd.getDirectory(McaType.REGION), fileName),
+				new File(wd.getDirectory(McaType.POI), fileName),
+				new File(wd.getDirectory(McaType.ENTITIES), fileName)
 		);
 	}
 

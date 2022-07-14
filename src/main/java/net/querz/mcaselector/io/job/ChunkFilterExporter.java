@@ -5,6 +5,7 @@ import net.querz.mcaselector.filter.filters.GroupFilter;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.WorldDirectories;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.io.mca.Region;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.progress.Progress;
@@ -13,6 +14,7 @@ import net.querz.mcaselector.selection.Selection;
 import net.querz.mcaselector.text.Translation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.util.function.Consumer;
 
@@ -73,9 +75,9 @@ public final class ChunkFilterExporter {
 				return true;
 			}
 
-			File toRegion = new File(destination.getRegion(), getRegionDirectories().getLocationAsFileName());
-			File toPoi = new File(destination.getPoi(), getRegionDirectories().getLocationAsFileName());
-			File toEntities = new File(destination.getEntities(), getRegionDirectories().getLocationAsFileName());
+			File toRegion = new File(destination.getDirectory(McaType.REGION), getRegionDirectories().getLocationAsFileName());
+			File toPoi = new File(destination.getDirectory(McaType.POI), getRegionDirectories().getLocationAsFileName());
+			File toEntities = new File(destination.getDirectory(McaType.ENTITIES), getRegionDirectories().getLocationAsFileName());
 			if (toRegion.exists() || toPoi.exists() || toEntities.exists()) {
 				LOGGER.debug("{} exists, not overwriting", getRegionDirectories().getLocationAsFileName());
 				progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());

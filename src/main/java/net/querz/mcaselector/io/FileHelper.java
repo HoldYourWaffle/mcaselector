@@ -4,11 +4,13 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import net.querz.mcaselector.Config;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.property.DataProperty;
 import net.querz.mcaselector.ui.dialog.SelectWorldDialog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
@@ -129,27 +131,27 @@ public final class FileHelper {
 	}
 
 	public static File createRegionMCAFilePath(Point2i r) {
-		return new File(Config.getWorldDirs().getRegion(), createMCAFileName(r));
+		return new File(Config.getWorldDirs().getDirectory(McaType.REGION), createMCAFileName(r));
 	}
 
 	public static File createPoiMCAFilePath(Point2i r) {
-		return new File(Config.getWorldDirs().getPoi(), createMCAFileName(r));
+		return new File(Config.getWorldDirs().getDirectory(McaType.POI), createMCAFileName(r));
 	}
 
 	public static File createEntitiesMCAFilePath(Point2i r) {
-		return new File(Config.getWorldDirs().getEntities(), createMCAFileName(r));
+		return new File(Config.getWorldDirs().getDirectory(McaType.ENTITIES), createMCAFileName(r));
 	}
 
 	public static File createRegionMCCFilePath(Point2i c) {
-		return new File(Config.getWorldDirs().getRegion(), createMCCFileName(c));
+		return new File(Config.getWorldDirs().getDirectory(McaType.REGION), createMCCFileName(c));
 	}
 
 	public static File createPoiMCCFilePath(Point2i c) {
-		return new File(Config.getWorldDirs().getPoi(), createMCCFileName(c));
+		return new File(Config.getWorldDirs().getDirectory(McaType.POI), createMCCFileName(c));
 	}
 
 	public static File createEntitiesMCCFilePath(Point2i c) {
-		return new File(Config.getWorldDirs().getEntities(), createMCCFileName(c));
+		return new File(Config.getWorldDirs().getDirectory(McaType.ENTITIES), createMCCFileName(c));
 	}
 
 	public static WorldDirectories validateWorldDirectories(File dir) {
@@ -322,13 +324,13 @@ public final class FileHelper {
 		WorldDirectories worldDirectories = new WorldDirectories();
 
 		if (region.exists() && FileHelper.hasMCAFiles(region)) {
-			worldDirectories.setRegion(region);
+			worldDirectories.setDirectory(McaType.REGION, region);
 		}
 		if (poi.exists()) {
-			worldDirectories.setPoi(poi);
+			worldDirectories.setDirectory(McaType.POI, poi);
 		}
 		if (entities.exists()) {
-			worldDirectories.setEntities(entities);
+			worldDirectories.setDirectory(McaType.ENTITIES, entities);
 		}
 
 		return worldDirectories;
@@ -377,29 +379,29 @@ public final class FileHelper {
 			}
 			switch (file.getName()) {
 				case "region" -> {
-					if (wd.getRegion() != null) {
+					if (wd.getDirectory(McaType.REGION) != null) {
 						wd = null;
 						break fileLoop;
 					}
-					wd.setRegion(file);
+					wd.setDirectory(McaType.REGION, file);
 				}
 				case "poi" -> {
-					if (wd.getPoi() != null) {
+					if (wd.getDirectory(McaType.POI) != null) {
 						wd = null;
 						break fileLoop;
 					}
-					wd.setPoi(file);
+					wd.setDirectory(McaType.POI, file);
 				}
 				case "entities" -> {
-					if (wd.getEntities() != null) {
+					if (wd.getDirectory(McaType.ENTITIES) != null) {
 						wd = null;
 						break fileLoop;
 					}
-					wd.setEntities(file);
+					wd.setDirectory(McaType.ENTITIES, file);
 				}
 			}
 		}
-		if (wd != null && wd.getRegion() != null) {
+		if (wd != null && wd.getDirectory(McaType.REGION) != null) {
 			return wd;
 		}
 
