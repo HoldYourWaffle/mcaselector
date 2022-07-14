@@ -19,7 +19,7 @@ public class EntitiesMCAFile extends MCAFile<EntitiesChunk> {
 	}
 
 	static EntitiesChunk newEmptyChunk(Point2i absoluteLocation, int dataVersion) {
-		ChunkMerger chunkMerger = VersionController.getEntityMerger(dataVersion);
+		ChunkMerger chunkMerger = VersionController.getChunkMerger(McaType.ENTITIES, dataVersion);
 		CompoundTag root = chunkMerger.newEmptyChunk(absoluteLocation, dataVersion);
 		EntitiesChunk chunk = new EntitiesChunk(absoluteLocation);
 		chunk.data = root;

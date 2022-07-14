@@ -19,13 +19,13 @@ public class EntitiesChunk extends Chunk {
 
 	@Override
 	public boolean relocate(Point3i offset) {
-		ChunkRelocator relocator = VersionController.getEntityRelocator(data.getInt("DataVersion"));
+		ChunkRelocator relocator = VersionController.getChunkRelocator(McaType.ENTITIES, data.getInt("DataVersion"));
 		return relocator.relocate(data, offset);
 	}
 
 	@Override
 	public void merge(CompoundTag destination, List<Range> ranges, int yOffset) {
-		ChunkMerger merger = VersionController.getEntityMerger(data.getInt("DataVersion"));
+		ChunkMerger merger = VersionController.getChunkMerger(McaType.ENTITIES, data.getInt("DataVersion"));
 		merger.mergeChunks(data, destination, ranges, yOffset);
 	}
 

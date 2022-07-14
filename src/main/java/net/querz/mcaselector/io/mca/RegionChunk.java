@@ -19,13 +19,13 @@ public class RegionChunk extends Chunk {
 
 	@Override
 	public boolean relocate(Point3i offset) {
-		ChunkRelocator relocator = VersionController.getChunkRelocator(data.getInt("DataVersion"));
+		ChunkRelocator relocator = VersionController.getChunkRelocator(McaType.REGION, data.getInt("DataVersion"));
 		return relocator.relocate(data, offset);
 	}
 
 	@Override
 	public void merge(CompoundTag destination, List<Range> ranges, int yOffset) {
-		ChunkMerger merger = VersionController.getChunkMerger(data.getInt("DataVersion"));
+		ChunkMerger merger = VersionController.getChunkMerger(McaType.REGION, data.getInt("DataVersion"));
 		merger.mergeChunks(data, destination, ranges, yOffset);
 	}
 
