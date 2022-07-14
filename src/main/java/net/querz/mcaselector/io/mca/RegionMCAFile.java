@@ -24,7 +24,7 @@ public class RegionMCAFile extends MCAFile<RegionChunk> {
 	}
 
 	static RegionChunk newEmptyChunk(Point2i absoluteLocation, int dataVersion) {
-		ChunkMerger chunkMerger = VersionController.getChunkMerger(dataVersion);
+		ChunkMerger chunkMerger = VersionController.getChunkMerger(McaType.REGION, dataVersion);
 		CompoundTag root = chunkMerger.newEmptyChunk(absoluteLocation, dataVersion);
 		RegionChunk chunk = new RegionChunk(absoluteLocation);
 		chunk.data = root;

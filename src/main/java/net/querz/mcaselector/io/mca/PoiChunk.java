@@ -19,13 +19,13 @@ public class PoiChunk extends Chunk {
 
 	@Override
 	public boolean relocate(Point3i offset) {
-		ChunkRelocator relocator = VersionController.getPoiRelocator(data.getInt("DataVersion"));
+		ChunkRelocator relocator = VersionController.getChunkRelocator(McaType.POI, data.getInt("DataVersion"));
 		return relocator.relocate(data, offset);
 	}
 
 	@Override
 	public void merge(CompoundTag destination, List<Range> ranges, int yOffset) {
-		ChunkMerger merger = VersionController.getPoiMerger(data.getInt("DataVersion"));
+		ChunkMerger merger = VersionController.getChunkMerger(McaType.POI, data.getInt("DataVersion"));
 		merger.mergeChunks(data, destination, ranges, yOffset);
 	}
 

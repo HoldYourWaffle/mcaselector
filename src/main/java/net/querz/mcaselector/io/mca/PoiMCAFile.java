@@ -19,7 +19,7 @@ public class PoiMCAFile extends MCAFile<PoiChunk> {
 	}
 
 	static PoiChunk newEmptyChunk(Point2i absoluteLocation, int dataVersion) {
-		ChunkMerger chunkMerger = VersionController.getPoiMerger(dataVersion);
+		ChunkMerger chunkMerger = VersionController.getChunkMerger(McaType.POI, dataVersion);
 		CompoundTag root = chunkMerger.newEmptyChunk(absoluteLocation, dataVersion);
 		PoiChunk chunk = new PoiChunk(absoluteLocation);
 		chunk.data = root;
