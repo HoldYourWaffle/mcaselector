@@ -38,4 +38,10 @@ public class PoiChunk extends Chunk {
 	public PoiChunk clone() {
 		return clone(PoiChunk::new);
 	}
+
+	@Override
+	public McaType getType() {
+		return McaType.POI;
+	}
+
 }

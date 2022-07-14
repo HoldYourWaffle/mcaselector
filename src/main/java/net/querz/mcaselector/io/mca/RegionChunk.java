@@ -38,4 +38,10 @@ public class RegionChunk extends Chunk {
 	public RegionChunk clone() {
 		return clone(RegionChunk::new);
 	}
+
+	@Override
+	public McaType getType() {
+		return McaType.REGION;
+	}
+
 }

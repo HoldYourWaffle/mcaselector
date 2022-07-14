@@ -180,4 +180,6 @@ public abstract class Chunk implements Cloneable {
 
 	public abstract Chunk clone();
 
+	public abstract McaType getType();
+
 }
