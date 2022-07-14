@@ -31,7 +31,7 @@ public class RegionChunk extends Chunk {
 
 	@Override
 	public File getMCCFile() {
-		return FileHelper.createRegionMCCFilePath(absoluteLocation);
+		return FileHelper.createMCCFilePath(McaType.REGION, absoluteLocation);
 	}
 
 	@Override

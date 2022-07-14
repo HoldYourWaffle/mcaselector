@@ -31,7 +31,7 @@ public class EntitiesChunk extends Chunk {
 
 	@Override
 	public File getMCCFile() {
-		return FileHelper.createEntitiesMCCFilePath(absoluteLocation);
+		return FileHelper.createMCCFilePath(McaType.ENTITIES, absoluteLocation);
 	}
 
 	@Override

@@ -130,28 +130,12 @@ public final class FileHelper {
 		FileHelper.lastOpenedDirectoryMap.put(key, lastOpenedDirectory);
 	}
 
-	public static File createRegionMCAFilePath(Point2i r) {
-		return new File(Config.getWorldDirs().getDirectory(McaType.REGION), createMCAFileName(r));
+	public static File createMCAFilePath(McaType type, Point2i r) {
+		return new File(Config.getWorldDirs().getDirectory(type), createMCAFileName(r));
 	}
 
-	public static File createPoiMCAFilePath(Point2i r) {
-		return new File(Config.getWorldDirs().getDirectory(McaType.POI), createMCAFileName(r));
-	}
-
-	public static File createEntitiesMCAFilePath(Point2i r) {
-		return new File(Config.getWorldDirs().getDirectory(McaType.ENTITIES), createMCAFileName(r));
-	}
-
-	public static File createRegionMCCFilePath(Point2i c) {
-		return new File(Config.getWorldDirs().getDirectory(McaType.REGION), createMCCFileName(c));
-	}
-
-	public static File createPoiMCCFilePath(Point2i c) {
-		return new File(Config.getWorldDirs().getDirectory(McaType.POI), createMCCFileName(c));
-	}
-
-	public static File createEntitiesMCCFilePath(Point2i c) {
-		return new File(Config.getWorldDirs().getDirectory(McaType.ENTITIES), createMCCFileName(c));
+	public static File createMCCFilePath(McaType type, Point2i c) {
+		return new File(Config.getWorldDirs().getDirectory(type), createMCCFileName(c));
 	}
 
 	public static WorldDirectories validateWorldDirectories(File dir) {
@@ -165,9 +149,9 @@ public final class FileHelper {
 	}
 
 	public static RegionDirectories createRegionDirectories(Point2i r) {
-		File region = createRegionMCAFilePath(r);
-		File poi = createPoiMCAFilePath(r);
-		File entities = createEntitiesMCAFilePath(r);
+		File region = createMCAFilePath(McaType.REGION, r);
+		File poi = createMCAFilePath(McaType.POI, r);
+		File entities = createMCAFilePath(McaType.ENTITIES, r);
 		return new RegionDirectories(r, region, poi, entities);
 	}
 

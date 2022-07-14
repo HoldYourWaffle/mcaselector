@@ -20,6 +20,7 @@ import net.querz.mcaselector.io.mca.Chunk;
 import net.querz.mcaselector.io.mca.EntitiesChunk;
 import net.querz.mcaselector.io.mca.EntitiesMCAFile;
 import net.querz.mcaselector.io.mca.MCAFile;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.io.mca.PoiChunk;
 import net.querz.mcaselector.io.mca.PoiMCAFile;
 import net.querz.mcaselector.io.mca.RegionChunk;
@@ -36,6 +37,7 @@ import net.querz.mcaselector.ui.UIFactory;
 import net.querz.nbt.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -75,13 +77,13 @@ public class NBTEditorDialog extends Dialog<NBTEditorDialog.Result> {
 					r.setMax(4);
 
 					r.updateProgress("region/" + FileHelper.createMCAFileName(selectedChunk.chunkToRegion()), 1);
-					writeSingleChunk(new RegionMCAFile(FileHelper.createRegionMCAFilePath(selectedChunk.chunkToRegion())), new RegionChunk(selectedChunk), regionData);
+                    writeSingleChunk(new RegionMCAFile(FileHelper.createMCAFilePath(McaType.REGION, selectedChunk.chunkToRegion())), new RegionChunk(selectedChunk), regionData);
 
 					r.incrementProgress("poi/" + FileHelper.createMCAFileName(selectedChunk.chunkToRegion()));
-					writeSingleChunk(new PoiMCAFile(FileHelper.createPoiMCAFilePath(selectedChunk.chunkToRegion())), new PoiChunk(selectedChunk), poiData);
+					writeSingleChunk(new PoiMCAFile(FileHelper.createMCAFilePath(McaType.POI, selectedChunk.chunkToRegion())), new PoiChunk(selectedChunk), poiData);
 
 					r.incrementProgress("entities/" + FileHelper.createMCAFileName(selectedChunk.chunkToRegion()));
-					writeSingleChunk(new EntitiesMCAFile(FileHelper.createEntitiesMCAFilePath(selectedChunk.chunkToRegion())), new EntitiesChunk(selectedChunk), entitiesData);
+					writeSingleChunk(new EntitiesMCAFile(FileHelper.createMCAFilePath(McaType.ENTITIES, selectedChunk.chunkToRegion())), new EntitiesChunk(selectedChunk), entitiesData);
 				} catch (Exception ex) {
 					exception.set(ex);
 					LOGGER.warn("failed to save chunk", ex);
@@ -98,9 +100,9 @@ public class NBTEditorDialog extends Dialog<NBTEditorDialog.Result> {
 			}
 		});
 
-		Tab regionTab = createEditorTab("region", primaryStage, new RegionMCAFile(FileHelper.createRegionMCAFilePath(selectedChunk.chunkToRegion())), d -> regionData = d);
-		Tab poiTab = createEditorTab("poi", primaryStage, new PoiMCAFile(FileHelper.createPoiMCAFilePath(selectedChunk.chunkToRegion())), d -> poiData = d);
-		Tab entitiesTab = createEditorTab("entities", primaryStage, new EntitiesMCAFile(FileHelper.createEntitiesMCAFilePath(selectedChunk.chunkToRegion())), d -> entitiesData = d);
+        Tab regionTab = createEditorTab("region", primaryStage, new RegionMCAFile(FileHelper.createMCAFilePath(McaType.REGION, selectedChunk.chunkToRegion())), d -> regionData = d);
+		Tab poiTab = createEditorTab("poi", primaryStage, new PoiMCAFile(FileHelper.createMCAFilePath(McaType.POI, selectedChunk.chunkToRegion())), d -> poiData = d);
+		Tab entitiesTab = createEditorTab("entities", primaryStage, new EntitiesMCAFile(FileHelper.createMCAFilePath(McaType.ENTITIES, selectedChunk.chunkToRegion())), d -> entitiesData = d);
 
 		editors.getTabs().addAll(regionTab, poiTab, entitiesTab);
 
