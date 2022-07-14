@@ -22,6 +22,7 @@ import net.querz.mcaselector.io.job.SelectionDeleter;
 import net.querz.mcaselector.io.job.SelectionExporter;
 import net.querz.mcaselector.io.job.SelectionImageExporter;
 import net.querz.mcaselector.io.mca.ChunkData;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.io.mca.Region;
 import net.querz.mcaselector.selection.ChunkSet;
 import net.querz.mcaselector.selection.ClipboardSelection;
@@ -307,8 +308,8 @@ public class DialogHelper {
 				}
 
 				WorldDirectories worldDirectories = Config.getWorldDirs();
-				worldDirectories.setPoi(r.poi);
-				worldDirectories.setEntities(r.entities);
+				worldDirectories.setDirectory(McaType.POI, r.poi);
+				worldDirectories.setDirectory(McaType.ENTITIES, r.entities);
 
 				CacheHelper.updateWorldSettingsFile();
 			}
@@ -578,7 +579,7 @@ public class DialogHelper {
 			tileMap.getWindow().getOptionBar().setWorldDependentMenuItemsEnabled(true, tileMap);
 			tileMap.getOverlayPool().switchTo(new File(Config.getCacheDir(), "cache.db").toString(), tileMap.getOverlays());
 			task.done(Translation.DIALOG_PROGRESS_DONE.toString());
-			Platform.runLater(() -> tileMap.getWindow().setTitleSuffix(worldDirectories.getRegion().getParent()));
+			Platform.runLater(() -> tileMap.getWindow().setTitleSuffix(worldDirectories.getDirectory(McaType.REGION).getParent()));
 		});
 	}
 

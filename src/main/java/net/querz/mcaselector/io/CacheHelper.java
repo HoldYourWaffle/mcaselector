@@ -3,6 +3,7 @@ package net.querz.mcaselector.io;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.querz.mcaselector.Config;
 import net.querz.mcaselector.io.job.RegionImageGenerator;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.selection.ChunkSet;
 import net.querz.mcaselector.selection.Selection;
@@ -214,10 +215,10 @@ public final class CacheHelper {
 		}
 
 		if (poi != null && !poi.isEmpty() && !poi.equals("null")) {
-			Config.getWorldDirs().setPoi(new File(poi));
-		}
+            Config.getWorldDirs().setDirectory(McaType.POI, new File(poi));
+        }
 		if (entities != null && !entities.isEmpty() && !entities.equals("null")) {
-			Config.getWorldDirs().setEntities(new File(entities));
+			Config.getWorldDirs().setDirectory(McaType.ENTITIES, new File(entities));
 		}
 		Config.setRenderHeight(height);
 		Config.setRenderLayerOnly(layerOnly);
@@ -246,8 +247,8 @@ public final class CacheHelper {
 		}
 
 		JSONObject root = new JSONObject();
-		root.put("poi", Config.getWorldDirs().getPoi());
-		root.put("entities", Config.getWorldDirs().getEntities());
+        root.put("poi", Config.getWorldDirs().getDirectory(McaType.POI));
+		root.put("entities", Config.getWorldDirs().getDirectory(McaType.ENTITIES));
 		root.put("height", Config.getRenderHeight());
 		root.put("layerOnly", Config.renderLayerOnly());
 		root.put("caves", Config.renderCaves());

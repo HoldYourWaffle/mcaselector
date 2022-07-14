@@ -1,5 +1,6 @@
 package net.querz.mcaselector.io;
 
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.selection.Selection;
 import java.io.File;
@@ -21,28 +22,20 @@ public class WorldDirectories implements Serializable, Cloneable {
 		this.entities = entities;
 	}
 
-	public void setRegion(File region) {
-		this.region = region;
+	public void setDirectory(McaType type, File dir) {
+		switch (type) {
+			case REGION -> region = dir;
+			case POI -> poi = dir;
+			case ENTITIES -> entities = dir;
+		}
 	}
 
-	public void setPoi(File poi) {
-		this.poi = poi;
-	}
-
-	public void setEntities(File entities) {
-		this.entities = entities;
-	}
-
-	public File getRegion() {
-		return region;
-	}
-
-	public File getPoi() {
-		return poi;
-	}
-
-	public File getEntities() {
-		return entities;
+	public File getDirectory(McaType type) {
+		return switch (type) {
+			case REGION -> region;
+			case POI -> poi;
+			case ENTITIES -> entities;
+		};
 	}
 
 	public RegionDirectories makeRegionDirectories(Point2i region) {

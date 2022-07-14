@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.WorldDirectories;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.point.Point2i;
 import java.io.*;
 import java.util.Iterator;
@@ -200,9 +201,9 @@ public class Selection implements Serializable, Iterable<Long2ObjectMap.Entry<Ch
 		}
 
 		Long2ObjectOpenHashMap<ChunkSet> selection = new Long2ObjectOpenHashMap<>();
-		LongOpenHashSet allRegions = FileHelper.parseAllMCAFileNames(world.getRegion());
-		LongOpenHashSet allPoi = FileHelper.parseAllMCAFileNames(world.getPoi());
-		LongOpenHashSet allEntities = FileHelper.parseAllMCAFileNames(world.getEntities());
+        LongOpenHashSet allRegions = FileHelper.parseAllMCAFileNames(world.getDirectory(McaType.REGION));
+		LongOpenHashSet allPoi = FileHelper.parseAllMCAFileNames(world.getDirectory(McaType.POI));
+		LongOpenHashSet allEntities = FileHelper.parseAllMCAFileNames(world.getDirectory(McaType.ENTITIES));
 		allRegions.addAll(allPoi);
 		allRegions.addAll(allEntities);
 		for (long region : allRegions) {

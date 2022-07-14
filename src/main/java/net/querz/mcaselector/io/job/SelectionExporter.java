@@ -6,6 +6,7 @@ import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.WorldDirectories;
 import net.querz.mcaselector.io.mca.Region;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.selection.ChunkSet;
 import net.querz.mcaselector.selection.Selection;
 import net.querz.mcaselector.point.Point2i;
@@ -64,9 +65,9 @@ public final class SelectionExporter {
 
 		@Override
 		public boolean execute() {
-			File toRegion = new File(destination.getRegion(), getRegionDirectories().getLocationAsFileName());
-			File toPoi = new File(destination.getPoi(), getRegionDirectories().getLocationAsFileName());
-			File toEntities = new File(destination.getEntities(), getRegionDirectories().getLocationAsFileName());
+            File toRegion = new File(destination.getDirectory(McaType.REGION), getRegionDirectories().getLocationAsFileName());
+			File toPoi = new File(destination.getDirectory(McaType.POI), getRegionDirectories().getLocationAsFileName());
+			File toEntities = new File(destination.getDirectory(McaType.ENTITIES), getRegionDirectories().getLocationAsFileName());
 			if (toRegion.exists() || toPoi.exists() || toEntities.exists()) {
 				LOGGER.debug("{} exists, not overwriting", getRegionDirectories().getLocationAsFileName());
 				progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
