@@ -23,7 +23,7 @@ import net.querz.mcaselector.io.job.SelectionExporter;
 import net.querz.mcaselector.io.job.SelectionImageExporter;
 import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.io.anvil.McaType;
-import net.querz.mcaselector.io.anvil.mca.Region;
+import net.querz.mcaselector.io.anvil.mca.RegionData;
 import net.querz.mcaselector.selection.ChunkSet;
 import net.querz.mcaselector.selection.ClipboardSelection;
 import net.querz.mcaselector.selection.Selection;
@@ -404,12 +404,12 @@ public class DialogHelper {
 
 			t.incrementProgress(FileHelper.createMCAFileName(fromRegion));
 
-			Region from;
-			Region to;
+			RegionData from;
+			RegionData to;
 
 			// load from
 			try {
-				from = Region.loadOrCreateEmptyRegion(FileHelper.createRegionDirectories(fromRegion));
+				from = RegionData.loadOrCreateEmptyRegion(FileHelper.createRegionDirectories(fromRegion));
 			} catch (IOException ex) {
 				LOGGER.warn("failed to load region files", ex);
 				t.done(null);
@@ -421,7 +421,7 @@ public class DialogHelper {
 				to = from;
 			} else {
 				try {
-					to = Region.loadOrCreateEmptyRegion(FileHelper.createRegionDirectories(toRegion));
+					to = RegionData.loadOrCreateEmptyRegion(FileHelper.createRegionDirectories(toRegion));
 				} catch (IOException ex) {
 					LOGGER.warn("failed to load region files", ex);
 					t.done(null);

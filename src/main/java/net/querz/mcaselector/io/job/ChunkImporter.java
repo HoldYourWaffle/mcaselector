@@ -13,7 +13,7 @@ import net.querz.mcaselector.io.WorldDirectories;
 import net.querz.mcaselector.io.anvil.McaType;
 import net.querz.mcaselector.io.anvil.mca.EntitiesMCAFile;
 import net.querz.mcaselector.io.anvil.mca.PoiMCAFile;
-import net.querz.mcaselector.io.anvil.mca.Region;
+import net.querz.mcaselector.io.anvil.mca.RegionData;
 import net.querz.mcaselector.io.anvil.mca.RegionMCAFile;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
@@ -334,7 +334,7 @@ public final class ChunkImporter {
 			Timer t = new Timer();
 			try {
 				// load target region
-				Region targetRegion = new Region(getRegionDirectories(), destDataRegion, destDataPoi, destDataEntities);
+				RegionData targetRegion = new RegionData(getRegionDirectories(), destDataRegion, destDataPoi, destDataEntities);
 
 				ChunkSet targetChunks = null;
 				if (targetSelection != null) {
@@ -412,11 +412,11 @@ public final class ChunkImporter {
 		}
 	}
 
-	private static class MCAChunkImporterSaveJob extends SaveDataJob<Region> {
+	private static class MCAChunkImporterSaveJob extends SaveDataJob<RegionData> {
 
 		private final Progress progressChannel;
 
-		private MCAChunkImporterSaveJob(RegionDirectories targetDirs, Region data, Progress progressChannel) {
+		private MCAChunkImporterSaveJob(RegionDirectories targetDirs, RegionData data, Progress progressChannel) {
 			super(targetDirs, data);
 			this.progressChannel = progressChannel;
 		}

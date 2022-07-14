@@ -5,7 +5,7 @@ import net.querz.mcaselector.filter.filters.GroupFilter;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.WorldDirectories;
-import net.querz.mcaselector.io.anvil.mca.Region;
+import net.querz.mcaselector.io.anvil.mca.RegionData;
 import net.querz.mcaselector.selection.ChunkSet;
 import net.querz.mcaselector.selection.Selection;
 import net.querz.mcaselector.tile.Tile;
@@ -90,7 +90,7 @@ public final class ChunkFilterSelector {
 			// load MCAFile
 			Timer t = new Timer();
 			try {
-				Region region = new Region(getRegionDirectories(), regionData, poiData, entitiesData);
+				RegionData region = new RegionData(getRegionDirectories(), regionData, poiData, entitiesData);
 
 				if (region.getRegion() == null) {
 					progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());

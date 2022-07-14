@@ -6,7 +6,7 @@ import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.WorldDirectories;
 import net.querz.mcaselector.io.anvil.McaType;
-import net.querz.mcaselector.io.anvil.mca.Region;
+import net.querz.mcaselector.io.anvil.mca.RegionData;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.progress.Progress;
 import net.querz.mcaselector.progress.Timer;
@@ -99,7 +99,7 @@ public final class ChunkFilterExporter {
 
 			// load MCAFile
 			try {
-				Region region = new Region(getRegionDirectories(), regionData, poiData, entitiesData);
+				RegionData region = new RegionData(getRegionDirectories(), regionData, poiData, entitiesData);
 
 				region.keepChunks(filter, selection);
 
@@ -115,12 +115,12 @@ public final class ChunkFilterExporter {
 		}
 	}
 
-	private static class MCAExportFilterSaveJob extends SaveDataJob<Region> {
+	private static class MCAExportFilterSaveJob extends SaveDataJob<RegionData> {
 
 		private final RegionDirectories to;
 		private final Progress progressChannel;
 
-		private MCAExportFilterSaveJob(RegionDirectories src, Region region, RegionDirectories to, Progress progressChannel) {
+		private MCAExportFilterSaveJob(RegionDirectories src, RegionData region, RegionDirectories to, Progress progressChannel) {
 			super(src, region);
 			this.to = to;
 			this.progressChannel = progressChannel;

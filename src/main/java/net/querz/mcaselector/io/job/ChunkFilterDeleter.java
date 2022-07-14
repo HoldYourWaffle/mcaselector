@@ -5,7 +5,7 @@ import net.querz.mcaselector.filter.filters.GroupFilter;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.WorldDirectories;
-import net.querz.mcaselector.io.anvil.mca.Region;
+import net.querz.mcaselector.io.anvil.mca.RegionData;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.progress.Progress;
 import net.querz.mcaselector.selection.Selection;
@@ -84,7 +84,7 @@ public final class ChunkFilterDeleter {
 
 			try {
 				// parse raw data
-				Region region = new Region(getRegionDirectories(), regionData, poiData, entitiesData);
+				RegionData region = new RegionData(getRegionDirectories(), regionData, poiData, entitiesData);
 
 				if (region.deleteChunks(filter, selection)) {
 					// only save file if we actually deleted something
@@ -104,11 +104,11 @@ public final class ChunkFilterDeleter {
 		}
 	}
 
-	private static class MCADeleteFilterSaveJob extends SaveDataJob<Region> {
+	private static class MCADeleteFilterSaveJob extends SaveDataJob<RegionData> {
 
 		private final Progress progressChannel;
 
-		private MCADeleteFilterSaveJob(RegionDirectories dirs, Region region, Progress progressChannel) {
+		private MCADeleteFilterSaveJob(RegionDirectories dirs, RegionData region, Progress progressChannel) {
 			super(dirs, region);
 			this.progressChannel = progressChannel;
 		}

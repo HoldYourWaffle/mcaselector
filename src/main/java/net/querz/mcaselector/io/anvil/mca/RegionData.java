@@ -23,10 +23,10 @@ import java.io.IOException;
 import java.util.List;
 
 // holds data for chunks, poi and entities
-public class Region {
+public class RegionData {
 
 	// TODO logging and error handling could do with an overhaul
-	private static final Logger LOGGER = LogManager.getLogger(Region.class);
+	private static final Logger LOGGER = LogManager.getLogger(RegionData.class);
 
 	private RegionMCAFile region;
 	private PoiMCAFile poi;
@@ -36,7 +36,7 @@ public class Region {
 
 	private Point2i location;
 
-	public Region(RegionDirectories dirs, byte[] regionData, byte[] poiData, byte[] entitiesData) throws IOException {
+	public RegionData(RegionDirectories dirs, byte[] regionData, byte[] poiData, byte[] entitiesData) throws IOException {
 		this.directories = dirs;
 		// CHECK no region is no location?
 
@@ -52,7 +52,7 @@ public class Region {
 		}
 	}
 
-	public Region(RegionDirectories dirs) throws IOException {
+	public RegionData(RegionDirectories dirs) throws IOException {
 		this.directories = dirs;
 		// CHECK this.location not initialized?
 
@@ -69,10 +69,10 @@ public class Region {
 
 
 	// SOON refactor remaining static constructors
-	private Region() {}
+	private RegionData() {}
 
-	public static Region loadRegionHeaders(RegionDirectories dirs, byte[] regionHeader, byte[] poiHeader, byte[] entitiesHeader) throws IOException {
-		Region r = new Region();
+	public static RegionData loadRegionHeaders(RegionDirectories dirs, byte[] regionHeader, byte[] poiHeader, byte[] entitiesHeader) throws IOException {
+		RegionData r = new RegionData();
 		if (dirs.getDirectory(McaType.REGION) != null && regionHeader != null) {
 			r.region = new RegionMCAFile(dirs.getDirectory(McaType.REGION));
 			r.region.loadHeader(new ByteArrayPointer(regionHeader));
@@ -89,8 +89,8 @@ public class Region {
 		return r;
 	}
 
-	public static Region loadOrCreateEmptyRegion(RegionDirectories dirs) throws IOException {
-		Region r = new Region();
+	public static RegionData loadOrCreateEmptyRegion(RegionDirectories dirs) throws IOException {
+		RegionData r = new RegionData();
 		if (dirs.getDirectory(McaType.REGION) != null) {
 			if (dirs.getDirectory(McaType.REGION).exists()) {
 				r.loadRegion(dirs.getDirectory(McaType.REGION));
@@ -448,7 +448,7 @@ public class Region {
 		LOGGER.debug("took {} to apply field changes to region {}", t, location);
 	}
 
-	public void mergeInto(Region region, Point3i offset, boolean overwrite, ChunkSet sourceChunks, ChunkSet targetChunks, List<Range> ranges) {
+	public void mergeInto(RegionData region, Point3i offset, boolean overwrite, ChunkSet sourceChunks, ChunkSet targetChunks, List<Range> ranges) {
 		if (this.region != null) {
 			this.region.mergeChunksInto(region.region, offset, overwrite, sourceChunks, targetChunks, ranges);
 		}
@@ -461,8 +461,8 @@ public class Region {
 	}
 
 	@Override
-	protected Region clone() throws CloneNotSupportedException {
-		Region clone = (Region) super.clone();
+	protected RegionData clone() throws CloneNotSupportedException {
+		RegionData clone = (RegionData) super.clone();
 		if (region != null) {
 			clone.region = region.clone();
 		}

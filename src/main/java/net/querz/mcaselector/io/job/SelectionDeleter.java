@@ -6,7 +6,7 @@ import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.anvil.McaType;
-import net.querz.mcaselector.io.anvil.mca.Region;
+import net.querz.mcaselector.io.anvil.mca.RegionData;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.progress.Progress;
 import net.querz.mcaselector.progress.Timer;
@@ -103,7 +103,7 @@ public final class SelectionDeleter {
 			// load MCAFile
 			try {
 				// only load headers, we don't care for chunk contents
-				Region region = Region.loadRegionHeaders(getRegionDirectories(), regionData, poiData, entitiesData);
+				RegionData region = RegionData.loadRegionHeaders(getRegionDirectories(), regionData, poiData, entitiesData);
 
 				region.deleteChunks(selection);
 
@@ -120,11 +120,11 @@ public final class SelectionDeleter {
 		}
 	}
 
-	private static class MCADeleteSelectionSaveJob extends SaveDataJob<Region> {
+	private static class MCADeleteSelectionSaveJob extends SaveDataJob<RegionData> {
 
 		private final Progress progressChannel;
 
-		private MCADeleteSelectionSaveJob(RegionDirectories dirs, Region region, Progress progressChannel) {
+		private MCADeleteSelectionSaveJob(RegionDirectories dirs, RegionData region, Progress progressChannel) {
 			super(dirs, region);
 			this.progressChannel = progressChannel;
 		}

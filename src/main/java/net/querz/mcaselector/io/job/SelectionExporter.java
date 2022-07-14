@@ -5,7 +5,7 @@ import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.WorldDirectories;
-import net.querz.mcaselector.io.anvil.mca.Region;
+import net.querz.mcaselector.io.anvil.mca.RegionData;
 import net.querz.mcaselector.io.anvil.McaType;
 import net.querz.mcaselector.selection.ChunkSet;
 import net.querz.mcaselector.selection.Selection;
@@ -119,7 +119,7 @@ public final class SelectionExporter {
 
 			try {
 				// only load headers, because we don't care for chunk data
-				Region region = Region.loadRegionHeaders(getRegionDirectories(), regionData, poiData, entitiesData);
+				RegionData region = RegionData.loadRegionHeaders(getRegionDirectories(), regionData, poiData, entitiesData);
 				region.deleteChunks(chunksToBeExported.flip());
 				MCADeleteSelectionSaveJob job = new MCADeleteSelectionSaveJob(getRegionDirectories(), region, to, progressChannel);
 				job.errorHandler = errorHandler;
@@ -134,12 +134,12 @@ public final class SelectionExporter {
 		}
 	}
 
-	private static class MCADeleteSelectionSaveJob extends SaveDataJob<Region> {
+	private static class MCADeleteSelectionSaveJob extends SaveDataJob<RegionData> {
 
 		private final Progress progressChannel;
 		private final RegionDirectories destinations;
 
-		private MCADeleteSelectionSaveJob(RegionDirectories dirs, Region region, RegionDirectories destinations, Progress progressChannel) {
+		private MCADeleteSelectionSaveJob(RegionDirectories dirs, RegionData region, RegionDirectories destinations, Progress progressChannel) {
 			super(dirs, region);
 			this.destinations = destinations;
 			this.progressChannel = progressChannel;

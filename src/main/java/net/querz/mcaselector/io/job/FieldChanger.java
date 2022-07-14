@@ -5,7 +5,7 @@ import net.querz.mcaselector.changer.Field;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.WorldDirectories;
-import net.querz.mcaselector.io.anvil.mca.Region;
+import net.querz.mcaselector.io.anvil.mca.RegionData;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.progress.Progress;
 import net.querz.mcaselector.progress.Timer;
@@ -86,7 +86,7 @@ public final class FieldChanger {
 
 			//load MCAFile
 			try {
-				Region region = new Region(getRegionDirectories(), regionData, poiData, entitiesData);
+				RegionData region = new RegionData(getRegionDirectories(), regionData, poiData, entitiesData);
 
 				region.applyFieldChanges(fields, force, selection);
 
@@ -102,11 +102,11 @@ public final class FieldChanger {
 		}
 	}
 
-	public static class MCAFieldChangeSaveJob extends SaveDataJob<Region> {
+	public static class MCAFieldChangeSaveJob extends SaveDataJob<RegionData> {
 
 		private final Progress progressChannel;
 
-		private MCAFieldChangeSaveJob(RegionDirectories file, Region region, Progress progressChannel) {
+		private MCAFieldChangeSaveJob(RegionDirectories file, RegionData region, Progress progressChannel) {
 			super(file, region);
 			this.progressChannel = progressChannel;
 		}
