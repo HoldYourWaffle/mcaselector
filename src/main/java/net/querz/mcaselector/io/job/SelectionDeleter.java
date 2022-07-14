@@ -5,6 +5,7 @@ import net.querz.mcaselector.Config;
 import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.io.mca.Region;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.progress.Progress;
@@ -65,24 +66,24 @@ public final class SelectionDeleter {
 			// delete whole files if everything is selected
 			if (selection == null) {
 				// delete region
-				if (getRegionDirectories().getRegion().delete()) {
-					LOGGER.debug("deleted file {}", getRegionDirectories().getRegion());
+				if (getRegionDirectories().getDirectory(McaType.REGION).delete()) {
+					LOGGER.debug("deleted file {}", getRegionDirectories().getDirectory(McaType.REGION));
 				} else {
-					LOGGER.warn("failed to delete file {}", getRegionDirectories().getRegion());
+					LOGGER.warn("failed to delete file {}", getRegionDirectories().getDirectory(McaType.REGION));
 				}
 
 				// delete poi
-				if (getRegionDirectories().getPoi().delete()) {
-					LOGGER.debug("deleted file {}", getRegionDirectories().getPoi());
+				if (getRegionDirectories().getDirectory(McaType.POI).delete()) {
+					LOGGER.debug("deleted file {}", getRegionDirectories().getDirectory(McaType.POI));
 				} else {
-					LOGGER.warn("failed to delete file {}", getRegionDirectories().getPoi());
+					LOGGER.warn("failed to delete file {}", getRegionDirectories().getDirectory(McaType.POI));
 				}
 
 				// delete entities
-				if (getRegionDirectories().getEntities().delete()) {
-					LOGGER.debug("deleted file {}", getRegionDirectories().getEntities());
+				if (getRegionDirectories().getDirectory(McaType.ENTITIES).delete()) {
+					LOGGER.debug("deleted file {}", getRegionDirectories().getDirectory(McaType.ENTITIES));
 				} else {
-					LOGGER.warn("failed to delete file {}", getRegionDirectories().getEntities());
+					LOGGER.warn("failed to delete file {}", getRegionDirectories().getDirectory(McaType.ENTITIES));
 				}
 
 				progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());

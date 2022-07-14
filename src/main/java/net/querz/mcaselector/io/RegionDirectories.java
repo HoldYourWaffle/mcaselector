@@ -22,37 +22,24 @@ public class RegionDirectories implements Cloneable {
 		this.entities = entities;
 	}
 
-	public void setRegion(File region) {
+	public void setDirectory(McaType type, File dir) {
 		if (location == null) {
-			location = FileHelper.parseMCAFileName(region);
+			location = FileHelper.parseMCAFileName(dir);
 		}
-		this.region = region;
-	}
 
-	public void setPoi(File poi) {
-		if (location == null) {
-			location = FileHelper.parseMCAFileName(poi);
+		switch (type) {
+			case REGION -> region = dir;
+			case POI -> poi = dir;
+			case ENTITIES -> entities = dir;
 		}
-		this.poi = poi;
 	}
 
-	public void setEntities(File entities) {
-		if (location == null) {
-			location = FileHelper.parseMCAFileName(entities);
-		}
-		this.entities = entities;
-	}
-
-	public File getRegion() {
-		return region;
-	}
-
-	public File getPoi() {
-		return poi;
-	}
-
-	public File getEntities() {
-		return entities;
+	public File getDirectory(McaType type) {
+		return switch (type) {
+			case REGION -> region;
+			case POI -> poi;
+			case ENTITIES -> entities;
+		};
 	}
 
 	public Point2i getLocation() {

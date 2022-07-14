@@ -178,40 +178,40 @@ public final class ChunkImporter {
 			if (offset.getX() == 0 && offset.getY() == 0 && offset.getZ() == 0 && targetSelection == null && sourceSelection == null && !getRegionDirectories().exists()) {
 				boolean allCopied = true;
 
-				if (!getRegionDirectories().getRegion().exists()) {
+				if (!getRegionDirectories().getDirectory(McaType.REGION).exists()) {
 					//if the entire mca file doesn't exist, just copy it over
 					File source = new File(sourceDirs.getDirectory(McaType.REGION), getRegionDirectories().getLocationAsFileName());
 					if (source.exists()) {
 						try {
-							Files.copy(source.toPath(), getRegionDirectories().getRegion().toPath());
+							Files.copy(source.toPath(), getRegionDirectories().getDirectory(McaType.REGION).toPath());
 						} catch (IOException ex) {
-							LOGGER.warn("failed to copy file {} to {}", source, getRegionDirectories().getRegion(), ex);
+							LOGGER.warn("failed to copy file {} to {}", source, getRegionDirectories().getDirectory(McaType.REGION), ex);
 						}
 					}
 				} else {
 					allCopied = false;
 				}
 
-				if (!getRegionDirectories().getPoi().exists() && sourceDirs.getDirectory(McaType.POI) != null) {
+				if (!getRegionDirectories().getDirectory(McaType.POI).exists() && sourceDirs.getDirectory(McaType.POI) != null) {
 					File source = new File(sourceDirs.getDirectory(McaType.POI), getRegionDirectories().getLocationAsFileName());
 					if (source.exists()) {
 						try {
-							Files.copy(source.toPath(), getRegionDirectories().getPoi().toPath());
+							Files.copy(source.toPath(), getRegionDirectories().getDirectory(McaType.POI).toPath());
 						} catch (IOException ex) {
-							LOGGER.warn("failed to copy file {} to {}", source, getRegionDirectories().getPoi(), ex);
+							LOGGER.warn("failed to copy file {} to {}", source, getRegionDirectories().getDirectory(McaType.POI), ex);
 						}
 					}
 				} else {
 					allCopied = false;
 				}
 
-				if (!getRegionDirectories().getEntities().exists() && sourceDirs.getDirectory(McaType.ENTITIES) != null) {
+				if (!getRegionDirectories().getDirectory(McaType.ENTITIES).exists() && sourceDirs.getDirectory(McaType.ENTITIES) != null) {
 					File source = new File(sourceDirs.getDirectory(McaType.ENTITIES), getRegionDirectories().getLocationAsFileName());
 					if (source.exists()) {
 						try {
-							Files.copy(source.toPath(), getRegionDirectories().getEntities().toPath());
+							Files.copy(source.toPath(), getRegionDirectories().getDirectory(McaType.ENTITIES).toPath());
 						} catch (IOException ex) {
-							LOGGER.warn("failed to copy file {} to {}", source, getRegionDirectories().getEntities(), ex);
+							LOGGER.warn("failed to copy file {} to {}", source, getRegionDirectories().getDirectory(McaType.ENTITIES), ex);
 						}
 					}
 				} else {
@@ -244,8 +244,8 @@ public final class ChunkImporter {
 				byte[] sourceData;
 
 				// region
-				if (sourceDirs.getRegion() != null) {
-					sourceFile = sourceDirs.getRegion();
+				if (sourceDirs.getDirectory(McaType.REGION) != null) {
+					sourceFile = sourceDirs.getDirectory(McaType.REGION);
 				} else {
 					sourceFile = new File(this.sourceDirs.getDirectory(McaType.REGION), FileHelper.createMCAFileName(s));
 				}
@@ -259,8 +259,8 @@ public final class ChunkImporter {
 				}
 
 				// poi
-				if (sourceDirs.getPoi() != null) {
-					sourceFile = sourceDirs.getPoi();
+				if (sourceDirs.getDirectory(McaType.POI) != null) {
+					sourceFile = sourceDirs.getDirectory(McaType.POI);
 				} else {
 					sourceFile = new File(this.sourceDirs.getDirectory(McaType.POI), FileHelper.createMCAFileName(s));
 				}
@@ -274,8 +274,8 @@ public final class ChunkImporter {
 				}
 
 				// entities
-				if (sourceDirs.getEntities() != null) {
-					sourceFile = sourceDirs.getEntities();
+				if (sourceDirs.getDirectory(McaType.ENTITIES) != null) {
+					sourceFile = sourceDirs.getDirectory(McaType.ENTITIES);
 				} else {
 					sourceFile = new File(this.sourceDirs.getDirectory(McaType.ENTITIES), FileHelper.createMCAFileName(s));
 				}
@@ -302,30 +302,30 @@ public final class ChunkImporter {
 
 			// LOAD DESTINATION DATA
 			byte[] destDataRegion = null;
-			if (getRegionDirectories().getRegion().exists() && getRegionDirectories().getRegion().length() > 0) {
-				destDataRegion = load(getRegionDirectories().getRegion());
+			if (getRegionDirectories().getDirectory(McaType.REGION).exists() && getRegionDirectories().getDirectory(McaType.REGION).length() > 0) {
+				destDataRegion = load(getRegionDirectories().getDirectory(McaType.REGION));
 				if (destDataRegion == null) {
-					LOGGER.warn("failed to load destination mca file {}", getRegionDirectories().getRegion());
+					LOGGER.warn("failed to load destination mca file {}", getRegionDirectories().getDirectory(McaType.REGION));
 					progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
 					return true;
 				}
 			}
 
 			byte[] destDataPoi = null;
-			if (getRegionDirectories().getPoi().exists() && getRegionDirectories().getPoi().length() > 0) {
-				destDataPoi = load(getRegionDirectories().getPoi());
+			if (getRegionDirectories().getDirectory(McaType.POI).exists() && getRegionDirectories().getDirectory(McaType.POI).length() > 0) {
+				destDataPoi = load(getRegionDirectories().getDirectory(McaType.POI));
 				if (destDataPoi == null) {
-					LOGGER.warn("failed to load destination mca file {}", getRegionDirectories().getPoi());
+					LOGGER.warn("failed to load destination mca file {}", getRegionDirectories().getDirectory(McaType.POI));
 					progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
 					return true;
 				}
 			}
 
 			byte[] destDataEntities = null;
-			if (getRegionDirectories().getEntities().exists() && getRegionDirectories().getEntities().length() > 0) {
-				destDataEntities = load(getRegionDirectories().getEntities());
+			if (getRegionDirectories().getDirectory(McaType.ENTITIES).exists() && getRegionDirectories().getDirectory(McaType.ENTITIES).length() > 0) {
+				destDataEntities = load(getRegionDirectories().getDirectory(McaType.ENTITIES));
 				if (destDataEntities == null) {
-					LOGGER.warn("failed to load destination mca file {}", getRegionDirectories().getEntities());
+					LOGGER.warn("failed to load destination mca file {}", getRegionDirectories().getDirectory(McaType.ENTITIES));
 					progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
 					return true;
 				}
@@ -348,7 +348,7 @@ public final class ChunkImporter {
 					LOGGER.debug("merging region chunks from {} into {}", sourceData.getKey(), target);
 
 					if (targetRegion.getRegion() == null) {
-						targetRegion.setRegion(new RegionMCAFile(getRegionDirectories().getRegion()));
+						targetRegion.setRegion(new RegionMCAFile(getRegionDirectories().getDirectory(McaType.REGION)));
 					}
 
 					ChunkSet sourceChunks = null;
@@ -366,7 +366,7 @@ public final class ChunkImporter {
 					LOGGER.debug("merging poi chunks from {} into {}", sourceData.getKey(), target);
 
 					if (targetRegion.getPoi() == null) {
-						targetRegion.setPoi(new PoiMCAFile(getRegionDirectories().getPoi()));
+						targetRegion.setPoi(new PoiMCAFile(getRegionDirectories().getDirectory(McaType.POI)));
 					}
 
 					ChunkSet sourceChunks = null;
@@ -384,7 +384,7 @@ public final class ChunkImporter {
 					LOGGER.debug("merging entities chunks from {} into {}", sourceData.getKey(), target);
 
 					if (targetRegion.getEntities() == null) {
-						targetRegion.setEntities(new EntitiesMCAFile(getRegionDirectories().getEntities()));
+						targetRegion.setEntities(new EntitiesMCAFile(getRegionDirectories().getDirectory(McaType.ENTITIES)));
 					}
 
 					ChunkSet sourceChunks = null;
