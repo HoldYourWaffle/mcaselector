@@ -30,37 +30,39 @@ public class Region {
 
 	private Point2i location;
 
-	public static Region loadRegion(RegionDirectories dirs, byte[] regionData, byte[] poiData, byte[] entitiesData) throws IOException {
-		Region r = new Region();
+	// TODO de-dupe constructors
+
+	public Region(RegionDirectories dirs, byte[] regionData, byte[] poiData, byte[] entitiesData) throws IOException {
 		if (dirs.getDirectory(McaType.REGION) != null && dirs.getDirectory(McaType.REGION).length() > FileHelper.HEADER_SIZE && regionData != null) {
-			r.loadRegion(dirs.getDirectory(McaType.REGION), new ByteArrayPointer(regionData));
+			loadRegion(dirs.getDirectory(McaType.REGION), new ByteArrayPointer(regionData));
 		}
 		if (dirs.getDirectory(McaType.POI) != null && poiData != null) {
-			r.loadPoi(dirs.getDirectory(McaType.POI), new ByteArrayPointer(poiData));
+			loadPoi(dirs.getDirectory(McaType.POI), new ByteArrayPointer(poiData));
 		}
 		if (dirs.getDirectory(McaType.ENTITIES) != null && entitiesData != null) {
-			r.loadEntities(dirs.getDirectory(McaType.ENTITIES), new ByteArrayPointer(entitiesData));
+			loadEntities(dirs.getDirectory(McaType.ENTITIES), new ByteArrayPointer(entitiesData));
 		}
-		r.location = dirs.getLocation();
-		r.directories = dirs;
-		return r;
+		this.location = dirs.getLocation();
+		this.directories = dirs;
 	}
 
-	public static Region loadRegion(RegionDirectories dirs) throws IOException {
-		Region r = new Region();
+	public Region(RegionDirectories dirs) throws IOException {
 		if (dirs.getDirectory(McaType.REGION) != null) {
-			r.loadRegion(dirs.getDirectory(McaType.REGION));
+			loadRegion(dirs.getDirectory(McaType.REGION));
 		}
 		if (dirs.getDirectory(McaType.POI) != null) {
-			r.loadPoi(dirs.getDirectory(McaType.POI));
+			loadPoi(dirs.getDirectory(McaType.POI));
 		}
 		if (dirs.getDirectory(McaType.ENTITIES) != null) {
-			r.loadEntities(dirs.getDirectory(McaType.ENTITIES));
+			loadEntities(dirs.getDirectory(McaType.ENTITIES));
 		}
-		r.location = dirs.getLocation();
-		r.directories = dirs;
-		return r;
+		this.location = dirs.getLocation();
+		this.directories = dirs;
 	}
+
+
+	// SOON refactor remaining static constructors
+	private Region() {}
 
 	public static Region loadRegionHeaders(RegionDirectories dirs, byte[] regionHeader, byte[] poiHeader, byte[] entitiesHeader) throws IOException {
 		Region r = new Region();

@@ -84,7 +84,7 @@ public final class ChunkFilterDeleter {
 
 			try {
 				// parse raw data
-				Region region = Region.loadRegion(getRegionDirectories(), regionData, poiData, entitiesData);
+				Region region = new Region(getRegionDirectories(), regionData, poiData, entitiesData);
 
 				if (region.deleteChunks(filter, selection)) {
 					// only save file if we actually deleted something

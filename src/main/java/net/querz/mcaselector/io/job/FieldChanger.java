@@ -86,7 +86,7 @@ public final class FieldChanger {
 
 			//load MCAFile
 			try {
-				Region region = Region.loadRegion(getRegionDirectories(), regionData, poiData, entitiesData);
+				Region region = new Region(getRegionDirectories(), regionData, poiData, entitiesData);
 
 				region.applyFieldChanges(fields, force, selection);
 
