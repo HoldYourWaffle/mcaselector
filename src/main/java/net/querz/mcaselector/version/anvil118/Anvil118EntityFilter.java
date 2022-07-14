@@ -1,6 +1,6 @@
 package net.querz.mcaselector.version.anvil118;
 
-import net.querz.mcaselector.io.mca.ChunkData;
+import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.range.Range;
 import net.querz.mcaselector.version.NbtHelper;
 import net.querz.mcaselector.version.anvil117.Anvil117EntityFilter;

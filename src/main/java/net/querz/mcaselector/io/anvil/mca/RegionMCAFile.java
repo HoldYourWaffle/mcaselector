@@ -1,5 +1,7 @@
-package net.querz.mcaselector.io.mca;
+package net.querz.mcaselector.io.anvil.mca;
 
+import net.querz.mcaselector.io.anvil.McaType;
+import net.querz.mcaselector.io.anvil.chunk.RegionChunk;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.version.ChunkRenderer;
 import net.querz.mcaselector.version.VersionController;
@@ -24,16 +26,16 @@ public class RegionMCAFile extends MCAFile<RegionChunk> {
 
 		for (int index = 0; index < 1024; index++) {
 			RegionChunk chunk = getChunk(index);
-			if (chunk == null || chunk.data == null) {
+			if (chunk == null || chunk.getData() == null) {
 				continue;
 			}
 
 			try {
 				ChunkRenderer chunkRenderer = VersionController.getChunkRenderer(chunk.getDataVersion());
-				CompoundTag minData = chunkRenderer.minimizeChunk(chunk.data);
+				CompoundTag minData = chunkRenderer.minimizeChunk(chunk.getData());
 
-				RegionChunk minChunk = new RegionChunk(chunk.absoluteLocation.clone());
-				minChunk.data = minData;
+				RegionChunk minChunk = new RegionChunk(chunk.getAbsoluteLocation().clone());
+				minChunk.setData(minData);
 
 				min.chunks[index] = minChunk;
 			} catch (Exception ex) {

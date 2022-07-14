@@ -4,7 +4,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import net.querz.mcaselector.Config;
 import net.querz.mcaselector.io.*;
-import net.querz.mcaselector.io.mca.RegionMCAFile;
+import net.querz.mcaselector.io.anvil.mca.RegionMCAFile;
 import net.querz.mcaselector.tile.Tile;
 import net.querz.mcaselector.tile.TileImage;
 import net.querz.mcaselector.point.Point2i;

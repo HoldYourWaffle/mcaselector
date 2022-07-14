@@ -3,7 +3,7 @@ package net.querz.mcaselector.io.job;
 import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.Job;
 import net.querz.mcaselector.io.RegionDirectories;
-import net.querz.mcaselector.io.mca.McaType;
+import net.querz.mcaselector.io.anvil.McaType;
 import net.querz.mcaselector.progress.Timer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

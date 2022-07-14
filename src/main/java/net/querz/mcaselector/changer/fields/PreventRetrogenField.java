@@ -2,7 +2,7 @@ package net.querz.mcaselector.changer.fields;
 
 import net.querz.mcaselector.changer.Field;
 import net.querz.mcaselector.changer.FieldType;
-import net.querz.mcaselector.io.mca.ChunkData;
+import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 
 public class PreventRetrogenField extends Field<Boolean> {
 

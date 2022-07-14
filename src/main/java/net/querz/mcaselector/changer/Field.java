@@ -1,6 +1,6 @@
 package net.querz.mcaselector.changer;
 
-import net.querz.mcaselector.io.mca.ChunkData;
+import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 
 public abstract class Field<T> {
 

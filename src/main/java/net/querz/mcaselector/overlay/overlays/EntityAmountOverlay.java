@@ -1,6 +1,6 @@
 package net.querz.mcaselector.overlay.overlays;
 
-import net.querz.mcaselector.io.mca.ChunkData;
+import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.overlay.AmountParser;
 import net.querz.mcaselector.overlay.OverlayType;
 import net.querz.mcaselector.version.EntityFilter;

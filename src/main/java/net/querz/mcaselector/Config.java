@@ -2,7 +2,7 @@ package net.querz.mcaselector;
 
 import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.WorldDirectories;
-import net.querz.mcaselector.io.mca.McaType;
+import net.querz.mcaselector.io.anvil.McaType;
 import net.querz.mcaselector.logging.Logging;
 import net.querz.mcaselector.tile.Tile;
 import net.querz.mcaselector.overlay.Overlay;

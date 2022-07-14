@@ -1,4 +1,4 @@
-package net.querz.mcaselector.io.mca;
+package net.querz.mcaselector.io.anvil.chunk;
 
 import net.querz.mcaselector.changer.Field;
 import net.querz.mcaselector.point.Point3i;

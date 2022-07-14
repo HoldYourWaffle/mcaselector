@@ -1,6 +1,6 @@
 package net.querz.mcaselector.filter;
 
-import net.querz.mcaselector.io.mca.ChunkData;
+import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 
 public abstract class NumberFilter<T extends Number> extends Filter<T> {
 

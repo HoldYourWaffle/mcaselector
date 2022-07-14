@@ -1,6 +1,6 @@
 package net.querz.mcaselector.version;
 
-import net.querz.mcaselector.io.mca.McaType;
+import net.querz.mcaselector.io.anvil.McaType;
 import net.querz.mcaselector.version.anvil112.*;
 import net.querz.mcaselector.version.anvil113.*;
 import net.querz.mcaselector.version.anvil114.*;

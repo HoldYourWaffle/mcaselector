@@ -1,6 +1,6 @@
 package net.querz.mcaselector.io;
 
-import net.querz.mcaselector.io.mca.McaType;
+import net.querz.mcaselector.io.anvil.McaType;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.selection.Selection;
 import java.io.File;

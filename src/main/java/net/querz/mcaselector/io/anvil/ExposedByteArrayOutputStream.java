@@ -1,4 +1,4 @@
-package net.querz.mcaselector.io.mca;
+package net.querz.mcaselector.io.anvil;
 
 import java.io.ByteArrayOutputStream;
 
@@ -6,7 +6,7 @@ import java.io.ByteArrayOutputStream;
  * ExposedByteArrayOutputStream exposes the buffer array in #getBuffer()
  * to avoid calling Arrays.copyOf() when using ByteArrayOutputStream#toByteArray()
  */
-class ExposedByteArrayOutputStream extends ByteArrayOutputStream {
+public class ExposedByteArrayOutputStream extends ByteArrayOutputStream {
 
 	public ExposedByteArrayOutputStream() {
 		super();

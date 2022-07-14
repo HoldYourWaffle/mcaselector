@@ -12,7 +12,7 @@ import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 import net.querz.mcaselector.Config;
 import net.querz.mcaselector.io.WorldDirectories;
-import net.querz.mcaselector.io.mca.McaType;
+import net.querz.mcaselector.io.anvil.McaType;
 import net.querz.mcaselector.property.DataProperty;
 import net.querz.mcaselector.text.Translation;
 import net.querz.mcaselector.ui.component.FileTextField;

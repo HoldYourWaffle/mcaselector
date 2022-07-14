@@ -1,7 +1,7 @@
 package net.querz.mcaselector.filter.filters;
 
 import net.querz.mcaselector.filter.*;
-import net.querz.mcaselector.io.mca.ChunkData;
+import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import javax.script.Invocable;

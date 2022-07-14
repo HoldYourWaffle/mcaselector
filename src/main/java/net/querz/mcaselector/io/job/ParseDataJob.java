@@ -2,11 +2,11 @@ package net.querz.mcaselector.io.job;
 
 import net.querz.mcaselector.io.ByteArrayPointer;
 import net.querz.mcaselector.io.RegionDirectories;
-import net.querz.mcaselector.io.mca.McaType;
-import net.querz.mcaselector.io.mca.ChunkData;
-import net.querz.mcaselector.io.mca.EntitiesMCAFile;
-import net.querz.mcaselector.io.mca.PoiMCAFile;
-import net.querz.mcaselector.io.mca.RegionMCAFile;
+import net.querz.mcaselector.io.anvil.McaType;
+import net.querz.mcaselector.io.anvil.chunk.ChunkData;
+import net.querz.mcaselector.io.anvil.mca.EntitiesMCAFile;
+import net.querz.mcaselector.io.anvil.mca.PoiMCAFile;
+import net.querz.mcaselector.io.anvil.mca.RegionMCAFile;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.progress.Timer;
 import net.querz.mcaselector.tile.Tile;

@@ -3,7 +3,7 @@ package net.querz.mcaselector.io;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.querz.mcaselector.Config;
 import net.querz.mcaselector.io.job.RegionImageGenerator;
-import net.querz.mcaselector.io.mca.McaType;
+import net.querz.mcaselector.io.anvil.McaType;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.selection.ChunkSet;
 import net.querz.mcaselector.selection.Selection;

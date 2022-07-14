@@ -1,6 +1,6 @@
 package net.querz.mcaselector.overlay;
 
-import net.querz.mcaselector.io.mca.ChunkData;
+import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.Arrays;

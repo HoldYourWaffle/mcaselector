@@ -1,4 +1,4 @@
-package net.querz.mcaselector.io.mca;
+package net.querz.mcaselector.io.anvil;
 
 public enum CompressionType {
 

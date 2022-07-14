@@ -1,8 +1,10 @@
-package net.querz.mcaselector.io.mca;
+package net.querz.mcaselector.io.anvil.chunk;
 
 import net.querz.mcaselector.io.ByteArrayPointer;
 import net.querz.mcaselector.io.FileHelper;
-import net.querz.mcaselector.io.FileHelper;
+import net.querz.mcaselector.io.anvil.CompressionType;
+import net.querz.mcaselector.io.anvil.ExposedByteArrayOutputStream;
+import net.querz.mcaselector.io.anvil.McaType;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
 import net.querz.mcaselector.range.Range;
@@ -179,7 +181,7 @@ public abstract class Chunk implements Cloneable {
 		return "<absoluteLocation=" + absoluteLocation + ", compressionType=" + compressionType + ", data=" + s + ">";
 	}
 
-	protected <T extends Chunk> T clone(Function<Point2i, T> chunkConstructor) {
+	public <T extends Chunk> T clone(Function<Point2i, T> chunkConstructor) {
 		T clone = chunkConstructor.apply(absoluteLocation);
 		clone.compressionType = compressionType;
 		clone.timestamp = timestamp;

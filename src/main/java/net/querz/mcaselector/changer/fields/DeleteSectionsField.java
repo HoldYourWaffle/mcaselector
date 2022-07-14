@@ -2,14 +2,13 @@ package net.querz.mcaselector.changer.fields;
 
 import net.querz.mcaselector.changer.Field;
 import net.querz.mcaselector.changer.FieldType;
-import net.querz.mcaselector.io.mca.ChunkData;
+import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.range.Range;
 import net.querz.mcaselector.range.RangeParser;
 import net.querz.mcaselector.version.ChunkFilter;
 import net.querz.mcaselector.version.EntityFilter;
 import net.querz.mcaselector.version.VersionController;
-import net.querz.nbt.CompoundTag;
-import net.querz.nbt.ListTag;
+
 import java.util.List;
 import java.util.StringJoiner;
 

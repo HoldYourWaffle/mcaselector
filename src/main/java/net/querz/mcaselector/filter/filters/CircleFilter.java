@@ -1,7 +1,7 @@
 package net.querz.mcaselector.filter.filters;
 
 import net.querz.mcaselector.filter.*;
-import net.querz.mcaselector.io.mca.ChunkData;
+import net.querz.mcaselector.io.anvil.chunk.ChunkData;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.text.TextHelper;
 import net.querz.mcaselector.version.ChunkFilter;

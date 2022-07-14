@@ -1,4 +1,7 @@
-package net.querz.mcaselector.io.mca;
+package net.querz.mcaselector.io.anvil.mca;
+
+import net.querz.mcaselector.io.anvil.McaType;
+import net.querz.mcaselector.io.anvil.chunk.PoiChunk;
 
 import java.io.File;
 

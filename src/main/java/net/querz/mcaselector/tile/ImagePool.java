@@ -11,7 +11,7 @@ import net.querz.mcaselector.io.ImageHelper;
 import net.querz.mcaselector.io.db.CacheDBController;
 import net.querz.mcaselector.io.job.CachedImageLoadJob;
 import net.querz.mcaselector.io.job.RegionImageGenerator;
-import net.querz.mcaselector.io.mca.McaType;
+import net.querz.mcaselector.io.anvil.McaType;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.text.Translation;
 import net.querz.mcaselector.ui.ProgressTask;
