@@ -34,13 +34,13 @@ public class Region {
 
 	public Region(RegionDirectories dirs, byte[] regionData, byte[] poiData, byte[] entitiesData) throws IOException {
 		if (dirs.getDirectory(McaType.REGION) != null && dirs.getDirectory(McaType.REGION).length() > FileHelper.HEADER_SIZE && regionData != null) {
-			loadRegion(dirs.getDirectory(McaType.REGION), new ByteArrayPointer(regionData));
+			setMcaFile(McaType.REGION, dirs.getDirectory(McaType.REGION)).load(new ByteArrayPointer(regionData));
 		}
 		if (dirs.getDirectory(McaType.POI) != null && poiData != null) {
-			loadPoi(dirs.getDirectory(McaType.POI), new ByteArrayPointer(poiData));
+			setMcaFile(McaType.POI, dirs.getDirectory(McaType.POI)).load(new ByteArrayPointer(poiData));
 		}
 		if (dirs.getDirectory(McaType.ENTITIES) != null && entitiesData != null) {
-			loadEntities(dirs.getDirectory(McaType.ENTITIES), new ByteArrayPointer(entitiesData));
+			setMcaFile(McaType.ENTITIES, dirs.getDirectory(McaType.ENTITIES)).load(new ByteArrayPointer(entitiesData));
 		}
 		this.location = dirs.getLocation();
 		this.directories = dirs;
@@ -48,13 +48,13 @@ public class Region {
 
 	public Region(RegionDirectories dirs) throws IOException {
 		if (dirs.getDirectory(McaType.REGION) != null) {
-			loadRegion(dirs.getDirectory(McaType.REGION));
+			setMcaFile(McaType.REGION, dirs.getDirectory(McaType.REGION)).load();
 		}
 		if (dirs.getDirectory(McaType.POI) != null) {
-			loadPoi(dirs.getDirectory(McaType.POI));
+			setMcaFile(McaType.POI, dirs.getDirectory(McaType.POI)).load();
 		}
 		if (dirs.getDirectory(McaType.ENTITIES) != null) {
-			loadEntities(dirs.getDirectory(McaType.ENTITIES));
+			setMcaFile(McaType.ENTITIES, dirs.getDirectory(McaType.ENTITIES)).load();
 		}
 		this.location = dirs.getLocation();
 		this.directories = dirs;
@@ -86,21 +86,21 @@ public class Region {
 		Region r = new Region();
 		if (dirs.getDirectory(McaType.REGION) != null) {
 			if (dirs.getDirectory(McaType.REGION).exists()) {
-				r.loadRegion(dirs.getDirectory(McaType.REGION));
+				r.setMcaFile(McaType.REGION, dirs.getDirectory(McaType.REGION)).load();
 			} else {
 				r.region = new RegionMCAFile(dirs.getDirectory(McaType.REGION));
 			}
 		}
 		if (dirs.getDirectory(McaType.POI) != null) {
 			if (dirs.getDirectory(McaType.POI).exists()) {
-				r.loadPoi(dirs.getDirectory(McaType.POI));
+				r.setMcaFile(McaType.POI, dirs.getDirectory(McaType.POI)).load();
 			} else {
 				r.poi = new PoiMCAFile(dirs.getDirectory(McaType.POI));
 			}
 		}
 		if (dirs.getDirectory(McaType.ENTITIES) != null) {
 			if (dirs.getDirectory(McaType.ENTITIES).exists()) {
-				r.loadEntities(dirs.getDirectory(McaType.ENTITIES));
+				r.setMcaFile(McaType.ENTITIES, dirs.getDirectory(McaType.ENTITIES)).load();
 			} else {
 				r.entities = new EntitiesMCAFile(dirs.getDirectory(McaType.ENTITIES));
 			}
@@ -108,34 +108,17 @@ public class Region {
 		return r;
 	}
 
-	public void loadRegion(File src) throws IOException {
-		region = new RegionMCAFile(src);
-		region.load();
-	}
+	private MCAFile<?> setMcaFile(McaType type, File src) {
+		/*
+			NOTE At time of writing (JDK 17) JEP406's switch pattern matching is still a preview feature whose syntax could break in the future
+				See #setRegion for the reasoning for using it anyway
+		 */
 
-	public void loadRegion(File src, ByteArrayPointer ptr) throws IOException {
-		region = new RegionMCAFile(src);
-		region.load(ptr);
-	}
-
-	public void loadPoi(File src) throws IOException {
-		poi = new PoiMCAFile(src);
-		poi.load();
-	}
-
-	public void loadPoi(File src, ByteArrayPointer ptr) throws IOException {
-		poi = new PoiMCAFile(src);
-		poi.load(ptr);
-	}
-
-	public void loadEntities(File src) throws IOException {
-		entities = new EntitiesMCAFile(src);
-		entities.load();
-	}
-
-	public void loadEntities(File src, ByteArrayPointer ptr) throws IOException {
-		entities = new EntitiesMCAFile(src);
-		entities.load(ptr);
+		return switch (MCAFile.createForType(type, src)) {
+			case RegionMCAFile f -> (region = f);
+			case PoiMCAFile f -> (poi = f);
+			case EntitiesMCAFile f -> (entities = f);
+		};
 	}
 
 	public MCAFile<?> getRegion(McaType type) {
