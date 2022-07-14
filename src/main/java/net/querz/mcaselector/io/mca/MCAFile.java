@@ -6,8 +6,12 @@ import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
 import net.querz.mcaselector.range.Range;
 import net.querz.mcaselector.selection.ChunkSet;
+import net.querz.mcaselector.version.ChunkMerger;
+import net.querz.mcaselector.version.VersionController;
+import net.querz.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -20,7 +24,6 @@ import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public abstract class MCAFile<T extends Chunk> implements Cloneable {
@@ -415,9 +418,7 @@ public abstract class MCAFile<T extends Chunk> implements Cloneable {
 		}
 	}
 
-	public abstract void mergeChunksInto(MCAFile<T> destination, Point3i offset, boolean overwrite, ChunkSet sourceChunks, ChunkSet targetChunks, List<Range> ranges);
-
-	protected void mergeChunksInto(MCAFile<T> destination, Point3i offset, boolean overwrite, ChunkSet sourceChunks, ChunkSet targetChunks, List<Range> ranges, BiFunction<Point2i, Integer, T> chunkCreator) {
+	public void mergeChunksInto(MCAFile<T> destination, Point3i offset, boolean overwrite, ChunkSet sourceChunks, ChunkSet targetChunks, List<Range> ranges) {
 		Point2i relativeOffset = location.regionToChunk().add(offset.toPoint2i()).sub(destination.location.regionToChunk());
 		int startX = relativeOffset.getX() > 0 ? 0 : 32 - (32 + relativeOffset.getX());
 		int limitX = relativeOffset.getX() > 0 ? (32 - relativeOffset.getX()) : 32;
@@ -457,7 +458,12 @@ public abstract class MCAFile<T extends Chunk> implements Cloneable {
 
 						int destinationVersion;
 						if (destinationChunk == null || destinationChunk.isEmpty()) {
-							destinationChunk = chunkCreator.apply(destChunk, sourceVersion);
+							ChunkMerger chunkMerger = VersionController.getChunkMerger(getType(), sourceVersion);
+							CompoundTag root = chunkMerger.newEmptyChunk(destChunk, sourceVersion);
+							destinationChunk = chunkConstructor.apply(destChunk);
+							destinationChunk.setData(root);
+							destinationChunk.setCompressionType(CompressionType.ZLIB);
+
 							destination.chunks[destIndex] = destinationChunk;
 						} else if (sourceVersion != (destinationVersion = destinationChunk.getDataVersion())) {
 							Point2i srcChunk = location.regionToChunk().add(x, z);
