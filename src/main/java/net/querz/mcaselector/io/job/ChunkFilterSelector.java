@@ -96,7 +96,7 @@ public final class ChunkFilterSelector {
 			// load MCAFile
 			Timer t = new Timer();
 			try {
-				Region region = Region.loadRegion(getRegionDirectories(), regionData, poiData, entitiesData);
+				Region region = new Region(getRegionDirectories(), regionData, poiData, entitiesData);
 
 				ChunkSet chunks = region.getFilteredChunks(filter, this.selection);
 				if (chunks.size() > 0) {
