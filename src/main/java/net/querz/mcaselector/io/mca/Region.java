@@ -148,24 +148,19 @@ public class Region {
 
 	public void setRegion(MCAFile<?> region) {
 		/*
-			NOTE This is kind of jank because Java doesn't have generic enums
-				Because of this we can't cleanly generify this method by coupling region's type parameter to an additional McaType parameter
-				(Although since region.getType exists this would technically have been a form of data duplication anyway)
-
-			TODO A cleaner solution would be to seal MCAFile and use JEP-406's switch pattern matching on region itself
-				This would eliminate data duplication completely, and prevent an implicit coupling between McaType and a class
-				Unfortunately this requires enabling preview language features that could break in the future
-				This seems very unlikely for such a simple use-case however, given that this basic syntax stays the same until at least JDK 19 (JEP-427)
+			NOTE At time of writing (JDK 17) JEP406's switch pattern matching is still a preview feature whose syntax could break in the future
+				This seems very unlikely for such a simple use-case though, given that this basic syntax stays the same until at least JDK 19 (JEP-427)
+				Meanwhile the advantages of enabling this syntax are plenty: no data duplication and no implicit coupling between McaType and a class (see previous commit)
 
 			XXX A possible alternative "proper" solution: McaType-ify the fields itself using a Map (similar to VersionController)
 				However, there might be legitimate use-cases for non-generic access to a specific MCAFile implementation instance
 		 */
 
 		@SuppressWarnings("unused")
-		MCAFile<?> exhaustiveCheck = switch (region.getType()) {
-			case REGION -> this.region = (RegionMCAFile) region;
-			case POI -> poi = (PoiMCAFile) region;
-			case ENTITIES -> entities = (EntitiesMCAFile) region;
+		MCAFile<?> exhaustiveCheck = switch (region) {
+			case RegionMCAFile r -> this.region = r;
+			case PoiMCAFile r -> poi = r;
+			case EntitiesMCAFile r -> entities = r;
 		};
 	}
 
