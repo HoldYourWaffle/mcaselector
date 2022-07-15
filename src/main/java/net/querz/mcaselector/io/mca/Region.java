@@ -136,16 +136,14 @@ public class Region {
 		entities.load(ptr);
 	}
 
-	public RegionMCAFile getRegion() {
-		return region;
-	}
+	public MCAFile<?> getRegion(McaType type) {
+		// XXX there might be legitimate use-cases for non-generic access to a specific MCAFile implementation instance
 
-	public PoiMCAFile getPoi() {
-		return poi;
-	}
-
-	public EntitiesMCAFile getEntities() {
-		return entities;
+		return switch(type) {
+			case REGION -> region;
+			case POI -> poi;
+			case ENTITIES -> entities;
+		};
 	}
 
 	public void setRegion(RegionMCAFile region) {
