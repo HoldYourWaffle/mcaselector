@@ -2,7 +2,7 @@ package net.querz.mcaselector.io.mca;
 
 import java.io.File;
 
-public class EntitiesMCAFile extends MCAFile<EntitiesChunk> {
+public non-sealed class EntitiesMCAFile extends MCAFile<EntitiesChunk> {
 
 	public EntitiesMCAFile(File file) {
 		super(file, EntitiesChunk.class);

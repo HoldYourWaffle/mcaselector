@@ -28,7 +28,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class MCAFile<T extends Chunk> implements Cloneable {
+public abstract sealed class MCAFile<T extends Chunk> implements Cloneable permits RegionMCAFile, PoiMCAFile, EntitiesMCAFile {
 
 	private static final Logger LOGGER = LogManager.getLogger(MCAFile.class);
 

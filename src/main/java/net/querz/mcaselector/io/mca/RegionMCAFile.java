@@ -7,7 +7,7 @@ import net.querz.nbt.CompoundTag;
 
 import java.io.File;
 
-public class RegionMCAFile extends MCAFile<RegionChunk> {
+public non-sealed class RegionMCAFile extends MCAFile<RegionChunk> {
 
 	public RegionMCAFile(File file) {
 		super(file, RegionChunk.class);

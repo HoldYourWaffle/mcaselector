@@ -2,7 +2,7 @@ package net.querz.mcaselector.io.mca;
 
 import java.io.File;
 
-public class PoiMCAFile extends MCAFile<PoiChunk> {
+public non-sealed class PoiMCAFile extends MCAFile<PoiChunk> {
 
 	public PoiMCAFile(File file) {
 		super(file, PoiChunk.class);
