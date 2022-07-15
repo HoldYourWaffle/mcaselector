@@ -10,10 +10,14 @@ import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.WorldDirectories;
+import net.querz.mcaselector.io.mca.EntitiesChunk;
+import net.querz.mcaselector.io.mca.MCAFile;
 import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.io.mca.EntitiesMCAFile;
+import net.querz.mcaselector.io.mca.PoiChunk;
 import net.querz.mcaselector.io.mca.PoiMCAFile;
 import net.querz.mcaselector.io.mca.Region;
+import net.querz.mcaselector.io.mca.RegionChunk;
 import net.querz.mcaselector.io.mca.RegionMCAFile;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
@@ -172,6 +176,8 @@ public final class ChunkImporter {
 			this.tempFilesMap = tempFilesMap;
 		}
 
+		// TODO these "unchecked" casts *should* disappear when de-duped
+		@SuppressWarnings("unchecked")
 		@Override
 		public boolean execute() {
 			// try to copy files directly if there is no offset, no selection and the target file does not exist
@@ -347,7 +353,7 @@ public final class ChunkImporter {
 
 					LOGGER.debug("merging region chunks from {} into {}", sourceData.getKey(), target);
 
-					if (targetRegion.getRegion() == null) {
+					if (targetRegion.getRegion(McaType.REGION) == null) {
 						targetRegion.setRegion(new RegionMCAFile(getRegionDirectories().getDirectory(McaType.REGION)));
 					}
 
@@ -356,7 +362,7 @@ public final class ChunkImporter {
 						sourceChunks = sourceSelection.getSelectedChunks(sourceData.getKey());
 					}
 
-					source.mergeChunksInto(targetRegion.getRegion(), offset, overwrite, sourceChunks, targetChunks, ranges);
+					source.mergeChunksInto((MCAFile<RegionChunk>) targetRegion.getRegion(McaType.REGION), offset, overwrite, sourceChunks, targetChunks, ranges);
 				}
 
 				for (Map.Entry<Point2i, byte[]> sourceData : sourceDataMappingPoi.entrySet()) {
@@ -365,7 +371,7 @@ public final class ChunkImporter {
 
 					LOGGER.debug("merging poi chunks from {} into {}", sourceData.getKey(), target);
 
-					if (targetRegion.getPoi() == null) {
+					if (targetRegion.getRegion(McaType.POI) == null) {
 						targetRegion.setPoi(new PoiMCAFile(getRegionDirectories().getDirectory(McaType.POI)));
 					}
 
@@ -374,7 +380,7 @@ public final class ChunkImporter {
 						sourceChunks = sourceSelection.getSelectedChunks(sourceData.getKey());
 					}
 
-					source.mergeChunksInto(targetRegion.getPoi(), offset, overwrite, sourceChunks, targetChunks, ranges);
+					source.mergeChunksInto((MCAFile<PoiChunk>) targetRegion.getRegion(McaType.POI), offset, overwrite, sourceChunks, targetChunks, ranges);
 				}
 
 				for (Map.Entry<Point2i, byte[]> sourceData : sourceDataMappingEntities.entrySet()) {
@@ -383,7 +389,7 @@ public final class ChunkImporter {
 
 					LOGGER.debug("merging entities chunks from {} into {}", sourceData.getKey(), target);
 
-					if (targetRegion.getEntities() == null) {
+					if (targetRegion.getRegion(McaType.ENTITIES) == null) {
 						targetRegion.setEntities(new EntitiesMCAFile(getRegionDirectories().getDirectory(McaType.ENTITIES)));
 					}
 
@@ -392,7 +398,7 @@ public final class ChunkImporter {
 						sourceChunks = sourceSelection.getSelectedChunks(sourceData.getKey());
 					}
 
-					source.mergeChunksInto(targetRegion.getEntities(), offset, overwrite, sourceChunks, targetChunks, ranges);
+					source.mergeChunksInto((MCAFile<EntitiesChunk>) targetRegion.getRegion(McaType.ENTITIES), offset, overwrite, sourceChunks, targetChunks, ranges);
 				}
 
 				// -----------------------------------------------------------------------------------------------------
