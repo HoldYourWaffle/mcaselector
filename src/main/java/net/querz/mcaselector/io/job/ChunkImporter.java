@@ -372,7 +372,7 @@ public final class ChunkImporter {
 					LOGGER.debug("merging poi chunks from {} into {}", sourceData.getKey(), target);
 
 					if (targetRegion.getRegion(McaType.POI) == null) {
-						targetRegion.setPoi(new PoiMCAFile(getRegionDirectories().getDirectory(McaType.POI)));
+						targetRegion.setRegion(new PoiMCAFile(getRegionDirectories().getDirectory(McaType.POI)));
 					}
 
 					ChunkSet sourceChunks = null;
@@ -390,7 +390,7 @@ public final class ChunkImporter {
 					LOGGER.debug("merging entities chunks from {} into {}", sourceData.getKey(), target);
 
 					if (targetRegion.getRegion(McaType.ENTITIES) == null) {
-						targetRegion.setEntities(new EntitiesMCAFile(getRegionDirectories().getDirectory(McaType.ENTITIES)));
+						targetRegion.setRegion(new EntitiesMCAFile(getRegionDirectories().getDirectory(McaType.ENTITIES)));
 					}
 
 					ChunkSet sourceChunks = null;
