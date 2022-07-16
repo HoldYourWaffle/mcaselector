@@ -2,7 +2,7 @@ package net.querz.mcaselector.io.mca;
 
 import net.querz.mcaselector.point.Point2i;
 
-public class RegionChunk extends Chunk {
+public non-sealed class RegionChunk extends Chunk {
 
 	public RegionChunk(Point2i absoluteLocation) {
 		super(absoluteLocation);

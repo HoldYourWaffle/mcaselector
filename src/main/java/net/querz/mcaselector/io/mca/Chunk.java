@@ -29,7 +29,7 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
-public abstract class Chunk implements Cloneable {
+public abstract sealed class Chunk implements Cloneable permits RegionChunk, PoiChunk, EntitiesChunk {
 
 	protected int timestamp;
 	protected CompoundTag data;
