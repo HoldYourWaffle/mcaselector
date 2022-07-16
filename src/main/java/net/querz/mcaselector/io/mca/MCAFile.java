@@ -2,6 +2,7 @@ package net.querz.mcaselector.io.mca;
 
 import net.querz.mcaselector.io.ByteArrayPointer;
 import net.querz.mcaselector.io.FileHelper;
+import net.querz.mcaselector.io.IoUtil;
 import net.querz.mcaselector.io.SeekableInputStream;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
@@ -228,36 +229,14 @@ public abstract sealed class MCAFile<T extends Chunk> implements Cloneable permi
 		}
 	}
 
-	public int[] load() throws IOException {
-		try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
-			loadHeader(raf);
-
-			Point2i origin = location.regionToChunk();
-
-			for (short i = 0; i < 1024; i++) {
-				if (offsets[i] == 0) {
-					chunks[i] = null;
-					continue;
-				}
-				raf.seek(offsets[i] * 4096L);
-
-				Point2i chunkLocation = origin.add(new Point2i(i));
-
-				try {
-					chunks[i] = chunkConstructor.apply(chunkLocation);
-					chunks[i].setTimestamp(timestamps[i]);
-					chunks[i].load(new SeekableInputStream.RandomAccessFileAdapter(raf));
-				} catch (Exception ex) {
-					chunks[i] = null;
-					LOGGER.warn("failed to load chunk at {}", chunkLocation, ex);
-				}
-			}
-			return offsets;
+	public void load() throws IOException {
+		try (SeekableInputStream.RandomAccessFileAdapter raf = new SeekableInputStream.RandomAccessFileAdapter(file, "r")) {
+			load(raf);
 		}
 	}
 
-	public int[] load(ByteArrayPointer ptr) throws IOException {
-		loadHeader(ptr);
+	public void load(SeekableInputStream in) throws IOException {
+		loadHeader(in);
 
 		Point2i origin = location.regionToChunk();
 
@@ -266,57 +245,39 @@ public abstract sealed class MCAFile<T extends Chunk> implements Cloneable permi
 				chunks[i] = null;
 				continue;
 			}
-			ptr.seek(offsets[i] * 4096L);
+			in.seek(offsets[i] * 4096L);
 
 			Point2i chunkLocation = origin.add(new Point2i(i));
 
 			try {
 				chunks[i] = chunkConstructor.apply(chunkLocation);
 				chunks[i].setTimestamp(timestamps[i]);
-				chunks[i].load(ptr);
+				chunks[i].load(in);
 			} catch (Exception ex) {
 				chunks[i] = null;
-				LOGGER.debug("failed to load chunk at {}", chunkLocation, ex);
+				LOGGER.warn("failed to load chunk at {}", chunkLocation, ex);
 			}
 		}
-		return offsets;
 	}
 
-	public void loadHeader(RandomAccessFile raf) throws IOException {
-		offsets = new int[1024];
-		sectors = new byte[1024];
-
-		raf.seek(0);
-		for (int i = 0; i < offsets.length; i++) {
-			int offset = (raf.read()) << 16;
-			offset |= (raf.read() & 0xFF) << 8;
-			offsets[i] = offset | raf.read() & 0xFF;
-			sectors[i] = raf.readByte();
-		}
-
-		// read timestamps
-		for (int i = 0; i < 1024; i++) {
-			timestamps[i] = raf.readInt();
-		}
-	}
-
-	public void loadHeader(ByteArrayPointer ptr) throws IOException {
+	public void loadHeader(SeekableInputStream in) throws IOException {
 		offsets = new int[1024];
 		sectors = new byte[1024];
 
 		try {
-			ptr.seek(0);
+			in.seek(0);
 			for (int i = 0; i < offsets.length; i++) {
-				int offset = (ptr.read()) << 16;
-				offset |= (ptr.read() & 0xFF) << 8;
-				offsets[i] = offset | ptr.read() & 0xFF;
-				sectors[i] = ptr.readByte();
+				int offset = (in.read()) << 16;
+				offset |= (in.read() & 0xFF) << 8;
+				offsets[i] = offset | in.read() & 0xFF;
+				sectors[i] = IoUtil.readByte(in);
 			}
 
 			// read timestamps
+			// MAINTAINER this re-initialization was missing in the original RandomAccessFile variant, was that intentional?
 			timestamps = new int[1024];
 			for (int i = 0; i < 1024; i++) {
-				timestamps[i] = ptr.readInt();
+				timestamps[i] = IoUtil.readInt(in);
 			}
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			throw new IOException(ex);
