@@ -2,6 +2,7 @@ package net.querz.mcaselector.io.mca;
 
 import net.querz.mcaselector.io.ByteArrayPointer;
 import net.querz.mcaselector.io.FileHelper;
+import net.querz.mcaselector.io.SeekableInputStream;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
 import net.querz.mcaselector.range.Range;
@@ -245,7 +246,7 @@ public abstract sealed class MCAFile<T extends Chunk> implements Cloneable permi
 				try {
 					chunks[i] = chunkConstructor.apply(chunkLocation);
 					chunks[i].setTimestamp(timestamps[i]);
-					chunks[i].load(raf);
+					chunks[i].load(new SeekableInputStream.RandomAccessFileAdapter(raf));
 				} catch (Exception ex) {
 					chunks[i] = null;
 					LOGGER.warn("failed to load chunk at {}", chunkLocation, ex);
@@ -360,7 +361,7 @@ public abstract sealed class MCAFile<T extends Chunk> implements Cloneable permi
 
 			if (offset > 0) {
 				raf.seek(offset * 4096L);
-				chunkData.load(raf);
+				chunkData.load(new SeekableInputStream.RandomAccessFileAdapter(raf));
 			}
 
 			return chunkData;

@@ -1,9 +1,8 @@
 package net.querz.mcaselector.io;
 
 import java.io.IOException;
-import java.io.InputStream;
 
-public class ByteArrayPointer extends InputStream {
+public class ByteArrayPointer extends SeekableInputStream {
 
 	private final byte[] data;
 	private int pointer = 0;
@@ -12,6 +11,7 @@ public class ByteArrayPointer extends InputStream {
 		this.data = data;
 	}
 
+	@Override
 	public void seek(long pointer) {
 		this.pointer = (int) pointer;
 	}
