@@ -21,6 +21,7 @@ import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.List;
 import java.util.function.Function;
@@ -45,44 +46,50 @@ public abstract sealed class Chunk implements Cloneable permits RegionChunk, Poi
 		int length = ptr.readInt();
 		compressionType = CompressionType.fromByte(ptr.readByte());
 
-		DataInputStream nbtIn = switch (compressionType) {
-			case GZIP -> new DataInputStream(new BufferedInputStream(new GZIPInputStream(ptr, length)));
-			case ZLIB -> new DataInputStream(new BufferedInputStream(new InflaterInputStream(ptr, new Inflater(), length)));
-			case NONE -> new DataInputStream(ptr);
-			case GZIP_EXT -> new DataInputStream(new BufferedInputStream(new GZIPInputStream(new FileInputStream(FileHelper.createMCCFilePath(getType(), absoluteLocation)))));
-			case ZLIB_EXT -> new DataInputStream(new BufferedInputStream(new InflaterInputStream(new FileInputStream(FileHelper.createMCCFilePath(getType(), absoluteLocation)))));
-			case NONE_EXT -> new DataInputStream(new BufferedInputStream(new FileInputStream(FileHelper.createMCCFilePath(getType(), absoluteLocation))));
+		InputStream nbtIn = switch (compressionType) {
+			case GZIP -> new BufferedInputStream(new GZIPInputStream(ptr, length));
+			case ZLIB -> new BufferedInputStream(new InflaterInputStream(ptr, new Inflater(), length));
+			case NONE -> ptr;
+			case GZIP_EXT, ZLIB_EXT, NONE_EXT -> getMCCInputStream(compressionType);
 		};
 
-		Tag tag = new NBTReader().read(nbtIn);
-
-		if (tag instanceof CompoundTag) {
-			data = (CompoundTag) tag;
-		} else {
-			throw new IOException("unexpected chunk data tag type " + tag.getID() + ", expected " + Tag.COMPOUND);
-		}
+		load(nbtIn);
 	}
 
 	public void load(RandomAccessFile raf) throws IOException {
 		int length = raf.readInt();
 		compressionType = CompressionType.fromByte(raf.readByte());
 
-		DataInputStream nbtIn = switch (compressionType) {
-			case GZIP -> new DataInputStream(new BufferedInputStream(new GZIPInputStream(new FileInputStream(raf.getFD()))));
-			case ZLIB -> new DataInputStream(new BufferedInputStream(new InflaterInputStream(new FileInputStream(raf.getFD()))));
-			case NONE -> new DataInputStream(new BufferedInputStream(new FileInputStream(raf.getFD()), length - 1));
-			case GZIP_EXT -> new DataInputStream(new BufferedInputStream(new GZIPInputStream(new FileInputStream(FileHelper.createMCCFilePath(getType(), absoluteLocation)))));
-			case ZLIB_EXT -> new DataInputStream(new BufferedInputStream(new InflaterInputStream(new FileInputStream(FileHelper.createMCCFilePath(getType(), absoluteLocation)))));
-			case NONE_EXT -> new DataInputStream(new BufferedInputStream(new FileInputStream(FileHelper.createMCCFilePath(getType(), absoluteLocation))));
+		InputStream nbtIn = switch (compressionType) {
+			case GZIP -> new BufferedInputStream(new GZIPInputStream(new FileInputStream(raf.getFD())));
+			case ZLIB -> new BufferedInputStream(new InflaterInputStream(new FileInputStream(raf.getFD())));
+			case NONE -> new BufferedInputStream(new FileInputStream(raf.getFD()), length - 1);
+			case GZIP_EXT, ZLIB_EXT, NONE_EXT -> getMCCInputStream(compressionType);
 		};
 
-		Tag tag = new NBTReader().read(nbtIn);
+		load(nbtIn);
+	}
 
-		if (tag instanceof CompoundTag) {
-			data = (CompoundTag) tag;
+	private void load(InputStream nbtIn) throws IOException {
+		// CHECK DataInputStream wrapper unnecessary?
+		Tag tag = new NBTReader().read(new DataInputStream(nbtIn));
+
+		if (tag instanceof CompoundTag data) {
+			this.data = data;
 		} else {
 			throw new IOException("unexpected chunk data tag type " + tag.getID() + ", expected " + Tag.COMPOUND);
 		}
+	}
+
+	private InputStream getMCCInputStream(CompressionType compression) throws IOException {
+		FileInputStream fis = new FileInputStream(FileHelper.createMCCFilePath(getType(), absoluteLocation));
+
+		return new BufferedInputStream(switch (compression) {
+			case GZIP_EXT -> new GZIPInputStream(fis);
+			case ZLIB_EXT -> new InflaterInputStream(fis);
+			case NONE_EXT -> fis;
+			default -> throw new IllegalArgumentException("Can't get external input stream for non-external compression type "+compression);
+		});
 	}
 
 	public int save(DataOutput out) throws IOException {
