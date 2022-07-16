@@ -2,7 +2,7 @@ package net.querz.mcaselector.io.mca;
 
 import net.querz.mcaselector.point.Point2i;
 
-public class PoiChunk extends Chunk {
+public non-sealed class PoiChunk extends Chunk {
 
 	public PoiChunk(Point2i absoluteLocation) {
 		super(absoluteLocation);
