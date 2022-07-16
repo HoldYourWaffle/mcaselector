@@ -43,35 +43,32 @@ public abstract sealed class Chunk implements Cloneable permits RegionChunk, Poi
 
 	public void load(ByteArrayPointer ptr) throws IOException {
 		int length = ptr.readInt();
-		compressionType = CompressionType.fromByte(ptr.readByte());
-
-		InputStream nbtIn = switch (compressionType) {
-			case GZIP -> new BufferedInputStream(new GZIPInputStream(ptr, length));
-			case ZLIB -> new BufferedInputStream(new InflaterInputStream(ptr, new Inflater(), length));
-			case NONE -> ptr;
-			case GZIP_EXT, ZLIB_EXT, NONE_EXT -> getMCCInputStream(compressionType);
-		};
-
-		load(nbtIn);
+		CompressionType compression = CompressionType.fromByte(ptr.readByte());
+		// CHECK the NONE case is wrapped in a BufferedInputStream now, does that make a difference?
+		load(ptr, length, compression);
 	}
 
 	public void load(RandomAccessFile raf) throws IOException {
 		int length = raf.readInt();
-		compressionType = CompressionType.fromByte(raf.readByte());
+		CompressionType compression = CompressionType.fromByte(raf.readByte());
+		FileInputStream fis = new FileInputStream(raf.getFD());
+		// use default buffer size of 512 bytes for decompressing streams
+		// CHECK does this actually make a difference?
+		load(fis, compression == CompressionType.NONE ? (length - 1) : 512, compression);
+	}
 
-		InputStream nbtIn = switch (compressionType) {
-			case GZIP -> new BufferedInputStream(new GZIPInputStream(new FileInputStream(raf.getFD())));
-			case ZLIB -> new BufferedInputStream(new InflaterInputStream(new FileInputStream(raf.getFD())));
-			case NONE -> new BufferedInputStream(new FileInputStream(raf.getFD()), length - 1);
+	private void load(InputStream nbtIn, int bufferLength, CompressionType compression) throws IOException {
+		this.compressionType = compression;
+
+		InputStream decompressedIn = switch (compressionType) {
+			case GZIP -> new BufferedInputStream(new GZIPInputStream(nbtIn, bufferLength));
+			case ZLIB -> new BufferedInputStream(new InflaterInputStream(nbtIn, new Inflater(), bufferLength));
+			case NONE -> new BufferedInputStream(nbtIn, bufferLength);
 			case GZIP_EXT, ZLIB_EXT, NONE_EXT -> getMCCInputStream(compressionType);
 		};
 
-		load(nbtIn);
-	}
-
-	private void load(InputStream nbtIn) throws IOException {
 		// CHECK DataInputStream wrapper unnecessary?
-		Tag tag = new NBTReader().read(new DataInputStream(nbtIn));
+		Tag tag = new NBTReader().read(new DataInputStream(decompressedIn));
 
 		if (tag instanceof CompoundTag data) {
 			this.data = data;
