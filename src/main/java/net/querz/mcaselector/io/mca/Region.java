@@ -83,27 +83,19 @@ public class Region {
 
 	public static Region loadOrCreateEmptyRegion(RegionDirectories dirs) throws IOException {
 		Region r = new Region();
-		if (dirs.getDirectory(McaType.REGION) != null) {
-			if (dirs.getDirectory(McaType.REGION).exists()) {
-				r.setMcaFile(McaType.REGION, dirs.getDirectory(McaType.REGION)).load();
-			} else {
-				r.region = new RegionMCAFile(dirs.getDirectory(McaType.REGION));
+
+		for (McaType type : McaType.values()) {
+			File dir = dirs.getDirectory(type);
+			if (dir == null) {
+				continue;
+			}
+
+			MCAFile<?> mca = r.setMcaFile(type, dir);
+			if (dir.exists()) {
+				mca.load();
 			}
 		}
-		if (dirs.getDirectory(McaType.POI) != null) {
-			if (dirs.getDirectory(McaType.POI).exists()) {
-				r.setMcaFile(McaType.POI, dirs.getDirectory(McaType.POI)).load();
-			} else {
-				r.poi = new PoiMCAFile(dirs.getDirectory(McaType.POI));
-			}
-		}
-		if (dirs.getDirectory(McaType.ENTITIES) != null) {
-			if (dirs.getDirectory(McaType.ENTITIES).exists()) {
-				r.setMcaFile(McaType.ENTITIES, dirs.getDirectory(McaType.ENTITIES)).load();
-			} else {
-				r.entities = new EntitiesMCAFile(dirs.getDirectory(McaType.ENTITIES));
-			}
-		}
+
 		return r;
 	}
 
