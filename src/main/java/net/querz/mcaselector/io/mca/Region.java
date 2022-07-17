@@ -47,15 +47,14 @@ public class Region {
 	}
 
 	public Region(RegionDirectories dirs) throws IOException {
-		if (dirs.getDirectory(McaType.REGION) != null) {
-			setMcaFile(McaType.REGION, dirs.getDirectory(McaType.REGION)).load();
+		for (McaType type : McaType.values()) {
+			File dir = dirs.getDirectory(type);
+			if (dir == null) {
+				continue;
+			}
+			setMcaFile(type, dir).load();
 		}
-		if (dirs.getDirectory(McaType.POI) != null) {
-			setMcaFile(McaType.POI, dirs.getDirectory(McaType.POI)).load();
-		}
-		if (dirs.getDirectory(McaType.ENTITIES) != null) {
-			setMcaFile(McaType.ENTITIES, dirs.getDirectory(McaType.ENTITIES)).load();
-		}
+
 		this.location = dirs.getLocation();
 		this.directories = dirs;
 	}
