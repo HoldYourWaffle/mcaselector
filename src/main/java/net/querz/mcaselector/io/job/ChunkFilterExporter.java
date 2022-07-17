@@ -86,9 +86,9 @@ public final class ChunkFilterExporter {
 
 			RegionDirectories to = new RegionDirectories(getRegionDirectories().getLocation(), toRegion, toPoi, toEntities);
 
-			byte[] regionData = loadRegion();
-			byte[] poiData = loadPoi();
-			byte[] entitiesData = loadEntities();
+			byte[] regionData = load(McaType.REGION);
+            byte[] poiData = load(McaType.POI);
+			byte[] entitiesData = load(McaType.ENTITIES);
 
 			if (regionData == null && poiData == null && entitiesData == null) {
 				LOGGER.warn("failed to load any data from {}", getRegionDirectories().getLocationAsFileName());

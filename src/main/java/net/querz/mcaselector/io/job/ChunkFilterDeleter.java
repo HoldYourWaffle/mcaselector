@@ -5,6 +5,7 @@ import net.querz.mcaselector.filter.filters.GroupFilter;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.WorldDirectories;
+import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.io.mca.Region;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.progress.Progress;
@@ -71,9 +72,9 @@ public final class ChunkFilterDeleter {
 				return true;
 			}
 
-			byte[] regionData = loadRegion();
-			byte[] poiData = loadPoi();
-			byte[] entitiesData = loadEntities();
+			byte[] regionData = load(McaType.REGION);
+			byte[] poiData = load(McaType.POI);
+			byte[] entitiesData = load(McaType.ENTITIES);
 
 			if (regionData == null && poiData == null && entitiesData == null) {
 				LOGGER.warn("failed to load any data from {}", getRegionDirectories().getLocationAsFileName());

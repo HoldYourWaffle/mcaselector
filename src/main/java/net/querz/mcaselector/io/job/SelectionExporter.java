@@ -106,9 +106,9 @@ public final class SelectionExporter {
 				return true;
 			}
 
-			byte[] regionData = loadRegionHeader();
-			byte[] poiData = loadPoiHeader();
-			byte[] entitiesData = loadEntitiesHeader();
+            byte[] regionData = loadHeader(McaType.REGION);
+			byte[] poiData = loadHeader(McaType.POI);
+			byte[] entitiesData = loadHeader(McaType.ENTITIES);
 
 			if (regionData == null && poiData == null && entitiesData == null) {
 				LOGGER.warn("failed to load any data from {}", getRegionDirectories().getLocationAsFileName());

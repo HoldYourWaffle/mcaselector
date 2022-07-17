@@ -25,28 +25,12 @@ public abstract class ProcessDataJob extends Job {
 		super(dirs, priority);
 	}
 
-	public byte[] loadPoi() {
-		return load(getRegionDirectories().getDirectory(McaType.POI));
+	public byte[] load(McaType type) {
+		return load(getRegionDirectories().getDirectory(type));
 	}
 
-	public byte[] loadEntities() {
-		return load(getRegionDirectories().getDirectory(McaType.ENTITIES));
-	}
-
-	public byte[] loadRegion() {
-        return load(getRegionDirectories().getDirectory(McaType.REGION));
-	}
-
-	public byte[] loadPoiHeader() {
-		return load(getRegionDirectories().getDirectory(McaType.POI), FileHelper.HEADER_SIZE);
-	}
-
-	public byte[] loadEntitiesHeader() {
-		return load(getRegionDirectories().getDirectory(McaType.ENTITIES), FileHelper.HEADER_SIZE);
-	}
-
-	public byte[] loadRegionHeader() {
-        return load(getRegionDirectories().getDirectory(McaType.REGION), FileHelper.HEADER_SIZE);
+	public byte[] loadHeader(McaType type) {
+		return load(getRegionDirectories().getDirectory(type), FileHelper.HEADER_SIZE);
 	}
 
 	protected byte[] load(File file) {

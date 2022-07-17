@@ -91,7 +91,7 @@ public class ParseDataJob extends ProcessDataJob {
         if (region != null) {
 			regionMCAFile = region;
 		} else if (getRegionDirectories().getDirectory(McaType.REGION) != null && getRegionDirectories().getDirectory(McaType.REGION).exists() && getRegionDirectories().getDirectory(McaType.REGION).length() > 0) {
-			byte[] regionData = loadRegion();
+			byte[] regionData = load(McaType.REGION);
             regionMCAFile = new RegionMCAFile(getRegionDirectories().getDirectory(McaType.REGION));
 			if (regionData != null) {
 				// load EntitiesMCAFile
@@ -108,7 +108,7 @@ public class ParseDataJob extends ProcessDataJob {
 		if (entities != null) {
 			entitiesMCAFile = entities;
 		} else if (getRegionDirectories().getDirectory(McaType.ENTITIES) != null && getRegionDirectories().getDirectory(McaType.ENTITIES).exists() && getRegionDirectories().getDirectory(McaType.ENTITIES).length() > 0) {
-			byte[] entitiesData = loadEntities();
+			byte[] entitiesData = load(McaType.ENTITIES);
 			entitiesMCAFile = new EntitiesMCAFile(getRegionDirectories().getDirectory(McaType.ENTITIES));
 			if (entitiesData != null) {
 				// load EntitiesMCAFile
@@ -125,7 +125,7 @@ public class ParseDataJob extends ProcessDataJob {
 		if (poi != null) {
 			poiMCAFile = poi;
 		} else if (getRegionDirectories().getDirectory(McaType.POI) != null && getRegionDirectories().getDirectory(McaType.POI).exists() && getRegionDirectories().getDirectory(McaType.POI).length() > 0) {
-			byte[] poiData = loadPoi();
+            byte[] poiData = load(McaType.POI);
 			poiMCAFile = new PoiMCAFile(getRegionDirectories().getDirectory(McaType.POI));
 			if (poiData != null) {
 				// load PoiMCAFile
