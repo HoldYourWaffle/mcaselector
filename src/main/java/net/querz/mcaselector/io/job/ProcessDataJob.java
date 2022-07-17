@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public abstract class ProcessDataJob extends Job {
@@ -27,6 +28,10 @@ public abstract class ProcessDataJob extends Job {
 
 	public byte[] load(McaType type) {
 		return load(getRegionDirectories().getDirectory(type));
+	}
+
+	public Map<McaType, byte[]> loadAll() {
+		return McaType.mapTo(this::load);
 	}
 
 	public byte[] loadHeader(McaType type) {
