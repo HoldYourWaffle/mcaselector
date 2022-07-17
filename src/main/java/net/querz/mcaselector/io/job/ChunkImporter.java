@@ -340,7 +340,7 @@ public final class ChunkImporter {
 			Timer t = new Timer();
 			try {
 				// load target region
-				Region targetRegion = new Region(getRegionDirectories(), destDataRegion, destDataPoi, destDataEntities);
+				Region targetRegion = new Region(getRegionDirectories(), Map.of(McaType.REGION, destDataRegion, McaType.POI, destDataPoi, McaType.ENTITIES, destDataEntities));
 
 				ChunkSet targetChunks = null;
 				if (targetSelection != null) {

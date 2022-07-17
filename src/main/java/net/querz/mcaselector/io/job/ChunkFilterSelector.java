@@ -83,20 +83,16 @@ public final class ChunkFilterSelector {
 				return true;
 			}
 
-			byte[] regionData = load(McaType.REGION);
-            byte[] poiData = load(McaType.POI);
-			byte[] entitiesData = load(McaType.ENTITIES);
-
-			if (regionData == null && poiData == null && entitiesData == null) {
-				LOGGER.warn("failed to load any data from {}", getRegionDirectories().getLocationAsFileName());
-				progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
-				return true;
-			}
-
 			// load MCAFile
 			Timer t = new Timer();
 			try {
-				Region region = new Region(getRegionDirectories(), regionData, poiData, entitiesData);
+				Region region = new Region(getRegionDirectories(), loadAll());
+
+				if (region.isEmpty()) {
+					LOGGER.warn("failed to load any data from {}", getRegionDirectories().getLocationAsFileName());
+					progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
+					return true;
+				}
 
 				ChunkSet chunks = region.getFilteredChunks(filter, this.selection);
 				if (chunks.size() > 0) {

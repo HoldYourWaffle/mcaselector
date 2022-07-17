@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 // holds data for chunks, poi and entities
 public class Region {
@@ -30,18 +31,17 @@ public class Region {
 
 	private Point2i location;
 
-	// TODO de-dupe constructors
+	public Region(RegionDirectories dirs, Map<McaType, byte[]> data) throws IOException {
+		for (McaType type : McaType.values()) {
+			File dir = dirs.getDirectory(type);
+			byte[] typeData = data.get(type);
 
-	public Region(RegionDirectories dirs, byte[] regionData, byte[] poiData, byte[] entitiesData) throws IOException {
-		if (dirs.getDirectory(McaType.REGION) != null && dirs.getDirectory(McaType.REGION).length() > FileHelper.HEADER_SIZE && regionData != null) {
-			setMcaFile(McaType.REGION, dirs.getDirectory(McaType.REGION)).load(new ByteArrayPointer(regionData));
+			if (dir != null && typeData != null) {
+				// MAINTAINER why are we not loading the *supplied* data if the directory doesn't exist (yet)?
+				setMcaFile(type, dir).load(new ByteArrayPointer(typeData));
+			}
 		}
-		if (dirs.getDirectory(McaType.POI) != null && poiData != null) {
-			setMcaFile(McaType.POI, dirs.getDirectory(McaType.POI)).load(new ByteArrayPointer(poiData));
-		}
-		if (dirs.getDirectory(McaType.ENTITIES) != null && entitiesData != null) {
-			setMcaFile(McaType.ENTITIES, dirs.getDirectory(McaType.ENTITIES)).load(new ByteArrayPointer(entitiesData));
-		}
+
 		this.location = dirs.getLocation();
 		this.directories = dirs;
 	}
