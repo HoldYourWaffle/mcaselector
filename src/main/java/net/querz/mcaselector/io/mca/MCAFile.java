@@ -30,7 +30,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract sealed class MCAFile<T extends Chunk> implements Cloneable permits RegionMCAFile, PoiMCAFile, EntitiesMCAFile {
+public abstract sealed class MCAFile<T extends Chunk> extends McaType.McaTyped implements Cloneable permits RegionMCAFile, PoiMCAFile, EntitiesMCAFile {
 
 	private static final Logger LOGGER = LogManager.getLogger(MCAFile.class);
 
@@ -546,8 +546,6 @@ public abstract sealed class MCAFile<T extends Chunk> implements Cloneable permi
 	}
 
 	public abstract MCAFile<T> clone();
-
-	public abstract McaType getType();
 
 	public static MCAFile<?> createForType(McaType type, File src) {
 		// NOTE Dear reviewer, please don't be alarmed by this strange utility method that's only used once

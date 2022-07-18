@@ -31,7 +31,7 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
-public abstract sealed class Chunk implements Cloneable permits RegionChunk, PoiChunk, EntitiesChunk {
+public abstract sealed class Chunk extends McaType.McaTyped implements Cloneable permits RegionChunk, PoiChunk, EntitiesChunk {
 
 	protected int timestamp;
 	protected CompoundTag data;
@@ -180,7 +180,5 @@ public abstract sealed class Chunk implements Cloneable permits RegionChunk, Poi
 	}
 
 	public abstract Chunk clone();
-
-	public abstract McaType getType();
 
 }
