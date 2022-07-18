@@ -548,9 +548,6 @@ public abstract sealed class MCAFile<T extends Chunk> extends McaType.McaTyped i
 	public abstract MCAFile<T> clone();
 
 	public static MCAFile<?> createForType(McaType type, File src) {
-		// NOTE Dear reviewer, please don't be alarmed by this strange utility method that's only used once
-		// 	https://i.kym-cdn.com/photos/images/newsfeed/001/264/842/220.png
-
 		return switch (type) {
 			case REGION -> new RegionMCAFile(src);
 			case POI -> new PoiMCAFile(src);

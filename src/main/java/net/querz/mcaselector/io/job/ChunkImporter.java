@@ -10,15 +10,9 @@ import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.WorldDirectories;
-import net.querz.mcaselector.io.mca.EntitiesChunk;
 import net.querz.mcaselector.io.mca.MCAFile;
 import net.querz.mcaselector.io.mca.McaType;
-import net.querz.mcaselector.io.mca.EntitiesMCAFile;
-import net.querz.mcaselector.io.mca.PoiChunk;
-import net.querz.mcaselector.io.mca.PoiMCAFile;
 import net.querz.mcaselector.io.mca.Region;
-import net.querz.mcaselector.io.mca.RegionChunk;
-import net.querz.mcaselector.io.mca.RegionMCAFile;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
 import net.querz.mcaselector.progress.Progress;
@@ -33,10 +27,12 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public final class ChunkImporter {
 
@@ -176,52 +172,35 @@ public final class ChunkImporter {
 			this.tempFilesMap = tempFilesMap;
 		}
 
-		// TODO these "unchecked" casts *should* disappear when de-duped
-		@SuppressWarnings("unchecked")
 		@Override
 		public boolean execute() {
 			// try to copy files directly if there is no offset, no selection and the target file does not exist
 			if (offset.getX() == 0 && offset.getY() == 0 && offset.getZ() == 0 && targetSelection == null && sourceSelection == null && !getRegionDirectories().exists()) {
 				boolean allCopied = true;
 
-				if (!getRegionDirectories().getDirectory(McaType.REGION).exists()) {
-					//if the entire mca file doesn't exist, just copy it over
-					File source = new File(sourceDirs.getDirectory(McaType.REGION), getRegionDirectories().getLocationAsFileName());
-					if (source.exists()) {
-						try {
-							Files.copy(source.toPath(), getRegionDirectories().getDirectory(McaType.REGION).toPath());
-						} catch (IOException ex) {
-							LOGGER.warn("failed to copy file {} to {}", source, getRegionDirectories().getDirectory(McaType.REGION), ex);
-						}
-					}
-				} else {
-					allCopied = false;
-				}
+				for (McaType type : McaType.values()) {
+					File dir = getRegionDirectories().getDirectory(type);
+					File sourceDir = sourceDirs.getDirectory(type);
 
-				if (!getRegionDirectories().getDirectory(McaType.POI).exists() && sourceDirs.getDirectory(McaType.POI) != null) {
-					File source = new File(sourceDirs.getDirectory(McaType.POI), getRegionDirectories().getLocationAsFileName());
-					if (source.exists()) {
-						try {
-							Files.copy(source.toPath(), getRegionDirectories().getDirectory(McaType.POI).toPath());
-						} catch (IOException ex) {
-							LOGGER.warn("failed to copy file {} to {}", source, getRegionDirectories().getDirectory(McaType.POI), ex);
-						}
+					if (dir.exists() || sourceDir == null) {
+						allCopied = false;
+						continue;
 					}
-				} else {
-					allCopied = false;
-				}
 
-				if (!getRegionDirectories().getDirectory(McaType.ENTITIES).exists() && sourceDirs.getDirectory(McaType.ENTITIES) != null) {
-					File source = new File(sourceDirs.getDirectory(McaType.ENTITIES), getRegionDirectories().getLocationAsFileName());
-					if (source.exists()) {
-						try {
-							Files.copy(source.toPath(), getRegionDirectories().getDirectory(McaType.ENTITIES).toPath());
-						} catch (IOException ex) {
-							LOGGER.warn("failed to copy file {} to {}", source, getRegionDirectories().getDirectory(McaType.ENTITIES), ex);
-						}
+					// if the entire mca file doesn't exist, just copy it over
+					// MAINTAINER ^don't we mean directory?
+
+					File source = new File(sourceDir, getRegionDirectories().getLocationAsFileName());
+					if (!source.exists()) {
+						continue;
 					}
-				} else {
-					allCopied = false;
+
+					try {
+						Files.copy(source.toPath(), dir.toPath());
+					} catch (IOException ex) {
+						LOGGER.warn("failed to copy file {} to {}", source, dir, ex);
+						// MAINTAINER swallowing exception?
+					}
 				}
 
 				if (allCopied) {
@@ -233,9 +212,8 @@ public final class ChunkImporter {
 			// ---------------------------------------------------------------------------------------------------------
 
 			// LOAD SOURCE DATA
-			Map<Point2i, byte[]> sourceDataMappingRegion = new HashMap<>();
-			Map<Point2i, byte[]> sourceDataMappingPoi = new HashMap<>();
-			Map<Point2i, byte[]> sourceDataMappingEntities = new HashMap<>();
+			// https://stackoverflow.com/q/73016928
+			Map<McaType, Map<Point2i, byte[]>> sourceDataMappings = McaType.mapTo((Supplier<Map<Point2i, byte[]>>) HashMap::new);
 
 			for (long source : sourceRegions) {
 				Point2i s = new Point2i(source);
@@ -246,51 +224,23 @@ public final class ChunkImporter {
 					sourceDirs = new RegionDirectories();
 				}
 
-				File sourceFile;
-				byte[] sourceData;
-
-				// region
-				if (sourceDirs.getDirectory(McaType.REGION) != null) {
-					sourceFile = sourceDirs.getDirectory(McaType.REGION);
-				} else {
-					sourceFile = new File(this.sourceDirs.getDirectory(McaType.REGION), FileHelper.createMCAFileName(s));
-				}
-				if (sourceFile.exists()) {
-					sourceData = load(sourceFile);
-					if (sourceData == null) {
-						LOGGER.warn("failed to load source mca file {}", sourceFile);
+				for (McaType type : McaType.values()) {
+					File sourceFile;
+					if (sourceDirs.getDirectory(type) != null) {
+						sourceFile = sourceDirs.getDirectory(type);
 					} else {
-						sourceDataMappingRegion.put(s, sourceData);
+						// MAINTAINER what is the difference between sourceDirs and this.sourceDirs?
+						sourceFile = new File(this.sourceDirs.getDirectory(type), FileHelper.createMCAFileName(s));
 					}
-				}
 
-				// poi
-				if (sourceDirs.getDirectory(McaType.POI) != null) {
-					sourceFile = sourceDirs.getDirectory(McaType.POI);
-				} else {
-					sourceFile = new File(this.sourceDirs.getDirectory(McaType.POI), FileHelper.createMCAFileName(s));
-				}
-				if (sourceFile.exists()) {
-					sourceData = load(sourceFile);
-					if (sourceData == null) {
-						LOGGER.warn("failed to load source mca file {}", sourceFile);
-					} else {
-						sourceDataMappingPoi.put(s, sourceData);
-					}
-				}
-
-				// entities
-				if (sourceDirs.getDirectory(McaType.ENTITIES) != null) {
-					sourceFile = sourceDirs.getDirectory(McaType.ENTITIES);
-				} else {
-					sourceFile = new File(this.sourceDirs.getDirectory(McaType.ENTITIES), FileHelper.createMCAFileName(s));
-				}
-				if (sourceFile.exists()) {
-					sourceData = load(sourceFile);
-					if (sourceData == null) {
-						LOGGER.warn("failed to load source mca file {}", sourceFile);
-					} else {
-						sourceDataMappingEntities.put(s, sourceData);
+					if (sourceFile.exists()) {
+						byte[] sourceData = load(sourceFile);
+						if (sourceData == null) {
+							LOGGER.warn("failed to load source mca file {}", sourceFile);
+							// MAINTAINER swallowing error?
+						} else {
+							sourceDataMappings.get(type).put(s, sourceData);
+						}
 					}
 				}
 			}
@@ -298,7 +248,7 @@ public final class ChunkImporter {
 			// ---------------------------------------------------------------------------------------------------------
 
 			// check if we need to do anything
-			if (sourceDataMappingRegion.isEmpty() && sourceDataMappingPoi.isEmpty() && sourceDataMappingEntities.isEmpty()) {
+			if (sourceDataMappings.values().stream().allMatch(Map::isEmpty)) {
 				LOGGER.warn("did not load any source mca files to merge into {}", getRegionDirectories().getLocationAsFileName());
 				progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
 				return true;
@@ -307,103 +257,52 @@ public final class ChunkImporter {
 			// ---------------------------------------------------------------------------------------------------------
 
 			// LOAD DESTINATION DATA
-			byte[] destDataRegion = null;
-			if (getRegionDirectories().getDirectory(McaType.REGION).exists() && getRegionDirectories().getDirectory(McaType.REGION).length() > 0) {
-				destDataRegion = load(getRegionDirectories().getDirectory(McaType.REGION));
-				if (destDataRegion == null) {
-					LOGGER.warn("failed to load destination mca file {}", getRegionDirectories().getDirectory(McaType.REGION));
-					progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
-					return true;
+			EnumMap<McaType, byte[]> loadDestinations = new EnumMap<>(McaType.class);
+			for (McaType type : McaType.values()) {
+				File dir = getRegionDirectories().getDirectory(type);
+				if (!dir.exists() || dir.length() <= 0) {
+					continue;
 				}
-			}
 
-			byte[] destDataPoi = null;
-			if (getRegionDirectories().getDirectory(McaType.POI).exists() && getRegionDirectories().getDirectory(McaType.POI).length() > 0) {
-				destDataPoi = load(getRegionDirectories().getDirectory(McaType.POI));
-				if (destDataPoi == null) {
-					LOGGER.warn("failed to load destination mca file {}", getRegionDirectories().getDirectory(McaType.POI));
+				byte[] destData = load(dir);
+				if (destData == null) {
+					LOGGER.warn("failed to load destination mca file {}", dir);
 					progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
 					return true;
 				}
-			}
-
-			byte[] destDataEntities = null;
-			if (getRegionDirectories().getDirectory(McaType.ENTITIES).exists() && getRegionDirectories().getDirectory(McaType.ENTITIES).length() > 0) {
-				destDataEntities = load(getRegionDirectories().getDirectory(McaType.ENTITIES));
-				if (destDataEntities == null) {
-					LOGGER.warn("failed to load destination mca file {}", getRegionDirectories().getDirectory(McaType.ENTITIES));
-					progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
-					return true;
-				}
+				loadDestinations.put(type, destData);
 			}
 
 			Timer t = new Timer();
 			try {
 				// load target region
-				Region targetRegion = new Region(getRegionDirectories(), Map.of(McaType.REGION, destDataRegion, McaType.POI, destDataPoi, McaType.ENTITIES, destDataEntities));
+				Region targetRegionData = new Region(getRegionDirectories(), loadDestinations);
+				ChunkSet targetChunks = targetSelection == null ? null : sourceSelection.getSelectedChunks(target);
 
-				ChunkSet targetChunks = null;
-				if (targetSelection != null) {
-					targetChunks = sourceSelection.getSelectedChunks(target);
-				}
+				for (McaType type : McaType.values()) {
+					for (Map.Entry<Point2i, byte[]> sourceData : sourceDataMappings.get(type).entrySet()) {
+						MCAFile<?> source = MCAFile.createForType(type, new File(sourceDirs.getDirectory(type), FileHelper.createMCAFileName(sourceData.getKey())));
+						source.load(new ByteArrayPointer(sourceData.getValue()));
 
-				for (Map.Entry<Point2i, byte[]> sourceData : sourceDataMappingRegion.entrySet()) {
-					RegionMCAFile source = new RegionMCAFile(new File(sourceDirs.getDirectory(McaType.REGION), FileHelper.createMCAFileName(sourceData.getKey())));
-					source.load(new ByteArrayPointer(sourceData.getValue()));
+						LOGGER.debug("merging {} chunks from {} into {}", type, sourceData.getKey(), target);
 
-					LOGGER.debug("merging region chunks from {} into {}", sourceData.getKey(), target);
+						MCAFile<?> targetRegion = targetRegionData.getRegion(type);
+						if (targetRegion == null) {
+							targetRegion = MCAFile.createForType(type, getRegionDirectories().getDirectory(type));
+							targetRegionData.setRegion(targetRegion);
+						}
 
-					if (targetRegion.getRegion(McaType.REGION) == null) {
-						targetRegion.setRegion(new RegionMCAFile(getRegionDirectories().getDirectory(McaType.REGION)));
+						ChunkSet sourceChunks = sourceSelection == null ? null : sourceSelection.getSelectedChunks(sourceData.getKey());
+
+						McaType.McaTyped.withEqualType(source, targetRegion, (_source, _targetRegion) -> {
+							_source.mergeChunksInto(_targetRegion, offset, overwrite, sourceChunks, targetChunks, ranges);
+						});
 					}
-
-					ChunkSet sourceChunks = null;
-					if (sourceSelection != null) {
-						sourceChunks = sourceSelection.getSelectedChunks(sourceData.getKey());
-					}
-
-					source.mergeChunksInto((MCAFile<RegionChunk>) targetRegion.getRegion(McaType.REGION), offset, overwrite, sourceChunks, targetChunks, ranges);
-				}
-
-				for (Map.Entry<Point2i, byte[]> sourceData : sourceDataMappingPoi.entrySet()) {
-					PoiMCAFile source = new PoiMCAFile(new File(sourceDirs.getDirectory(McaType.POI), FileHelper.createMCAFileName(sourceData.getKey())));
-					source.load(new ByteArrayPointer(sourceData.getValue()));
-
-					LOGGER.debug("merging poi chunks from {} into {}", sourceData.getKey(), target);
-
-					if (targetRegion.getRegion(McaType.POI) == null) {
-						targetRegion.setRegion(new PoiMCAFile(getRegionDirectories().getDirectory(McaType.POI)));
-					}
-
-					ChunkSet sourceChunks = null;
-					if (sourceSelection != null) {
-						sourceChunks = sourceSelection.getSelectedChunks(sourceData.getKey());
-					}
-
-					source.mergeChunksInto((MCAFile<PoiChunk>) targetRegion.getRegion(McaType.POI), offset, overwrite, sourceChunks, targetChunks, ranges);
-				}
-
-				for (Map.Entry<Point2i, byte[]> sourceData : sourceDataMappingEntities.entrySet()) {
-					EntitiesMCAFile source = new EntitiesMCAFile(new File(sourceDirs.getDirectory(McaType.ENTITIES), FileHelper.createMCAFileName(sourceData.getKey())));
-					source.load(new ByteArrayPointer(sourceData.getValue()));
-
-					LOGGER.debug("merging entities chunks from {} into {}", sourceData.getKey(), target);
-
-					if (targetRegion.getRegion(McaType.ENTITIES) == null) {
-						targetRegion.setRegion(new EntitiesMCAFile(getRegionDirectories().getDirectory(McaType.ENTITIES)));
-					}
-
-					ChunkSet sourceChunks = null;
-					if (sourceSelection != null) {
-						sourceChunks = sourceSelection.getSelectedChunks(sourceData.getKey());
-					}
-
-					source.mergeChunksInto((MCAFile<EntitiesChunk>) targetRegion.getRegion(McaType.ENTITIES), offset, overwrite, sourceChunks, targetChunks, ranges);
 				}
 
 				// -----------------------------------------------------------------------------------------------------
 
-				MCAChunkImporterSaveJob job = new MCAChunkImporterSaveJob(getRegionDirectories(), targetRegion, progressChannel);
+				MCAChunkImporterSaveJob job = new MCAChunkImporterSaveJob(getRegionDirectories(), targetRegionData, progressChannel);
 				job.errorHandler = errorHandler;
 				JobHandler.executeSaveData(job);
 				LOGGER.debug("took {} to merge chunks into {} with offset {}", t, getRegionDirectories().getLocation(), offset);

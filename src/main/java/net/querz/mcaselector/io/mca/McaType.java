@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 // XXX there has to be a better name for this
 public enum McaType {
@@ -15,6 +16,10 @@ public enum McaType {
             map.put(type, values.apply(type));
         }
         return map;
+    }
+
+    public static <V> Map<McaType, V> mapTo(Supplier<V> values) {
+        return mapTo(type -> values.get());
     }
 
     public static abstract class McaTyped {
