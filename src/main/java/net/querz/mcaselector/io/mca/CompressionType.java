@@ -1,6 +1,7 @@
 package net.querz.mcaselector.io.mca;
 
 public enum CompressionType {
+	// CHECK possibly duplicated by net.querz.mca.CompressionType
 
 	NONE(0), // indicates that there is no data present
 	GZIP(1),
