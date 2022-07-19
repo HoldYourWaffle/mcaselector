@@ -60,23 +60,23 @@ public class Region {
 	}
 
 
-	// SOON refactor remaining static constructors
+	// SOON de-dupe (static) constructors collectively
 	private Region() {}
 
-	public static Region loadRegionHeaders(RegionDirectories dirs, byte[] regionHeader, byte[] poiHeader, byte[] entitiesHeader) throws IOException {
+	public static Region loadRegionHeaders(RegionDirectories dirs, Map<McaType, byte[]> data) throws IOException {
 		Region r = new Region();
-		if (dirs.getDirectory(McaType.REGION) != null && regionHeader != null) {
-			r.region = new RegionMCAFile(dirs.getDirectory(McaType.REGION));
-			r.region.loadHeader(new ByteArrayPointer(regionHeader));
+
+		for (McaType type : McaType.values()) {
+			File dir = dirs.getDirectory(type);
+			byte[] typeData = data.get(type);
+
+			if (dir != null && typeData != null) {
+				// MAINTAINER why are we not loading the *supplied* data if the directory doesn't exist (yet)?
+				r.setMcaFile(type, dir).loadHeader(new ByteArrayPointer(typeData));
+			}
 		}
-		if (dirs.getDirectory(McaType.POI) != null && poiHeader != null) {
-			r.poi = new PoiMCAFile(dirs.getDirectory(McaType.POI));
-			r.poi.loadHeader(new ByteArrayPointer(poiHeader));
-		}
-		if (dirs.getDirectory(McaType.ENTITIES) != null && entitiesHeader != null) {
-			r.entities = new EntitiesMCAFile(dirs.getDirectory(McaType.ENTITIES));
-			r.entities.loadHeader(new ByteArrayPointer(entitiesHeader));
-		}
+
+		// MAINTAINER no location initialized?
 		r.directories = dirs;
 		return r;
 	}
