@@ -90,20 +90,16 @@ public final class SelectionDeleter {
 				return true;
 			}
 
-            byte[] regionData = loadHeader(McaType.REGION);
-			byte[] poiData = loadHeader(McaType.POI);
-			byte[] entitiesData = loadHeader(McaType.ENTITIES);
-
-			if (regionData == null && poiData == null && entitiesData == null) {
-				LOGGER.warn("failed to load any data from {}", getRegionDirectories().getLocationAsFileName());
-				progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
-				return true;
-			}
-
 			// load MCAFile
 			try {
 				// only load headers, we don't care for chunk contents
-				Region region = Region.loadRegionHeaders(getRegionDirectories(), regionData, poiData, entitiesData);
+				Region region = Region.loadRegionHeaders(getRegionDirectories(), loadAll());
+
+				if (region.isEmpty()) {
+					LOGGER.warn("failed to load any data from {}", getRegionDirectories().getLocationAsFileName());
+					progressChannel.incrementProgress(getRegionDirectories().getLocationAsFileName());
+					return true;
+				}
 
 				region.deleteChunks(selection);
 
