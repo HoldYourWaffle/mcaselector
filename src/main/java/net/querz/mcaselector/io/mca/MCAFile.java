@@ -32,6 +32,7 @@ import java.util.function.Function;
 
 public abstract sealed class MCAFile<T extends Chunk> extends McaType.McaTyped implements Cloneable permits RegionMCAFile, PoiMCAFile, EntitiesMCAFile {
 
+	// XXX possibly (partially) duplicated by net.querz.mca.MCAFile
 	private static final Logger LOGGER = LogManager.getLogger(MCAFile.class);
 
 	protected Point2i location;
@@ -77,6 +78,7 @@ public abstract sealed class MCAFile<T extends Chunk> extends McaType.McaTyped i
 
 	protected MCAFile(Point2i location) {
 		this.location = location;
+		// CHECK chunkConstructor will be null?
 	}
 
 // IO STUFF ------------------------------------------------------------------------------------------------------------
@@ -260,6 +262,8 @@ public abstract sealed class MCAFile<T extends Chunk> extends McaType.McaTyped i
 		}
 	}
 
+	// SOON there's more to de-dupe here
+
 	public void loadHeader(SeekableInputStream in) throws IOException {
 		offsets = new int[1024];
 		sectors = new byte[1024];
@@ -372,6 +376,7 @@ public abstract sealed class MCAFile<T extends Chunk> extends McaType.McaTyped i
 
 	public void saveSingleChunk(Point2i location, T chunk) throws IOException {
 		if (file.exists() && file.length() > 0) {
+			// MAINTAINER why?
 			load();
 		} else if (chunk == null || chunk.isEmpty()) {
 			LOGGER.debug("nothing to save and no existing file found for chunk {}", location);
@@ -548,6 +553,14 @@ public abstract sealed class MCAFile<T extends Chunk> extends McaType.McaTyped i
 	public abstract MCAFile<T> clone();
 
 	public static MCAFile<?> createForType(McaType type, File src) {
+		// XXX perhaps the implementation of getType should be moved to this superclass as well
+		// 	This might seem counter-intuitive, but it'd move the (necessary) implicit coupling of McaType to implementation classes to a single class at least
+
+		// SOON actually no, this is prime-time for reflection
+		// 	Could add a Class<? extends MCAFile<?>> property "mcaClass" to MCAFile, instantiating in this method (which would then be inlined)
+		// 	getType could then be non-dupedly and without implicit coupling implemented in this superclass using a map of McaType's elements' "mcaClass" values
+		// 	Should probably do the same for Chunk implementations of course
+
 		return switch (type) {
 			case REGION -> new RegionMCAFile(src);
 			case POI -> new PoiMCAFile(src);

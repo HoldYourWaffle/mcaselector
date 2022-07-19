@@ -3,11 +3,13 @@ package net.querz.mcaselector.filter;
 import net.querz.mcaselector.io.mca.ChunkData;
 
 public abstract class TextFilter<T> extends Filter<T> {
+	// TODO most (if not all) TextFilter's implementations seem near identical, could an abstract "getContainer"-like method be enough?
 
 	private static final Comparator[] comparators = {
 			Comparator.CONTAINS,
 			Comparator.CONTAINS_NOT,
 			Comparator.INTERSECTS
+			// XXX why do not all TextFilter's support EQUAL and NOT_EQUAL?
 	};
 
 	protected T value;

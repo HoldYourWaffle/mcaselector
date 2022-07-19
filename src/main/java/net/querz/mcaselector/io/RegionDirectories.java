@@ -4,6 +4,8 @@ import net.querz.mcaselector.io.mca.McaType;
 import net.querz.mcaselector.point.Point2i;
 import java.io.File;
 
+// TODO suspiciously similar to WorldDirectories
+// MAINTAINER these are not directories?
 public class RegionDirectories implements Cloneable {
 
 	private Point2i location;

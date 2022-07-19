@@ -7,6 +7,7 @@ import net.querz.nbt.ListTag;
 import java.util.List;
 
 public interface EntityFilter {
+	// TODO rename to EntityHandler?
 
 	void deleteEntities(ChunkData data, List<Range> ranges);
 

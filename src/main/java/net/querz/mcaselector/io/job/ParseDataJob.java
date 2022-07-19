@@ -87,6 +87,8 @@ public class ParseDataJob extends ProcessDataJob {
 	public boolean execute() {
 		Timer t = new Timer();
 
+		// TODO big dupe
+
 		RegionMCAFile regionMCAFile = null;
         if (region != null) {
 			regionMCAFile = region;

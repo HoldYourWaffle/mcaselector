@@ -106,6 +106,7 @@ public final class SelectionExporter {
 				return true;
 			}
 
+			// TODO super similar to SelectionDeleter
             try {
 				// only load headers, because we don't care for chunk data
 				Region region = Region.loadRegionHeaders(getRegionDirectories(), loadAll());

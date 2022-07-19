@@ -8,12 +8,14 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+// XXX record-ify?
 public class WorldDirectories implements Serializable, Cloneable {
 
 	private File region;
 	private File poi;
 	private File entities;
 
+	// XXX uninitialized?
 	public WorldDirectories() {}
 
 	public WorldDirectories(File region, File poi, File entities) {

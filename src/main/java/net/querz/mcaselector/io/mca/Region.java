@@ -21,6 +21,7 @@ import java.util.Map;
 // holds data for chunks, poi and entities
 public class Region {
 
+	// TODO logging and error handling could do with an overhaul
 	private static final Logger LOGGER = LogManager.getLogger(Region.class);
 
 	private RegionMCAFile region;

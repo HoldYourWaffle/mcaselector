@@ -27,6 +27,7 @@ public abstract class ProcessDataJob extends Job {
 	}
 
 	public byte[] load(McaType type) {
+		// TODO future de-dupes will make this obsolete
 		return load(getRegionDirectories().getDirectory(type));
 	}
 
