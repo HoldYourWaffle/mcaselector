@@ -74,11 +74,11 @@ public class BiomeFilter extends TextFilter<List<BiomeRegistry.BiomeIdentifier>>
 				if (name.startsWith("'") && name.endsWith("'") && name.length() > 2) {
 					name = name.substring(1, name.length() - 1);
 					quoted = true;
-				} else if (!name.matches("^[0-9]+$") && !name.startsWith("minecraft:")) {
+				} else if (!name.matches("^\\d+$") && !name.startsWith("minecraft:")) {
 					name = "minecraft:" + name;
 				}
 
-				if (name.matches("^[0-9]+$")) {
+				if (name.matches("^\\d+$")) {
 					try {
 						int id = Integer.parseInt(name);
 						if (quoted || BiomeRegistry.isValidID(id)) {

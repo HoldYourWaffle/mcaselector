@@ -62,7 +62,7 @@ public class PlayerLocationFilter extends TextFilter<PlayerLocationFilter.Player
 			return;
 		}
 		Object dimension;
-		if (separated[1].matches("^-?[0-9]+$")) {
+		if (separated[1].matches("^-?\\d+$")) {
 			try {
 				dimension = Integer.parseInt(separated[1]);
 			} catch (NumberFormatException ex) {
@@ -168,7 +168,7 @@ public class PlayerLocationFilter extends TextFilter<PlayerLocationFilter.Player
 		playerChunks.clear();
 		playerRegions.clear();
 
-		File[] playerFiles = value.directory.listFiles((d, f) -> f.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.dat$"));
+		File[] playerFiles = value.directory.listFiles((d, f) -> f.matches("^[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}\\.dat$"));
 		if (playerFiles == null || playerFiles.length == 0) {
 			return;
 		}

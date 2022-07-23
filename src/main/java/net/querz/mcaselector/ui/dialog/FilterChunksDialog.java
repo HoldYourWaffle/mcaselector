@@ -166,7 +166,7 @@ public class FilterChunksDialog extends Dialog<FilterChunksDialog.Result> {
 		if (newValue.isEmpty()) {
 			radius = 0;
 		} else {
-			if (!newValue.matches("[0-9]+")) {
+			if (!newValue.matches("\\d+")) {
 				selectionRadius.setText(oldValue);
 				return;
 			}

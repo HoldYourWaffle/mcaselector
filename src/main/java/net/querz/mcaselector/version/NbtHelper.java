@@ -321,7 +321,7 @@ public final class NbtHelper {
 		CompoundTag destinationElements = tagFromCompound(destination, name, new CompoundTag());
 
 		for (Map.Entry<String, Tag> sourceElement : sourceElements) {
-			if (sourceElement.getKey().matches("^-?[0-9]{1,2}$")) {
+			if (sourceElement.getKey().matches("^-?\\d{1,2}$")) {
 				int y = Integer.parseInt(sourceElement.getKey());
 				for (Range range : ranges) {
 					if (range.contains(y - yOffset)) {

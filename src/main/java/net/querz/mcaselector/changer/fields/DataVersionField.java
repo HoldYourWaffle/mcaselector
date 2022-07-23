@@ -20,7 +20,7 @@ public class DataVersionField extends Field<Integer> {
 	@Override
 	public boolean parseNewValue(String s) {
 		try {
-			if (s.matches("^[0-9]+$")) {
+			if (s.matches("^\\d+$")) {
 				setNewValue(Integer.parseInt(s));
 				return true;
 			}

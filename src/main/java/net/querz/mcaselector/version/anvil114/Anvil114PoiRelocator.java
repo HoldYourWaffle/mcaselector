@@ -36,7 +36,7 @@ public class Anvil114PoiRelocator implements ChunkRelocator {
 				}
 			}
 
-			if (s.getKey().matches("^[0-9]{1,2}$")) {
+			if (s.getKey().matches("^\\d{1,2}$")) {
 				int y = Integer.parseInt(s.getKey()) + offset.getY();
 				if (y >= 0 && y <= 15) {
 					newSections.put("" + y, section);
