@@ -81,10 +81,9 @@ public class MappableExceptionInfo {
 
 	@Override
 	public boolean equals(Object other) {
-		if (!(other instanceof MappableExceptionInfo)) {
-			return false;
+		if (other instanceof MappableExceptionInfo ex) {
+			return clazz == ex.clazz && line == ex.line && (file == null && ex.file == null || file != null && file.equals(ex.file));
 		}
-		MappableExceptionInfo ex = (MappableExceptionInfo) other;
-		return clazz == ex.clazz && line == ex.line && (file == null && ex.file == null || file != null && file.equals(ex.file));
+		return false;
 	}
 }
