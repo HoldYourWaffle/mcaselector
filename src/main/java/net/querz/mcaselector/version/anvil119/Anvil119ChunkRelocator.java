@@ -188,11 +188,9 @@ public class Anvil119ChunkRelocator implements ChunkRelocator {
 		}
 
 		String id = NbtHelper.stringFromCompound(item, "id", "");
-		switch (id) {
-		case "minecraft:compass":
+		if (id.equals("minecraft:compass")) {
 			CompoundTag lodestonePos = NbtHelper.tagFromCompound(tag, "LodestonePos");
 			NbtHelper.applyIntOffsetIfRootPresent(lodestonePos, "X", "Y", "Z", offset);
-			break;
 		}
 
 		// recursively update all items in child containers
