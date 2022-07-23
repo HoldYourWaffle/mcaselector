@@ -8,6 +8,7 @@ import net.querz.nbt.*;
 
 public class Anvil112ChunkRelocator implements ChunkRelocator {
 
+	@Override
 	public boolean relocate(CompoundTag root, Point3i offset) {
 		CompoundTag level = NbtHelper.tagFromCompound(root, "Level");
 		if (level == null) {

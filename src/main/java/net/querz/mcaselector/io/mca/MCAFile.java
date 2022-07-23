@@ -545,6 +545,7 @@ public abstract sealed class MCAFile<T extends Chunk> extends McaType.McaTyped i
 		return clone;
 	}
 
+	@Override
 	public abstract MCAFile<T> clone();
 
 	public static MCAFile<?> createForType(McaType type, File src) {

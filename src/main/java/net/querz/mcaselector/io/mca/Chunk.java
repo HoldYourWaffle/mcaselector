@@ -178,6 +178,7 @@ public abstract sealed class Chunk extends McaType.McaTyped implements Cloneable
 		return clone;
 	}
 
+	@Override
 	public abstract Chunk clone();
 
 }

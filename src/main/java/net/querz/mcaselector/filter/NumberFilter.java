@@ -35,6 +35,7 @@ public abstract class NumberFilter<T extends Number> extends Filter<T> {
 		return comparator;
 	}
 
+	@Override
 	public void setComparator(Comparator comparator) {
 		this.comparator = comparator;
 	}

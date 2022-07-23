@@ -74,6 +74,7 @@ public abstract class Filter<T> implements Serializable {
 
 	public abstract boolean matches(ChunkData data);
 
+	@Override
 	public abstract Filter<T> clone();
 
 	protected static String escape(String value) {

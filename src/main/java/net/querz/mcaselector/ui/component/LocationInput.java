@@ -55,6 +55,7 @@ public class LocationInput extends HBox {
 		setValue();
 	}
 
+	@Override
 	public void requestFocus() {
 		xValue.requestFocus();
 	}

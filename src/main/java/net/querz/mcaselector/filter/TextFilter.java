@@ -30,6 +30,7 @@ public abstract class TextFilter<T> extends Filter<T> {
 		return comparator;
 	}
 
+	@Override
 	public void setComparator(Comparator comparator) {
 		this.comparator = comparator;
 	}
