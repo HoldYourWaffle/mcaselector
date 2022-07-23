@@ -2,7 +2,6 @@ package net.querz.mcaselector.version;
 
 import net.querz.mcaselector.io.registry.BiomeRegistry;
 import net.querz.mcaselector.range.Range;
-import net.querz.nbt.NBTUtil;
 import net.querz.nbt.*;
 import java.util.Collection;
 import java.util.List;

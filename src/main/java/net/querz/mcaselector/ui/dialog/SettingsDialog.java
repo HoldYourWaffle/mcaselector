@@ -18,7 +18,6 @@ import net.querz.mcaselector.property.DataProperty;
 import net.querz.mcaselector.text.Translation;
 import net.querz.mcaselector.ui.component.FileTextField;
 import net.querz.mcaselector.ui.component.HeightSlider;
-import net.querz.mcaselector.ui.component.NumberTextField;
 import net.querz.mcaselector.ui.component.TileMapBox;
 import net.querz.mcaselector.ui.UIFactory;
 import java.io.File;

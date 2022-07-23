@@ -3,7 +3,6 @@ package net.querz.mcaselector.io.mca;
 import net.querz.mcaselector.changer.Field;
 import net.querz.mcaselector.filter.Filter;
 import net.querz.mcaselector.io.ByteArrayPointer;
-import net.querz.mcaselector.io.FileHelper;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
