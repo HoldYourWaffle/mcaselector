@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class MappableExceptionInfo {
 
-	private Class<? extends Throwable> clazz;
+	private final Class<? extends Throwable> clazz;
 
 	private final int line;
 	private final String file;
