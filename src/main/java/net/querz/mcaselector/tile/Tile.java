@@ -49,9 +49,7 @@ public class Tile {
 		return isVisible(tileMap, 0);
 	}
 
-	// returns whether this tile is visible on screen, adding a custom radius
-	// as a threshold
-	// threshold is measured in tiles
+	// returns whether this tile is visible on screen, adding a custom radius as a threshold (measured in tiles)
 	public boolean isVisible(TileMap tileMap, int threshold) {
 		Point2i o = tileMap.getOffset().toPoint2i();
 		Point2i min = o.sub(threshold * SIZE).blockToRegion().regionToBlock();

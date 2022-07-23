@@ -198,13 +198,13 @@ public enum Translation {
 
 	private static final Set<Locale> availableLanguages = new HashSet<>();
 
-	private static final Pattern languangeFilePattern = Pattern.compile("^(?<locale>-?(?<language>-?[a-z]{2})_(?<country>-?[A-Z]{2}))\\.txt$");
+	private static final Pattern languageFilePattern = Pattern.compile("^(?<locale>-?(?<language>-?[a-z]{2})_(?<country>-?[A-Z]{2}))\\.txt$");
 
 	static {
 		String[] langFiles = getResourceListing(Translation.class, "lang");
 		if (langFiles != null) {
 			for (String langFile : langFiles) {
-				Matcher matcher = languangeFilePattern.matcher(langFile);
+				Matcher matcher = languageFilePattern.matcher(langFile);
 				if (matcher.matches()) {
 					String language = matcher.group("language");
 					String country = matcher.group("country");

@@ -24,12 +24,12 @@ public class HeightSlider extends HBox {
 	*   if text field value is smaller than slider min, set slider to min
 	* */
 
-	public HeightSlider(int init, boolean showCustomlabels) {
+	public HeightSlider(int init, boolean showCustomLabels) {
 		valueProperty.set(init);
 		heightField.getStyleClass().add("slider-value-field");
 		slider.setSnapToTicks(true);
-		slider.setShowTickLabels(!showCustomlabels);
-		slider.setShowTickMarks(!showCustomlabels);
+		slider.setShowTickLabels(!showCustomLabels);
+		slider.setShowTickMarks(!showCustomLabels);
 		slider.setMajorTickUnit(32);
 		slider.setMinorTickCount(384);
 		slider.setPrefWidth(300);
@@ -38,7 +38,7 @@ public class HeightSlider extends HBox {
 
 		heightField.valueProperty().set(init);
 
-		if (showCustomlabels) {
+		if (showCustomLabels) {
 			slider.setLabelFormatter(new StringConverter<>() {
 				@Override
 				public String toString(Double object) {
@@ -79,7 +79,7 @@ public class HeightSlider extends HBox {
 		// value property sets text field value
 		valueProperty.addListener((v, o, n) -> heightField.setText(n.intValue() + ""));
 
-		if (showCustomlabels) {
+		if (showCustomLabels) {
 			getChildren().addAll(heightMinLabel, slider, heightMaxLabel, heightField);
 		} else {
 			getChildren().addAll(slider, heightField);

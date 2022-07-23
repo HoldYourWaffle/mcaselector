@@ -46,7 +46,7 @@ public abstract sealed class MCAFile<T extends Chunk> extends McaType.McaTyped i
 
 	protected Function<Point2i, T> chunkConstructor;
 
-	// file name must have well formed mca file format (r.<x>.<z>.mca)
+	// file name must have well-formed mca file format (r.<x>.<z>.mca)
 	@SuppressWarnings("unchecked")
 	public MCAFile(File file, Class<T> chunkClass) {
 		Point2i location = FileHelper.parseMCAFileName(file);

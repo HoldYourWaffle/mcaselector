@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class ReferenceField extends Field<Boolean> {
 
-	// compoundtag: structure_name --> long_array
-	// where each long is a x/z coordinate
+	// compound tag: structure_name --> long_array
+	// where each long is an x/z coordinate
 
 	public ReferenceField() {
 		super(FieldType.STRUCTURE_REFERENCE);

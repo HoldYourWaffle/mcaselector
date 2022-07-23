@@ -180,7 +180,7 @@ public class NBTTreeView extends TreeView<NBTTreeView.NamedTag> {
 				return new int[]{((ListTag) target.getValue().tag).getElementType()};
 			}
 		}
-		// if the tag is a value tag, we lookup the parent
+		// if the tag is a value tag, we look up the parent
 		if (target.getValue().tag.getID() != Tag.LIST && target.getValue().tag.getID() != Tag.COMPOUND) {
 			if (target.getParent().getValue().tag.getID() == Tag.LIST) {
 				// when parent is a list tag, we have limited possibilities
