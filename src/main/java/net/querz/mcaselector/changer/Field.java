@@ -45,7 +45,7 @@ public abstract class Field<T> {
 
 	@Override
 	public String toString() {
-		return type.toString() + " = " + valueToString();
+		return type + " = " + valueToString();
 	}
 
 	public String valueToString() {

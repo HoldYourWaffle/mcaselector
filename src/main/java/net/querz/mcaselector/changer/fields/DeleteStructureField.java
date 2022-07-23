@@ -72,7 +72,7 @@ public class DeleteStructureField extends Field<List<String>> {
 	public String toString() {
 		StringJoiner sj = new StringJoiner(", ");
 		getNewValue().forEach(s -> sj.add(StructureRegistry.isValidName(s) ? s : "'" + s + "'"));
-		return getType().toString() + " = \"" + sj + "\"";
+		return getType() + " = \"" + sj + "\"";
 	}
 
 	@Override

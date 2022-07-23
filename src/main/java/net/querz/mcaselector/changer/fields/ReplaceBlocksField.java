@@ -191,7 +191,7 @@ public class ReplaceBlocksField extends Field<Map<String, ChunkFilter.BlockRepla
 
 	@Override
 	public String toString() {
-		return getType().toString() + " = \"" + valueToString() + "\"";
+		return getType() + " = \"" + valueToString() + "\"";
 	}
 
 	@Override

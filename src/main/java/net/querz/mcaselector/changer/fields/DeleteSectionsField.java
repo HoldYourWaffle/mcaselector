@@ -57,11 +57,11 @@ public class DeleteSectionsField extends Field<List<Range>> {
 	@Override
 	public String toString() {
 		if (getNewValue().size() == 1 && getNewValue().get(0).isMaxRange()) {
-			return getType().toString() + " = true";
+			return getType() + " = true";
 		}
 		StringJoiner sj = new StringJoiner(", ");
 		getNewValue().forEach(r -> sj.add(r.toString()));
-		return getType().toString() + " = \"" + sj + "\"";
+		return getType() + " = \"" + sj + "\"";
 	}
 
 	@Override

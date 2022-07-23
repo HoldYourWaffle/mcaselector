@@ -9,7 +9,7 @@ import net.querz.mcaselector.text.Translation;
 class BorderedTitledPane extends StackPane {
 
 	BorderedTitledPane(Translation titleString, Node content) {
-		Label title = new Label(" " + titleString.toString() + " ");
+		Label title = new Label(" " + titleString + " ");
 		title.getStyleClass().remove("label");
 		title.getStyleClass().add("bordered-titled-title");
 		StackPane.setAlignment(title, Pos.TOP_LEFT);

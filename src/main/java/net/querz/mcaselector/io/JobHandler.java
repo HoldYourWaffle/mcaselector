@@ -266,7 +266,7 @@ public final class JobHandler {
 
 		@Override
 		public String toString() {
-			return jobID + "#" + job.toString();
+			return jobID + "#" + job;
 		}
 	}
 }
