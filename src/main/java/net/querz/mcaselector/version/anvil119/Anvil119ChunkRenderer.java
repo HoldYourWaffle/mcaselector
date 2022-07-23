@@ -32,7 +32,7 @@ public class Anvil119ChunkRenderer implements ChunkRenderer {
 			int y = NbtHelper.numberFromCompound(s, "Y", -5).intValue();
 			if (y >= -4 && y < yMax && p != null) {
 				palettes[y + 4] = p;
-				blockStatesArray[y + 4] = NbtHelper.longArrayFromCompound(NbtHelper.tagFromCompound(s, "block_states"), "data");;
+				blockStatesArray[y + 4] = NbtHelper.longArrayFromCompound(NbtHelper.tagFromCompound(s, "block_states"), "data");
 				biomePalettes[y + 4] = NbtHelper.tagFromCompound(NbtHelper.tagFromCompound(s, "biomes"), "palette");
 				biomesArray[y + 4] = NbtHelper.longArrayFromCompound(NbtHelper.tagFromCompound(s, "biomes"), "data");
 			}

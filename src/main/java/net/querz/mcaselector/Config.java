@@ -241,7 +241,7 @@ public final class Config {
 	}
 
 	public static void setCacheDir(File cacheDir) {
-		Config.cacheDir = new File(cacheDir, worldUUID.toString().replace("-", ""));;
+		Config.cacheDir = new File(cacheDir, worldUUID.toString().replace("-", ""));
 	}
 
 	public static File getCacheDir(int zoomLevel) {
