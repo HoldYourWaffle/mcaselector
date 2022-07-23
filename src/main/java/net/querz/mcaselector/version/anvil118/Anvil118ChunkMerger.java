@@ -27,16 +27,14 @@ public class Anvil118ChunkMerger implements ChunkMerger {
 			NbtHelper.mergeListTagLists(source, destination, ranges, yOffset, "Lights");
 			NbtHelper.mergeListTagLists(source, destination, ranges, yOffset, "LiquidsToBeTicked");
 			NbtHelper.mergeListTagLists(source, destination, ranges, yOffset, "ToBeTicked");
-			NbtHelper.mergeListTagLists(source, destination, ranges, yOffset, "PostProcessing");
-			mergeStructures(source, destination, ranges, yOffset, dataVersion);
 		} else {
 			NbtHelper.mergeCompoundTagLists(source, destination, ranges, yOffset, "sections", c -> ((CompoundTag) c).getInt("Y"));
 			NbtHelper.mergeCompoundTagLists(source, destination, ranges, yOffset, "block_entities", c -> ((CompoundTag) c).getInt("y") >> 4);
 			NbtHelper.mergeCompoundTagLists(source, destination, ranges, yOffset, "block_ticks", c -> ((CompoundTag) c).getInt("y") >> 4);
 			NbtHelper.mergeCompoundTagLists(source, destination, ranges, yOffset, "fluid_ticks", c -> ((CompoundTag) c).getInt("y") >> 4);
-			NbtHelper.mergeListTagLists(source, destination, ranges, yOffset, "PostProcessing");
-			mergeStructures(source, destination, ranges, yOffset, dataVersion);
 		}
+		NbtHelper.mergeListTagLists(source, destination, ranges, yOffset, "PostProcessing");
+		mergeStructures(source, destination, ranges, yOffset, dataVersion);
 	}
 
 	private void mergeStructures(CompoundTag source, CompoundTag destination, List<Range> ranges, int yOffset, int dataVersion) {

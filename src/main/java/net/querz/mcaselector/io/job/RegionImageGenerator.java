@@ -194,7 +194,6 @@ public final class RegionImageGenerator {
 				if (progressChannel != null) {
 					progressChannel.incrementProgress(FileHelper.createMCAFileName(tile.getLocation()));
 				}
-				return true;
 			} else {
 				Timer t = new Timer();
 				Image image = TileImage.generateImage(cachedRegion, zoomLevel);
@@ -214,8 +213,8 @@ public final class RegionImageGenerator {
 						progressChannel.incrementProgress(FileHelper.createMCAFileName(tile.getLocation()));
 					}
 				}
-				return true;
 			}
+			return true;
 		}
 
 		@Override

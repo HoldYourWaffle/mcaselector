@@ -186,7 +186,6 @@ public class Anvil118ChunkFilter extends Anvil117ChunkFilter {
 					}
 				}
 			}
-			return false;
 		} else {
 			IntArrayTag biomesTag = NbtHelper.tagFromLevelFromRoot(data, "Biomes");
 			if (biomesTag == null) {
@@ -200,8 +199,8 @@ public class Anvil118ChunkFilter extends Anvil117ChunkFilter {
 					}
 				}
 			}
-			return false;
 		}
+		return false;
 	}
 
 	@Override
