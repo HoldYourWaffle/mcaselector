@@ -55,6 +55,8 @@ dependencies {
 	implementation 'me.tongfei:progressbar:0.9.3'
 	implementation 'org.codehaus.groovy:groovy-jsr223:3.0.11'
 
+	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'commons-io:commons-io:2.11.0'
 }
