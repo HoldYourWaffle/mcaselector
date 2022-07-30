@@ -1,7 +1,7 @@
 package net.querz.mcaselector.io.mca;
 
-import net.querz.mcaselector.io.ByteArrayPointer;
 import net.querz.mcaselector.io.FileHelper;
+import net.querz.mcaselector.io.IoUtil;
 import net.querz.mcaselector.point.Point2i;
 import net.querz.mcaselector.point.Point3i;
 import net.querz.mcaselector.range.Range;
@@ -42,25 +42,18 @@ public abstract sealed class Chunk implements Cloneable permits RegionChunk, Poi
 		this.absoluteLocation = absoluteLocation;
 	}
 
-	public void load(ByteArrayPointer ptr) throws IOException {
-		int length = ptr.readInt();
-		CompressionType compression = CompressionType.fromByte(ptr.readByte());
-		// CHECK the NONE case is wrapped in a BufferedInputStream now, does that make a difference?
-		load(ptr, length, compression);
-	}
-
-	public void load(RandomAccessFile raf) throws IOException {
-		int length = raf.readInt();
-		CompressionType compression = CompressionType.fromByte(raf.readByte());
-		FileInputStream fis = new FileInputStream(raf.getFD());
-		// use default buffer size of 512 bytes for decompressing streams
-		// CHECK does this actually make a difference?
-		load(fis, compression == CompressionType.NONE ? (length - 1) : 512, compression);
+	public void load(InputStream nbtIn) throws IOException {
+		// CHECK the 'length' is now always used as buffer size
+		// 	Does this cause issues in the cases where the default value was used before?
+		int length = IoUtil.readInt(nbtIn);
+		CompressionType compression = CompressionType.fromByte(IoUtil.readByte(nbtIn));
+		load(nbtIn, length, compression);
 	}
 
 	private void load(InputStream nbtIn, int bufferLength, CompressionType compression) throws IOException {
 		this.compressionType = compression;
 
+		// CHECK the ByteArrayPointer+NONE case is wrapped in a BufferedInputStream now, does that make a difference?
 		InputStream decompressedIn = switch (compressionType) {
 			case GZIP -> new BufferedInputStream(new GZIPInputStream(nbtIn, bufferLength));
 			case ZLIB -> new BufferedInputStream(new InflaterInputStream(nbtIn, new Inflater(), bufferLength));
