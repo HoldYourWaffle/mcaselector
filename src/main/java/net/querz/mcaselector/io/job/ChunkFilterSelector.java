@@ -2,9 +2,11 @@ package net.querz.mcaselector.io.job;
 
 import net.querz.mcaselector.config.ConfigProvider;
 import net.querz.mcaselector.filter.filters.GroupFilter;
+import net.querz.mcaselector.filter.filters.InhabitedTimeFilter;
 import net.querz.mcaselector.io.JobHandler;
 import net.querz.mcaselector.io.RegionDirectories;
 import net.querz.mcaselector.io.WorldDirectories;
+import net.querz.mcaselector.io.mca.JanktasticInhabitedTimeCache;
 import net.querz.mcaselector.io.mca.Region;
 import net.querz.mcaselector.selection.ChunkSet;
 import net.querz.mcaselector.selection.Selection;
@@ -15,6 +17,7 @@ import net.querz.mcaselector.util.progress.Timer;
 import net.querz.mcaselector.text.Translation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.util.function.Consumer;
 
 public final class ChunkFilterSelector {
@@ -80,9 +83,16 @@ public final class ChunkFilterSelector {
 			// load MCAFile
 			Timer t = new Timer();
 			try {
-				Region region = Region.loadRegion(getRegionDirectories());
+				ChunkSet chunks;
+				if (filter.getFilterValue().size() == 1 && filter.getFilterValue().getFirst() instanceof InhabitedTimeFilter) {
+					// Jank special case with caching
+					chunks = JanktasticInhabitedTimeCache.getFilteredChunksWithCache((InhabitedTimeFilter) filter.getFilterValue().getFirst(), getRegionDirectories());
+				} else {
+					// Boring slow path
+					Region region = Region.loadRegion(getRegionDirectories());
+					chunks = region.getFilteredChunks(filter, this.selection);
+				}
 
-				ChunkSet chunks = region.getFilteredChunks(filter, this.selection);
 				if (!chunks.isEmpty()) {
 					if (chunks.size() == Tile.CHUNKS) {
 						chunks = null;
